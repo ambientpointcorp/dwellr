@@ -1,0 +1,7 @@
+^data-raw$
+^\.github$
+^_pkgdown\.yml$
+^docs$
+^dwellr\.Rproj$
+^\.Rproj\.user$
+^README\.Rmd$

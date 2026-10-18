@@ -1,0 +1,115 @@
+# Declared, not yet implemented.
+#
+# These are the function families the book's remaining chapters need. They are
+# declared here, with the chapter each belongs to, for one reason: a reader
+# who finds a name in the function reference and calls it should be told it is
+# not written yet, not handed something plausible. An unimplemented method that
+# returns a number is worse than one that errors.
+#
+# Each gains a real implementation as its chapter is drafted. Remove from this
+# file when that happens.
+
+not_yet <- function(what, chapter) {
+  stop(sprintf("%s is not implemented yet (%s).\n  See OUTLINE.md in ambientpointcorp/lifecycle-analytics-book.",
+               what, chapter), call. = FALSE)
+}
+
+#' Lot sizing and the remaining deterministic models
+#'
+#' @description Not yet implemented. See Chapter 2.
+#' @param ... Arguments, once there are any.
+#' @name roadmap-deterministic
+#' @keywords internal
+NULL
+
+#' @rdname roadmap-deterministic
+#' @export
+dls_wagner_whitin <- function(...) not_yet("dls_wagner_whitin()", "Chapter 2, dynamic lot sizing")
+
+#' @rdname roadmap-deterministic
+#' @export
+eoq_quantity_discount <- function(...) not_yet("eoq_quantity_discount()", "Chapter 2, quantity discounts")
+
+#' @rdname roadmap-deterministic
+#' @export
+epq <- function(...) not_yet("epq()", "Chapter 2, the economic production quantity")
+
+#' Stochastic policies
+#'
+#' @description Not yet implemented. See Chapter 3.
+#' @param ... Arguments, once there are any.
+#' @name roadmap-stochastic
+#' @keywords internal
+NULL
+
+#' @rdname roadmap-stochastic
+#' @export
+policy_base_stock <- function(...) not_yet("policy_base_stock()", "Chapter 3, base-stock policies")
+
+#' @rdname roadmap-stochastic
+#' @export
+policy_ss <- function(...) not_yet("policy_ss()", "Chapter 3, the (s, S) policy")
+
+#' @rdname roadmap-stochastic
+#' @export
+policy_rs <- function(...) not_yet("policy_rs()", "Chapter 3, the (R, S) policy")
+
+#' Safety stock from measured dwell
+#'
+#' @description Not yet implemented. See Chapter 7.
+#' @param ... Arguments, once there are any.
+#' @name roadmap-safety
+#' @keywords internal
+NULL
+
+#' @rdname roadmap-safety
+#' @export
+safety_stock <- function(...) not_yet("safety_stock()", "Chapter 7, from dwell variance to safety stock")
+
+#' @rdname roadmap-safety
+#' @export
+dwell_variance_contribution <- function(...) not_yet("dwell_variance_contribution()", "Chapter 7, variance contribution by stage")
+
+#' Modeling helpers
+#'
+#' @description Not yet implemented. See Chapter 9.
+#' @param ... Arguments, once there are any.
+#' @name roadmap-modeling
+#' @keywords internal
+NULL
+
+#' @rdname roadmap-modeling
+#' @export
+fit_dwell_model <- function(...) not_yet("fit_dwell_model()", "Chapter 9, machine learning for lifecycle data")
+
+#' @rdname roadmap-modeling
+#' @export
+calibrate_probability <- function(...) not_yet("calibrate_probability()", "Chapter 9, calibration")
+
+#' Baselines, deadlines, capacity, routing and evaluation
+#'
+#' @description Not yet implemented. See Parts III, IV and V.
+#' @param ... Arguments, once there are any.
+#' @name roadmap-operations
+#' @keywords internal
+NULL
+
+#' @rdname roadmap-operations
+#' @export
+baseline_cohort <- function(...) not_yet("baseline_cohort()", "Chapter 12, baselines")
+
+#' @rdname roadmap-operations
+#' @export
+deadline_derive <- function(...) not_yet("deadline_derive()", "Chapter 13, deadlines and date fields")
+
+#' @rdname roadmap-operations
+#' @export
+capacity_admit <- function(...) not_yet("capacity_admit()", "Chapter 15, attention capacity")
+
+#' @rdname roadmap-operations
+#' @export
+route_action <- function(...) not_yet("route_action()", "Chapter 18, severity and routing")
+
+#' @rdname roadmap-operations
+#' @export
+evaluate_policy <- function(...) not_yet("evaluate_policy()", "Chapter 21, evaluating a monitoring policy")

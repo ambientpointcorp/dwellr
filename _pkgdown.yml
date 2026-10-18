@@ -1,0 +1,52 @@
+url: https://ambientpointcorp.github.io/dwellr/
+
+template:
+  bootstrap: 5
+
+# Organized by chapter, so the reference doubles as the book's function index
+# and Appendix E does not have to maintain a second copy of this list.
+reference:
+- title: Synthetic data
+  desc: >
+    Start here. Everything else runs against this, and the built-in dataset is
+    one call to it.
+  contents:
+  - simulate_lifecycles
+  - orders
+
+- title: "Part I — Classical inventory control"
+  desc: Chapters 2 and 3.
+  contents:
+  - eoq
+  - eoq_cost
+  - nv_critical_fractile
+  - nv_quantity
+  - roadmap-deterministic
+  - roadmap-stochastic
+
+- title: "Part II — Lead time as a stage process"
+  desc: Chapters 5 to 8. Stage dwell under right-censoring.
+  contents:
+  - stage_dwell
+  - dwell_survival
+  - dwell_quantile
+  - roadmap-safety
+
+- title: "Interlude — Machine learning"
+  desc: Chapter 9.
+  contents:
+  - roadmap-modeling
+
+- title: "Part III — Measurement method"
+  desc: Chapters 10 to 13.
+  contents:
+  - fill_rate
+
+- title: "Part IV — Allocating attention"
+  desc: Chapters 14 to 19.
+  contents:
+  - threshold_from_cost
+
+- title: "Parts III-V — declared, not yet implemented"
+  contents:
+  - roadmap-operations
