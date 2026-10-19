@@ -141,8 +141,13 @@ stage_validate <- function(sim, spec) {
 #' @export
 distribution_stage_spec <- function() {
   stage_spec(
-    stages = c("received", "awaiting_supply", "credit_hold", "released",
-               "backordered", "partially_shipped", "shipped", "cancelled"),
+    # Declared in order of PROGRESS, not in the order the stages happen to be
+    # listed anywhere else. `stage_exit_type()` reads backwardness from this
+    # order, so `backordered` has to sit behind `released`: a short pick is a
+    # move back, and classing it as forward would confound the hazard that
+    # §6.8 separates.
+    stages = c("received", "awaiting_supply", "credit_hold", "backordered",
+               "released", "partially_shipped", "shipped", "cancelled"),
     transitions = c(
       "received -> awaiting_supply",
       "received -> credit_hold",

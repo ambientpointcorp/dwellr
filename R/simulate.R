@@ -18,6 +18,10 @@
 #'   is what overstates a naive work queue (§8.3).
 #' * **Special orders.** Items bought from a vendor per order wait in
 #'   `awaiting_supply` on a vendor clock, not a warehouse one (§5.7).
+#' * **Covariate effects.** Dwell in `released` scales with the order's line
+#'   count, and dwell in `received` depends on branch and channel, so that the
+#'   regressions of §6.9 have something to recover and the recovered
+#'   coefficients can be checked against the values used here.
 #'
 #' It is not a model of any real operation and its parameters are not fitted to
 #' one. Treat the numbers it produces as illustrative.
@@ -89,6 +93,38 @@ simulate_lifecycles <- function(n = 5000,
   # released -> shipped. Chapter 6: p50 1.7h, p90 20h, p99 3.8d.
   d_released <- mixed_dwell(n, 0.16, 1.9, log(26), 1.3)
   d_partial  <- mixed_dwell(n, 0.30, 9, log(60), 1.0)
+
+  # Covariate effects on dwell. Without them every dwell is independent of
+  # everything recorded about the order, a regression on this corpus correctly
+  # finds nothing, and Chapter 6 can demonstrate only what a null result looks
+  # like. The effects are declared here, rather than buried in the draws, so
+  # that a coefficient recovered in Chapter 6 or Chapter 9 can be checked
+  # against the value that produced it.
+  #
+  #   released: handling work, so dwell scales with the work content of the
+  #     order, sublinearly in the number of lines -- picking a second line
+  #     costs less than picking the first.
+  #   received: an administrative release, so dwell depends on who processes
+  #     it rather than on the order's size. The smaller branch is slower, and
+  #     an inside-sales order needs a person where an e-store order does not.
+  #
+  # Nothing here makes dwell depend on the backlog present on arrival, because
+  # the generator has no queue: orders do not compete for a resource. Section
+  # 6.9 tests for a backlog effect and correctly finds none, which is the
+  # result to expect from data built this way and is stated there as such.
+  # Each factor is divided by its own mean over the population, so it changes
+  # which orders wait longer without changing how long the stage holds orders
+  # on average. That matters beyond tidiness: the stage decomposition of
+  # Chapter 5 is computed from these same draws, and a factor with a mean above
+  # one would silently relabel which stage carries the most lead time.
+  centered <- function(x) x / mean(x)
+
+  f_lines   <- centered((lines_n / 3)^0.45)
+  f_branch  <- centered(ifelse(branch == "30", 1.55, 1))
+  f_channel <- centered(ifelse(source_ == "inside_sales", 1.40, 1))
+
+  d_released <- d_released * f_lines
+  d_received <- d_received * f_branch * f_channel
 
   ev <- list()
   add <- function(order_no, event, stage, at) {
