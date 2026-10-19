@@ -16,9 +16,11 @@ Depends: R (>= 4.1)
 Imports:
     R6,
     stats,
-    survival
+    survival,
+    utils
 Suggests:
     testthat (>= 3.0.0),
+    forecast,
     ggplot2,
     ranger,
     xgboost,
