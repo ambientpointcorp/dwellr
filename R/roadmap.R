@@ -14,26 +14,6 @@ not_yet <- function(what, chapter) {
                what, chapter), call. = FALSE)
 }
 
-#' Stochastic policies
-#'
-#' @description Not yet implemented. See Chapter 3.
-#' @param ... Arguments, once there are any.
-#' @name roadmap-stochastic
-#' @keywords internal
-NULL
-
-#' @rdname roadmap-stochastic
-#' @export
-policy_base_stock <- function(...) not_yet("policy_base_stock()", "Chapter 3, base-stock policies")
-
-#' @rdname roadmap-stochastic
-#' @export
-policy_ss <- function(...) not_yet("policy_ss()", "Chapter 3, the (s, S) policy")
-
-#' @rdname roadmap-stochastic
-#' @export
-policy_rs <- function(...) not_yet("policy_rs()", "Chapter 3, the (R, S) policy")
-
 #' Safety stock from measured dwell
 #'
 #' @description Not yet implemented. See Chapter 7.
