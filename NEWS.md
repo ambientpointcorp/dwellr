@@ -10,7 +10,9 @@ First scaffold. Implemented and tested:
   the conditional dwell distribution.
 * `fill_rate()` — fill on units, lines and value, with the binding dimension.
 * `eoq()`, `eoq_cost()`, `nv_critical_fractile()`, `nv_quantity()` — the
-  classical results the later chapters reuse.
+  classical results the later chapters reuse. Their tests reproduce the
+  instance carried through Chapter 2 (K = 100, h = 1, d = 10), the flatness
+  figures of Section 2.3, and the cost-misestimation figures of Section 2.4.
 
 Declared with a roadmap and not yet implemented: the remaining `eoq_*`/`dls_*`
 lot-sizing models, the stochastic policies, the `fit_*`/`calibrate_*` modeling
