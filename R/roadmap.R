@@ -14,26 +14,6 @@ not_yet <- function(what, chapter) {
                what, chapter), call. = FALSE)
 }
 
-#' Lot sizing and the remaining deterministic models
-#'
-#' @description Not yet implemented. See Chapter 2.
-#' @param ... Arguments, once there are any.
-#' @name roadmap-deterministic
-#' @keywords internal
-NULL
-
-#' @rdname roadmap-deterministic
-#' @export
-dls_wagner_whitin <- function(...) not_yet("dls_wagner_whitin()", "Chapter 2, dynamic lot sizing")
-
-#' @rdname roadmap-deterministic
-#' @export
-eoq_quantity_discount <- function(...) not_yet("eoq_quantity_discount()", "Chapter 2, quantity discounts")
-
-#' @rdname roadmap-deterministic
-#' @export
-epq <- function(...) not_yet("epq()", "Chapter 2, the economic production quantity")
-
 #' Stochastic policies
 #'
 #' @description Not yet implemented. See Chapter 3.
