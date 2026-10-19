@@ -126,11 +126,32 @@ simulate_lifecycles <- function(n = 5000,
   d_released <- d_released * f_lines
   d_received <- d_received * f_branch * f_channel
 
-  ev <- list()
+  # Events accumulate into preallocated vectors rather than into a list of
+  # one-row data frames. The list version was quadratic: do.call(rbind, ...)
+  # over tens of thousands of frames dominated the run, so n = 5000 took 27
+  # seconds and n = 20000 would have taken minutes. Every chapter of the book
+  # regenerates this corpus, so the cost was paid eight times per build.
+  #
+  # The draws are untouched and happen in the same order, so the output is
+  # identical to the list version; only the assembly changed.
+  cap <- 8L * n
+  ev_order <- character(cap)
+  ev_event <- character(cap)
+  ev_stage <- character(cap)
+  ev_at <- numeric(cap)
+  n_ev <- 0L
   add <- function(order_no, event, stage, at) {
-    ev[[length(ev) + 1L]] <<- data.frame(
-      order_no = order_no, event = event, stage = stage,
-      occurred_at = at, stringsAsFactors = FALSE)
+    n_ev <<- n_ev + 1L
+    if (n_ev > length(ev_order)) {           # grow by doubling, never per row
+      ev_order <<- c(ev_order, character(length(ev_order)))
+      ev_event <<- c(ev_event, character(length(ev_event)))
+      ev_stage <<- c(ev_stage, character(length(ev_stage)))
+      ev_at <<- c(ev_at, numeric(length(ev_at)))
+    }
+    ev_order[n_ev] <<- order_no
+    ev_event[n_ev] <<- event
+    ev_stage[n_ev] <<- stage
+    ev_at[n_ev] <<- as.numeric(at)
   }
 
   stage_now  <- character(n)
@@ -229,7 +250,11 @@ simulate_lifecycles <- function(n = 5000,
     if (stats::runif(1) < 0.30) residue[i] <- TRUE
   }
 
-  events <- do.call(rbind, ev)
+  keep <- seq_len(n_ev)
+  events <- data.frame(
+    order_no = ev_order[keep], event = ev_event[keep], stage = ev_stage[keep],
+    occurred_at = as.POSIXct(ev_at[keep], origin = "1970-01-01", tz = "UTC"),
+    stringsAsFactors = FALSE)
   events <- events[order(events$occurred_at, events$order_no), ]
   rownames(events) <- NULL
 

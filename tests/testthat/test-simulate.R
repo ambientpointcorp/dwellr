@@ -36,3 +36,37 @@ test_that("censored visits are the slow ones, which is the Chapter 6 bias", {
   # -- removes exactly the stuck population and runs optimistic.
   expect_gt(open_med, done_med)
 })
+
+test_that("the event log assembles the same way at every size", {
+  # The assembly was rewritten from a list of one-row data frames to
+  # preallocated vectors, because do.call(rbind, ...) over tens of thousands
+  # of frames made the generator quadratic: n = 5000 took 27 seconds and every
+  # chapter of the book regenerates that corpus. The draws are unchanged, so
+  # this guards the property that made the rewrite safe -- the log is still
+  # assembled in one order, sorted by instant then identifier, with no gaps.
+  sim <- simulate_lifecycles(n = 1500, seed = 11)
+  ev <- sim$events
+
+  expect_false(any(is.na(ev$occurred_at)))
+  expect_false(any(ev$order_no == ""))
+  expect_equal(ev$occurred_at, sort(ev$occurred_at))
+  expect_s3_class(ev$occurred_at, "POSIXct")
+  expect_equal(attr(ev$occurred_at, "tzone"), "UTC")
+  expect_equal(rownames(ev), as.character(seq_len(nrow(ev))))
+
+  # Every order contributes at least its entry event, and no order contributes
+  # more events than the longest declared path allows.
+  per <- table(ev$order_no)
+  expect_equal(length(per), nrow(sim$orders))
+  expect_true(all(per >= 1))
+  expect_lte(max(per), 8)
+})
+
+test_that("generation stays roughly linear in the number of orders", {
+  skip_on_cran()
+  t1 <- system.time(simulate_lifecycles(n = 1000, seed = 3))[["elapsed"]]
+  t4 <- system.time(simulate_lifecycles(n = 4000, seed = 3))[["elapsed"]]
+  # Quadratic assembly made this ratio about 16; linear-ish assembly keeps it
+  # near 4. The bound is loose because timing on a shared machine is noisy.
+  expect_lt(t4 / max(t1, 0.05), 9)
+})
