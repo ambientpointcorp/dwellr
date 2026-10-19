@@ -24,10 +24,6 @@ NULL
 
 #' @rdname roadmap-safety
 #' @export
-safety_stock <- function(...) not_yet("safety_stock()", "Chapter 7, from dwell variance to safety stock")
-
-#' @rdname roadmap-safety
-#' @export
 dwell_variance_contribution <- function(...) not_yet("dwell_variance_contribution()", "Chapter 7, variance contribution by stage")
 
 #' Modeling helpers
