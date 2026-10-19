@@ -14,17 +14,6 @@ not_yet <- function(what, chapter) {
                what, chapter), call. = FALSE)
 }
 
-#' Safety stock from measured dwell
-#'
-#' @description Not yet implemented. See Chapter 7.
-#' @param ... Arguments, once there are any.
-#' @name roadmap-safety
-#' @keywords internal
-NULL
-
-#' @rdname roadmap-safety
-#' @export
-dwell_variance_contribution <- function(...) not_yet("dwell_variance_contribution()", "Chapter 7, variance contribution by stage")
 
 #' Modeling helpers
 #'
