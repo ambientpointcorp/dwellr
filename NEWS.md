@@ -18,6 +18,15 @@ First scaffold. Implemented and tested:
 * `dwell_mixture()` now returns the index of the `slow` component and a
   `posterior(time, censored)` function giving the probability that a visit
   belongs to it, which is the input `threshold_from_cost()` expects.
+* `order_lines()`, `entity_check()`, `identifier_audit()` and
+  `segment_decision_shift()` — the entity decision of Chapter 10.
+  `entity_check()` applies the two conditions a candidate entity has to meet,
+  that every event attaches to exactly one instance and that an instance can
+  say whether work is still owed; on the order population the pick ticket
+  fails the first at an attachment rate of 0.857 and the customer fails the
+  second. `segment_decision_shift()` judges a segmentation key by how many
+  visits it reclassifies under the operating threshold rather than by whether
+  its groups differ.
 * `fill_rate()` — fill on units, lines and value, with the binding dimension.
 * `eoq()`, `eoq_cost()`, `nv_critical_fractile()`, `nv_quantity()` — the
   classical results the later chapters reuse. Their tests reproduce the

@@ -40,6 +40,10 @@ reference:
 - title: "Part III — Measurement method"
   desc: Chapters 10 to 13.
   contents:
+  - order_lines
+  - entity_check
+  - identifier_audit
+  - segment_decision_shift
   - fill_rate
 
 - title: "Part IV — Allocating attention"
