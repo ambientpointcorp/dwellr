@@ -119,6 +119,10 @@ reference:
 - title: "Part III — Measurement method"
   desc: Chapters 10 to 13.
   contents:
+  - baseline_cohort
+  - baseline_exceedance
+  - baseline_stability
+  - baseline_drift_decompose
   - order_lines
   - entity_check
   - identifier_audit

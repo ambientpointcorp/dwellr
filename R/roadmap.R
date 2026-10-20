@@ -31,17 +31,13 @@ fit_dwell_model <- function(...) not_yet("fit_dwell_model()", "Chapter 9, machin
 #' @export
 calibrate_probability <- function(...) not_yet("calibrate_probability()", "Chapter 9, calibration")
 
-#' Baselines, deadlines, capacity, routing and evaluation
+#' Deadlines, capacity, routing and evaluation
 #'
 #' @description Not yet implemented. See Parts III, IV and V.
 #' @param ... Arguments, once there are any.
 #' @name roadmap-operations
 #' @keywords internal
 NULL
-
-#' @rdname roadmap-operations
-#' @export
-baseline_cohort <- function(...) not_yet("baseline_cohort()", "Chapter 12, baselines")
 
 #' @rdname roadmap-operations
 #' @export

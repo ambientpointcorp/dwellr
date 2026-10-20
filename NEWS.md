@@ -18,6 +18,21 @@ First scaffold. Implemented and tested:
 * `dwell_mixture()` now returns the index of the `slow` component and a
   `posterior(time, censored)` function giving the probability that a visit
   belongs to it, which is the input `threshold_from_cost()` expects.
+* `baseline_cohort()`, `baseline_exceedance()`, `baseline_stability()` and
+  `baseline_drift_decompose()` — the baselines of Chapter 12, replacing the
+  `baseline_cohort` roadmap stub. A cohort scheme is validated on the cohort
+  and not on the population: on the order population every granularity from one
+  key to four holds an overall exceedance within 1.7 points of its 10% target
+  while the worst cohort moves from 2.6 to 90 points off it, so
+  `baseline_exceedance()` reports the per-cohort column. `baseline_stability()`
+  measures the steadiness half of the window-length trade-off, where a
+  seven-day baseline moves 15% from week to week against 1.4% at sixty days.
+  `baseline_drift_decompose()` separates a slowing process from a shifting mix,
+  which an aggregate cannot: a mix shift and a 25% slowdown produce aggregates
+  0.7 hours apart here. It aligns its inputs by name, because matching
+  positionally pairs each weight with the wrong cohort whenever the caller
+  writes them in a different order from `tapply`, and that produced a mix
+  effect of +85 hours against a true +12 in a first draft.
 * `order_lines()`, `entity_check()`, `identifier_audit()` and
   `segment_decision_shift()` — the entity decision of Chapter 10.
   `entity_check()` applies the two conditions a candidate entity has to meet,

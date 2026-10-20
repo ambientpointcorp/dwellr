@@ -2,15 +2,12 @@
 % Please edit documentation in R/roadmap.R
 \name{roadmap-operations}
 \alias{roadmap-operations}
-\alias{baseline_cohort}
 \alias{deadline_derive}
 \alias{capacity_admit}
 \alias{route_action}
 \alias{evaluate_policy}
-\title{Baselines, deadlines, capacity, routing and evaluation}
+\title{Deadlines, capacity, routing and evaluation}
 \usage{
-baseline_cohort(...)
-
 deadline_derive(...)
 
 capacity_admit(...)
