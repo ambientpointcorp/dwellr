@@ -42,7 +42,9 @@ eoq_cost <- function(demand_rate, order_cost, holding_cost, Q) {
 #' Newsvendor critical fractile
 #'
 #' The service level implied by a pair of overage and underage costs (§3.1).
-#' Chapter 14 reuses this expression for alerting; see [threshold_from_cost()].
+#' Chapter 14 reuses this expression for alerting, on the complementary tail
+#' because the decision variable there is a waiting time rather than a
+#' stocking quantity; see [threshold_from_cost()].
 #'
 #' @param overage Cost per unit left unsold, `o`.
 #' @param underage Cost per unit of unmet demand, `u`.

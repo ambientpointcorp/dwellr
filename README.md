@@ -35,15 +35,34 @@ d <- stage_dwell(orders, stage = "released")
 
 # The operating quantiles a threshold should come from.
 dwell_quantile(d, c(0.5, 0.9))
-#> [1]  1.97 17.99
+#> [1]  1.81 13.68
 
-# And the threshold itself, derived from a cost ratio rather than chosen:
-# the critical fractile of the conditional dwell distribution.
-threshold_from_cost(d, cost_miss = 400, cost_look = 10)
-#> $fractile
-#> [1] 0.9756
-#> $hours
-#> [1] 108.8
+# A threshold wants a stall probability per order, which the two-component
+# mixture supplies: the chance a visit still open at t belongs to the slow
+# population rather than the one moving at the intended pace.
+mix <- dwell_mixture(d)
+q <- mix$posterior(d$dwell_hours, censored = d$censored)
+
+# The threshold itself is then derived from a cost ratio rather than chosen.
+# Reviewer attention priced at 10x a missed stall flags 9% of the population,
+# and the crossing translates back to an operating rule in hours.
+r <- threshold_from_cost(q, cost_miss = 40, cost_look = 400,
+                         hours = d$dwell_hours)
+r$probability_threshold
+#> [1] 0.9091
+c(flagged = r$flagged_n, hours = round(r$hours, 2))
+#> flagged   hours
+#>  193.00   17.31
+
+# And the rule is checked against the two policies it has to beat.
+round(r$expected_cost)
+#>   rule   none    all
+#>   2571   9892 741878
+
+# With no fitted probability available, the fallback reads the same cost ratio
+# off the dwell distribution instead, under the assumption its help documents.
+threshold_from_dwell_quantile(d, cost_miss = 40, cost_look = 400)$hours
+#> [1] 17.77
 ```
 
 ### Why censoring is the first thing in the package

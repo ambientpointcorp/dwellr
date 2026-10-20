@@ -46,6 +46,7 @@ reference:
   desc: Chapters 14 to 19.
   contents:
   - threshold_from_cost
+  - threshold_from_dwell_quantile
 
 - title: "Parts III-V — declared, not yet implemented"
   contents:

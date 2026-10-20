@@ -281,13 +281,25 @@ dwell_parametric <- function(dwell,
 #'
 #' @return A list with the mixing `weight` of each component, the fitted
 #'   `params`, the `logLik`, the iterations run, whether the fit `converged`,
-#'   and a `quantile` function giving quantiles of the mixture.
+#'   the index of the `slow` component, a `posterior(time, censored)` function
+#'   giving the probability that a visit belongs to it, and a `quantile`
+#'   function giving quantiles of the mixture.
+#'
+#'   The `posterior` is the input [threshold_from_cost()] expects, with one
+#'   qualification to carry into any rule built on it: it reports membership in
+#'   the slow component, which is a stall only to the extent that the slow
+#'   component is what stalling means here. How low the posterior reaches
+#'   depends on the families fitted and on the smallest time observed, so
+#'   compare `min(posterior(...))` against the intended threshold rather than
+#'   assuming the range covers it.
 #'
 #' @examples
 #' sim <- simulate_lifecycles(n = 2000, seed = 1)
 #' fit <- dwell_mixture(stage_dwell(sim, "released"))
 #' fit$weight
 #' fit$quantile(c(0.5, 0.9))
+#' # The stall probability of a visit still open at 2, 12 and 48 hours.
+#' fit$posterior(c(2, 12, 48), censored = TRUE)
 #' @export
 dwell_mixture <- function(dwell, families = c("exp", "lnorm"),
                           iter = 500, tol = 1e-7) {
@@ -370,9 +382,31 @@ dwell_mixture <- function(dwell, families = c("exp", "lnorm"),
     }, numeric(1))
   }
 
+  # Which component is the slow one is a property of the fit and not of the
+  # order the families were named in, since EM is free to swap them.
+  med_k <- c(quant(families[1], par[[1]], 0.5), quant(families[2], par[[2]], 0.5))
+  slow <- which.max(med_k)
+
+  # The probability that a visit belongs to the slow component. For a visit
+  # that has finished this conditions on its observed dwell; for one still
+  # open it conditions on the dwell exceeding the time so far, which is the
+  # quantity an alerting rule needs. It rises with `time` whenever the slow
+  # component has the heavier tail, which is the same mixed-population fact
+  # that makes the pooled hazard fall (Section 6.5).
+  posterior <- function(time, censored = FALSE) {
+    time <- pmax(time, 1e-6)
+    censored <- rep_len(censored, length(time))
+    m <- cbind(
+      ifelse(censored, surv(families[1], par[[1]], time),
+             dens(families[1], par[[1]], time)),
+      ifelse(censored, surv(families[2], par[[2]], time),
+             dens(families[2], par[[2]], time))) * rep(w, each = length(time))
+    m[, slow] / pmax(rowSums(m), 1e-300)
+  }
+
   list(weight = stats::setNames(w, families), params = par,
        families = families, logLik = ll_old, iterations = it,
-       converged = converged,
+       converged = converged, slow = slow, posterior = posterior,
        quantile = qmix,
        component_quantile = function(p) rbind(
          vapply(p, function(pi) quant(families[1], par[[1]], pi), numeric(1)),

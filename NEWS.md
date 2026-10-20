@@ -6,8 +6,18 @@ First scaffold. Implemented and tested:
   the package, and every example in the book, runs against its output.
 * `stage_dwell()`, `dwell_survival()`, `dwell_quantile()` — stage dwell under
   right-censoring.
-* `threshold_from_cost()` — an alerting threshold as the critical fractile of
-  the conditional dwell distribution.
+* `threshold_from_cost()` — an alerting threshold on a vector of calibrated
+  stall probabilities, set at `p* = c_look / (c_look + c_miss)` and reported
+  with the expected cost of the rule beside reviewing nothing and reviewing
+  everything. This is the newsvendor fractile with the costs in the other
+  order, since the decision variable is when to spend attention rather than
+  how much to stock, so the threshold falls as a missed stall gets dearer and
+  rises as reviewer attention does. `threshold_from_dwell_quantile()` is the
+  fallback where no fitted probability exists, applying the same `p*` as a
+  fractile of the dwell distribution.
+* `dwell_mixture()` now returns the index of the `slow` component and a
+  `posterior(time, censored)` function giving the probability that a visit
+  belongs to it, which is the input `threshold_from_cost()` expects.
 * `fill_rate()` — fill on units, lines and value, with the binding dimension.
 * `eoq()`, `eoq_cost()`, `nv_critical_fractile()`, `nv_quantity()` — the
   classical results the later chapters reuse. Their tests reproduce the
