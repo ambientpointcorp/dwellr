@@ -42,15 +42,23 @@
 #' @param horizon_days Days of order entry to generate.
 #' @param start Entry date of the first order.
 #'
-#' @return An object of class `lifecycle_sim`: a list with
-#'   `orders` (one row per order) and `events` (the append-only event log,
-#'   one row per transition, with `order_no`, `event`, `stage`, `occurred_at`).
+#' @return An object of class `lifecycle_sim`: a list with `orders` (one row
+#'   per order), `events` (the append-only event log, one row per transition,
+#'   with `order_no`, `event`, `stage`, `occurred_at`) and `lines` (one row per
+#'   order line, with `qty_ordered`, `unit_price` and `qty_shipped`).
+#'
+#'   The extended value of an order's lines sums to its `value`, and the three
+#'   `fill_*` columns on `orders` are computed from the lines rather than drawn
+#'   separately, so that the dimensions of Chapter 11 describe one population.
+#'   They are `NA` where the order has not reached a shipping stage, because an
+#'   order that has not shipped has no fill rate yet.
 #'
 #' @examples
 #' sim <- simulate_lifecycles(n = 500, seed = 1)
 #' nrow(sim$orders)
 #' head(sim$events, 3)
 #' table(sim$orders$stage)
+#' head(sim$lines, 3)
 #' @export
 simulate_lifecycles <- function(n = 5000,
                                 seed = NULL,
@@ -250,6 +258,55 @@ simulate_lifecycles <- function(n = 5000,
     if (stats::runif(1) < 0.30) residue[i] <- TRUE
   }
 
+  # ---- Order lines, with quantities and prices ----------------------------
+  #
+  # Chapter 11 measures fill on units, lines and value, and the three can only
+  # disagree if the lines of an order differ in size and in price. The order
+  # record cannot carry that: a fraction of units filled says nothing about
+  # which line was short.
+  #
+  # Every draw below is vectorized and happens after the loop above, so adding
+  # this leaves the rest of the population byte-identical. That was verified
+  # across three seeds and two sizes rather than assumed.
+  n_lines <- sum(lines_n)
+  qty_ordered <- 1L + stats::rpois(n_lines, 4)
+  # A price multiplier per line, so the expensive line is not always the big
+  # one. Scaled within each order so that the extended value of its lines sums
+  # to the order value already drawn.
+  price_raw <- stats::rlnorm(n_lines, 0, 0.8)
+  line_order <- rep(order_no, lines_n)
+  ext_raw <- qty_ordered * price_raw
+  ext_total <- tapply(ext_raw, line_order, sum)[line_order]
+  unit_price <- price_raw * (rep(value, lines_n) / as.numeric(ext_total))
+
+  # A short order ships its first k lines complete and the rest not at all,
+  # where k is the line count the loop above already settled. Line fill is
+  # therefore exactly the fraction drawn there, while fill on units and on
+  # value follow from which lines those happen to be.
+  line_no_v <- sequence(lines_n)
+  k_complete <- ifelse(stage_now %in% c("shipped", "partially_shipped"),
+                       round(fill_lines * lines_n), 0)
+  qty_shipped <- ifelse(line_no_v <= rep(k_complete, lines_n), qty_ordered, 0L)
+
+  lines_tbl <- data.frame(
+    order_no = line_order, line_no = line_no_v,
+    qty_ordered = qty_ordered, unit_price = unit_price,
+    qty_shipped = qty_shipped, stringsAsFactors = FALSE)
+
+  # Fill on units and on value are recomputed from the lines, so that the three
+  # dimensions describe one population rather than three independent draws.
+  # They are NA where the order has not reached a shipping stage: an order that
+  # has not shipped has no fill rate yet, which is the same censoring problem
+  # Chapter 6 treats for dwell, and crediting it with 1 would report every
+  # open order as perfectly filled.
+  shipped_stage <- stage_now %in% c("shipped", "partially_shipped")
+  sum_by <- function(x) as.numeric(tapply(x, line_order, sum)[order_no])
+  fill_units <- ifelse(shipped_stage, sum_by(qty_shipped) / sum_by(qty_ordered), NA)
+  fill_value <- ifelse(shipped_stage,
+                       sum_by(qty_shipped * unit_price) /
+                         sum_by(qty_ordered * unit_price), NA)
+  fill_lines <- ifelse(shipped_stage, fill_lines, NA)
+
   keep <- seq_len(n_ev)
   events <- data.frame(
     order_no = ev_order[keep], event = ev_event[keep], stage = ev_stage[keep],
@@ -280,8 +337,8 @@ simulate_lifecycles <- function(n = 5000,
     stringsAsFactors = FALSE
   )
 
-  structure(list(orders = orders, events = events, as_of = as_of),
-            class = "lifecycle_sim")
+  structure(list(orders = orders, events = events, lines = lines_tbl,
+                 as_of = as_of), class = "lifecycle_sim")
 }
 
 #' @export

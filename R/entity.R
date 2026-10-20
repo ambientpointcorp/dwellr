@@ -54,6 +54,17 @@ order_lines <- function(sim) {
     shipped = line_no <= shipped_n[idx],
     stringsAsFactors = FALSE)
 
+  # Quantities and prices come from the generator's own line table, which is
+  # where they are drawn. Joining on the pair rather than assuming row order
+  # keeps the two independent of each other's sorting.
+  if (!is.null(sim$lines)) {
+    key <- paste(out$order_no, out$line_no)
+    j <- match(key, paste(sim$lines$order_no, sim$lines$line_no))
+    out$qty_ordered <- sim$lines$qty_ordered[j]
+    out$unit_price <- sim$lines$unit_price[j]
+    out$qty_shipped <- sim$lines$qty_shipped[j]
+  }
+
   # The source disposition is what a line-level status column in an order
   # management system would hold: shipped, cancelled at close, or open. It is
   # a statement about where the line stands and not about what happened to it,

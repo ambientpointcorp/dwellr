@@ -34,9 +34,16 @@ earlier \code{as_of}, for a larger censored share.}
 \item{start}{Entry date of the first order.}
 }
 \value{
-An object of class \code{lifecycle_sim}: a list with
-\code{orders} (one row per order) and \code{events} (the append-only event log,
-one row per transition, with \code{order_no}, \code{event}, \code{stage}, \code{occurred_at}).
+An object of class \code{lifecycle_sim}: a list with \code{orders} (one row
+per order), \code{events} (the append-only event log, one row per transition,
+with \code{order_no}, \code{event}, \code{stage}, \code{occurred_at}) and \code{lines} (one row per
+order line, with \code{qty_ordered}, \code{unit_price} and \code{qty_shipped}).
+
+The extended value of an order's lines sums to its \code{value}, and the three
+\verb{fill_*} columns on \code{orders} are computed from the lines rather than drawn
+separately, so that the dimensions of Chapter 11 describe one population.
+They are \code{NA} where the order has not reached a shipping stage, because an
+order that has not shipped has no fill rate yet.
 }
 \description{
 Generates a synthetic population of orders moving through a distribution
@@ -72,4 +79,5 @@ sim <- simulate_lifecycles(n = 500, seed = 1)
 nrow(sim$orders)
 head(sim$events, 3)
 table(sim$orders$stage)
+head(sim$lines, 3)
 }

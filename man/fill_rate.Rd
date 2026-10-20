@@ -11,20 +11,31 @@ fill_rate(orders)
 as produced by \code{\link[=simulate_lifecycles]{simulate_lifecycles()}}.}
 }
 \value{
-The input with \code{fill_binding} and \code{fill_binding_dimension} added.
+The input with \code{fill_binding}, \code{fill_binding_dimension} and
+\code{fill_defined} added.
 }
 \description{
 Order fill measured on units, lines and value, plus the binding dimension.
 }
 \details{
-The three disagree, and the disagreement is informative rather than noise.
-Six of eight units is 0.75 by units; if the missing unit is the expensive one
-it is worse by value; a one-of-three-lines order is worse by lines. The
-binding dimension -- the minimum -- is the one the customer experiences
+The three disagree, and the disagreement is informative. Six of eight units
+is 0.75 by units; if the missing unit is the expensive one it is worse by
+value; a one-of-three-lines order is worse by lines. The binding dimension,
+which is the minimum of the three, is the one the customer experiences
 (Chapter 11).
+
+Orders that have not reached a shipping stage carry \code{NA} on all three
+dimensions, because an order that has not shipped has no fill rate yet. The
+binding dimension is \code{NA} for those rows rather than 1, so that averaging
+over the column cannot credit an open order with a complete shipment. The
+returned \code{fill_defined} column marks the rows the three dimensions are
+available for, and any rate quoted from this frame should report that
+denominator beside it.
 }
 \examples{
 sim <- simulate_lifecycles(n = 300, seed = 1)
 f <- fill_rate(sim$orders)
 table(f$fill_binding_dimension[f$fill_binding < 1])
+# The denominator a fill rate has to be quoted against.
+c(defined = sum(f$fill_defined), open = sum(!f$fill_defined))
 }

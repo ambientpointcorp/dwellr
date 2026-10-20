@@ -27,7 +27,17 @@ First scaffold. Implemented and tested:
   second. `segment_decision_shift()` judges a segmentation key by how many
   visits it reclassifies under the operating threshold rather than by whether
   its groups differ.
-* `fill_rate()` — fill on units, lines and value, with the binding dimension.
+* `fill_rate()`, `fill_dimensions()` — fill on units, lines and value, with the
+  binding dimension, for Chapter 11. `simulate_lifecycles()` now returns a
+  `lines` table carrying an ordered quantity and a unit price per line, and the
+  three `fill_*` columns are computed from it rather than drawn separately, so
+  the dimensions describe one population and can disagree the way they do in
+  an order book. They are `NA` where the order has not reached a shipping
+  stage: an order that has not shipped has no fill rate, and crediting it with
+  one overstated unit fill on this population by 0.3 points while pooling every
+  line in the extract understated it by 4.6. The new line draws are vectorized
+  and happen after every other draw, so the rest of the population is
+  byte-identical, verified across three seeds and two sizes.
 * `eoq()`, `eoq_cost()`, `nv_critical_fractile()`, `nv_quantity()` — the
   classical results the later chapters reuse. Their tests reproduce the
   instance carried through Chapter 2 (K = 100, h = 1, d = 10), the flatness

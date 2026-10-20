@@ -124,6 +124,7 @@ reference:
   - identifier_audit
   - segment_decision_shift
   - fill_rate
+  - fill_dimensions
 
 - title: "Part IV — Allocating attention"
   desc: Chapters 14 to 19.
