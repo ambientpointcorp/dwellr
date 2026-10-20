@@ -5,6 +5,12 @@ template:
 
 # Organized by chapter, so the reference doubles as the book's function index
 # and Appendix E does not have to maintain a second copy of this list.
+#
+# pkgdown requires every documented topic to appear here exactly once, so this
+# file is what fails when a chapter adds a function and forgets the index. Note
+# that a topic is not always a function: `fc_benchmarks` documents four
+# forecasting methods under one name, and the two roadmap entries each cover a
+# family of declared stubs.
 reference:
 - title: Synthetic data
   desc: >
@@ -14,23 +20,96 @@ reference:
   - simulate_lifecycles
   - orders
 
-- title: "Part I — Classical inventory control"
-  desc: Chapters 2 and 3.
+- title: "Part I — Inventory systems"
+  desc: Chapter 1. State derived from a ledger rather than maintained beside one.
+  contents:
+  - Warehouse
+
+- title: "Part I — Deterministic models"
+  desc: Chapter 2. Lot sizing under known, constant demand.
   contents:
   - eoq
   - eoq_cost
+  - eoq_cost_interval
+  - eoq_penalty
+  - eoq_misestimate_penalty
+  - eoq_quantity_discount
+  - epq
+  - backorder_policy
+  - reorder_point
+  - pow2_interval
+  - pow2_bound
+  - elsp_common_cycle
+  - jrp
+  - dls_wagner_whitin
+
+- title: "Part I — Stochastic models and service levels"
+  desc: Chapter 3. The newsvendor, the standard policies, and what service costs.
+  contents:
   - nv_critical_fractile
   - nv_quantity
-  - roadmap-deterministic
-  - roadmap-stochastic
+  - nv_quantity_for_service
+  - nv_leftover
+  - nv_shortfall
+  - nv_cost
+  - nv_service_levels
+  - policy_base_stock
+  - policy_ss
+  - policy_rs
+  - ss_cost
 
-- title: "Part II — Lead time as a stage process"
-  desc: Chapters 5 to 8. Stage dwell under right-censoring.
+- title: "Part I — Demand forecasting"
+  desc: Chapter 4. Benchmarks first, then accuracy, then what feeds safety stock.
+  contents:
+  - fc_benchmarks
+  - fc_accuracy
+  - fc_rolling_origin
+  - lead_time_demand
+  - safety_stock
+
+- title: "Part II — Decomposing lead time"
+  desc: Chapter 5. Stages declared, validated, and attributed.
+  contents:
+  - stage_spec
+  - stage_validate
+  - distribution_stage_spec
+  - lead_time_decompose
+  - degenerate_stages
+
+- title: "Part II — Measuring dwell time"
+  desc: Chapter 6. Stage dwell under right-censoring.
   contents:
   - stage_dwell
   - dwell_survival
   - dwell_quantile
-  - roadmap-safety
+  - dwell_mean
+  - dwell_hazard
+  - dwell_parametric
+  - dwell_mixture
+  - dwell_competing
+  - dwell_regression
+  - stage_exit_type
+  - observe_at
+  - stage_backlog
+
+- title: "Part II — From dwell variance to safety stock"
+  desc: Chapter 7. What the variance is worth, and to which stage it belongs.
+  contents:
+  - dwell_variance_contribution
+  - variance_reduction_value
+  - driver_variance
+  - service_level_gap
+  - lead_time_demand_empirical
+  - monitoring_budget
+
+- title: "Part II — Lifecycles that are not chains"
+  desc: Chapter 8. Loops, partial completion, residue, and path enumeration.
+  contents:
+  - lifecycle_variants
+  - revisit_count
+  - time_in_stage
+  - queue_reconcile
+  - stage_separation
 
 - title: "Interlude — Machine learning"
   desc: Chapter 9.
@@ -53,5 +132,8 @@ reference:
   - threshold_from_dwell_quantile
 
 - title: "Parts III-V — declared, not yet implemented"
+  desc: >
+    Each errors with the chapter it belongs to rather than returning something
+    plausible.
   contents:
   - roadmap-operations
