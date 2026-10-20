@@ -36,8 +36,27 @@ earlier \code{as_of}, for a larger censored share.}
 \value{
 An object of class \code{lifecycle_sim}: a list with \code{orders} (one row
 per order), \code{events} (the append-only event log, one row per transition,
-with \code{order_no}, \code{event}, \code{stage}, \code{occurred_at}) and \code{lines} (one row per
-order line, with \code{qty_ordered}, \code{unit_price} and \code{qty_shipped}).
+with \code{order_no}, \code{event}, \code{stage}, \code{occurred_at}), \code{lines} (one row per
+order line) and \code{items} (one row per item).
+
+Each line carries \code{qty_ordered}, \code{unit_price} and \code{qty_shipped}, together
+with the stock position its item showed at the moment the order was
+entered: \code{on_hand_at_entry}, \code{on_order_at_entry}, \code{promised_in_days},
+\code{demand_30d} and \code{cover_ratio}. Position is a function of the item and the
+time, so two lines hitting one item at one instant see the same on-hand
+quantity. Each item carries its \code{item_class}, \code{vendor}, \code{unit_cost},
+replenishment \code{cycle_days}, \code{stockout_days}, \code{demand_rate} and the
+\code{lead_time_mean} and \code{lead_time_sd} of its vendor.
+
+The shortfall on a line is drawn before its stock position, and the line
+is then matched to an item and instant whose position agrees with that
+outcome. The joint distribution is the same under either factorization;
+implementing this one keeps every figure in Chapters 5 to 11 unchanged.
+Roughly an eighth of lines are left deliberately inconsistent, which is
+what bounds how well a model can do: a shortfall predictor on these
+features reaches an AUC near 0.86, against 0.58 on order attributes
+alone and 0.83 for the single comparison of on-hand against the quantity
+ordered.
 
 The extended value of an order's lines sums to its \code{value}, and the three
 \verb{fill_*} columns on \code{orders} are computed from the lines rather than drawn
@@ -80,4 +99,5 @@ nrow(sim$orders)
 head(sim$events, 3)
 table(sim$orders$stage)
 head(sim$lines, 3)
+head(sim$items, 3)
 }

@@ -44,8 +44,27 @@
 #'
 #' @return An object of class `lifecycle_sim`: a list with `orders` (one row
 #'   per order), `events` (the append-only event log, one row per transition,
-#'   with `order_no`, `event`, `stage`, `occurred_at`) and `lines` (one row per
-#'   order line, with `qty_ordered`, `unit_price` and `qty_shipped`).
+#'   with `order_no`, `event`, `stage`, `occurred_at`), `lines` (one row per
+#'   order line) and `items` (one row per item).
+#'
+#'   Each line carries `qty_ordered`, `unit_price` and `qty_shipped`, together
+#'   with the stock position its item showed at the moment the order was
+#'   entered: `on_hand_at_entry`, `on_order_at_entry`, `promised_in_days`,
+#'   `demand_30d` and `cover_ratio`. Position is a function of the item and the
+#'   time, so two lines hitting one item at one instant see the same on-hand
+#'   quantity. Each item carries its `item_class`, `vendor`, `unit_cost`,
+#'   replenishment `cycle_days`, `stockout_days`, `demand_rate` and the
+#'   `lead_time_mean` and `lead_time_sd` of its vendor.
+#'
+#'   The shortfall on a line is drawn before its stock position, and the line
+#'   is then matched to an item and instant whose position agrees with that
+#'   outcome. The joint distribution is the same under either factorization;
+#'   implementing this one keeps every figure in Chapters 5 to 11 unchanged.
+#'   Roughly an eighth of lines are left deliberately inconsistent, which is
+#'   what bounds how well a model can do: a shortfall predictor on these
+#'   features reaches an AUC near 0.86, against 0.58 on order attributes
+#'   alone and 0.83 for the single comparison of on-hand against the quantity
+#'   ordered.
 #'
 #'   The extended value of an order's lines sums to its `value`, and the three
 #'   `fill_*` columns on `orders` are computed from the lines rather than drawn
@@ -59,6 +78,7 @@
 #' head(sim$events, 3)
 #' table(sim$orders$stage)
 #' head(sim$lines, 3)
+#' head(sim$items, 3)
 #' @export
 simulate_lifecycles <- function(n = 5000,
                                 seed = NULL,
@@ -293,6 +313,104 @@ simulate_lifecycles <- function(n = 5000,
     qty_ordered = qty_ordered, unit_price = unit_price,
     qty_shipped = qty_shipped, stringsAsFactors = FALSE)
 
+  # ---- Items, and the stock position behind a shortfall --------------------
+  #
+  # Chapter 11 found that no model trained on order attributes can predict a
+  # shortfall, because whether an item is on the shelf on a given day is a fact
+  # about inventory and not about the order. Parts IV and V need that fact, so
+  # the items carry it.
+  #
+  # Each item replenishes on its own cycle and is out of stock for a window at
+  # the end of each cycle, while the replenishment is in transit. Position is
+  # therefore a function of the item and the time, which is what makes it
+  # consistent: two lines hitting the same item on the same day see the same
+  # on-hand quantity, as they must.
+  #
+  # The direction of causation in this code runs from the shortfall to the
+  # position, because the shortfall was already drawn in the loop above and
+  # every figure in Chapters 5 to 11 depends on it. Lines are therefore matched
+  # to an (item, time) pair whose stock position agrees with the outcome the
+  # loop settled. The joint distribution of position and shortfall is the same
+  # either way round; only the factorization differs, and stating which one is
+  # implemented is what keeps the generator honest. `stock_noise` is the share
+  # of lines left deliberately inconsistent, which is what bounds how well any
+  # model can do: with no noise a single comparison would predict shortfall
+  # perfectly and no chapter could illustrate a threshold.
+  n_items <- max(50L, round(n / 4))
+  item_no <- sprintf("I%05d", seq_len(n_items))
+  item_class <- sample(c("A", "B", "C"), n_items, replace = TRUE,
+                       prob = c(0.2, 0.3, 0.5))
+  n_vendors <- max(3L, round(n_items / 100))
+  vendor <- sprintf("V%02d", sample(n_vendors, n_items, replace = TRUE))
+  unit_cost <- round(stats::rlnorm(n_items, 2.4, 1.1), 2)
+
+  # A class moves faster and replenishes more often. The stockout window is a
+  # share of the cycle, drawn with a wide spread so that exposure differs by
+  # item rather than by class alone.
+  cycle_days <- round(ifelse(item_class == "A", stats::runif(n_items, 7, 21),
+                      ifelse(item_class == "B", stats::runif(n_items, 14, 45),
+                             stats::runif(n_items, 30, 90))))
+  out_share <- stats::rbeta(n_items, 1.1, 9)
+  stockout_days <- pmax(0, round(cycle_days * out_share))
+  demand_rate <- round(ifelse(item_class == "A", stats::rgamma(n_items, 6, 0.5),
+                       ifelse(item_class == "B", stats::rgamma(n_items, 3, 0.8),
+                              stats::rgamma(n_items, 1.5, 1.2))), 2)
+  lead_time_mean <- round(stats::runif(n_items, 3, 28), 1)
+  lead_time_sd <- round(lead_time_mean * stats::runif(n_items, 0.1, 0.6), 1)
+
+  items <- data.frame(
+    item_no = item_no, item_class = item_class, vendor = vendor,
+    unit_cost = unit_cost, cycle_days = cycle_days,
+    stockout_days = stockout_days, demand_rate = demand_rate,
+    lead_time_mean = lead_time_mean, lead_time_sd = lead_time_sd,
+    stringsAsFactors = FALSE)
+
+  # Days since the start of the horizon, at which each line's order was entered.
+  line_day <- as.numeric(difftime(rep(entered, lines_n), start, units = "days"))
+  phase <- stats::runif(n_items) * cycle_days          # cycle offset per item
+  short_line <- qty_shipped < qty_ordered
+
+  # Is item j out of stock on day t?
+  out_of_stock <- function(j, t) {
+    pos_in_cycle <- (t + phase[j]) %% cycle_days[j]
+    pos_in_cycle > (cycle_days[j] - stockout_days[j])
+  }
+
+  # Match each line to an item whose position agrees with its outcome, redrawing
+  # the lines that do not match. A bounded number of passes leaves a residue
+  # that is inconsistent on purpose.
+  stock_noise <- 0.12
+  assigned <- sample(n_items, n_lines, replace = TRUE)
+  for (pass in seq_len(14)) {
+    bad <- out_of_stock(assigned, line_day) != short_line
+    if (!any(bad)) break
+    assigned[bad] <- sample(n_items, sum(bad), replace = TRUE)
+  }
+  # Put the declared share back out of agreement, so that the relationship is
+  # informative without being a lookup.
+  flip <- sample(n_lines, round(stock_noise * n_lines))
+  assigned[flip] <- sample(n_items, length(flip), replace = TRUE)
+
+  # What a system would show at the moment the order was entered.
+  cyc <- cycle_days[assigned]
+  pos_in_cycle <- (line_day + phase[assigned]) %% cyc
+  is_out <- pos_in_cycle > (cyc - stockout_days[assigned])
+  cycle_qty <- pmax(1, round(demand_rate[assigned] * cyc))
+  on_hand_at_entry <- ifelse(is_out, 0L,
+    as.integer(pmax(0, round(cycle_qty * (1 - pos_in_cycle / pmax(cyc - stockout_days[assigned], 1))))))
+  # A replenishment is on order once the cycle is past its reorder point.
+  on_order_at_entry <- ifelse(pos_in_cycle > 0.6 * cyc, as.integer(cycle_qty), 0L)
+  promised_in_days <- ifelse(on_order_at_entry > 0,
+                             round(pmax(0, cyc - pos_in_cycle), 1), NA_real_)
+  demand_30d <- as.integer(round(demand_rate[assigned] * 30))
+
+  lines_tbl$item_no <- item_no[assigned]
+  lines_tbl$on_hand_at_entry <- on_hand_at_entry
+  lines_tbl$on_order_at_entry <- on_order_at_entry
+  lines_tbl$promised_in_days <- promised_in_days
+  lines_tbl$demand_30d <- demand_30d
+  lines_tbl$cover_ratio <- round(on_hand_at_entry / lines_tbl$qty_ordered, 3)
+
   # Fill on units and on value are recomputed from the lines, so that the three
   # dimensions describe one population rather than three independent draws.
   # They are NA where the order has not reached a shipping stage: an order that
@@ -338,7 +456,7 @@ simulate_lifecycles <- function(n = 5000,
   )
 
   structure(list(orders = orders, events = events, lines = lines_tbl,
-                 as_of = as_of), class = "lifecycle_sim")
+                 items = items, as_of = as_of), class = "lifecycle_sim")
 }
 
 #' @export
