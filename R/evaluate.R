@@ -1,7 +1,7 @@
 # Chapter 21 models. Evaluating a monitoring policy rather than the model
 # inside it. The asymmetry the whole chapter turns on is that a false positive
 # leaves a record and a false negative leaves nothing, so anything measured
-# from the programme's own output is measured on the half that is visible.
+# from the program's own output is measured on the half that is visible.
 
 #' Compare a proposed monitoring policy against the one running today
 #'

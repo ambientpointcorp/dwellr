@@ -200,7 +200,7 @@ echelon_simulate <- function(levels, demand_mean, demand_sd, lead_times,
 #' @param start Starting levels. Defaults to mean demand over each stage's
 #'   lead time plus one period.
 #' @param steps Grid steps, applied in order. A wide step finds the
-#'   neighbourhood and a narrow one the level.
+#'   neighborhood and a narrow one the level.
 #' @param span How many steps either side of the current level each sweep
 #'   considers.
 #' @param max_sweeps Cap on passes per step size. A pass that changes nothing
@@ -236,7 +236,7 @@ echelon_optimize <- function(demand_mean, demand_sd, lead_times, holding,
   }
   best <- evaluate(cur)
   path <- best
-  # Coarse to fine: a wide step finds the neighbourhood, a narrow one the
+  # Coarse to fine: a wide step finds the neighborhood, a narrow one the
   # level. Sweeping stops when a whole pass changes nothing, which is what
   # makes the result independent of the starting point rather than a
   # fixed number of steps away from it.

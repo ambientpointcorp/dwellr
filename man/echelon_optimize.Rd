@@ -38,7 +38,7 @@ first. Nonincreasing upstream.}
 lead time plus one period.}
 
 \item{steps}{Grid steps, applied in order. A wide step finds the
-neighbourhood and a narrow one the level.}
+neighborhood and a narrow one the level.}
 
 \item{span}{How many steps either side of the current level each sweep
 considers.}

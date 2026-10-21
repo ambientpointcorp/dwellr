@@ -158,6 +158,16 @@ reference:
   - rule_reachable
   - offpolicy_value
 
+- title: "Part V — Records and configuration"
+  desc: Chapter 22.
+  contents:
+  - decision_record
+  - record_conformance
+  - replay_check
+  - rule_grammar
+  - rule_compile
+  - rule_apply
+
 - title: "Parts III-V — declared, not yet implemented"
   desc: >
     Each errors with the chapter it belongs to rather than returning something
