@@ -29,6 +29,18 @@ First scaffold. Implemented and tested:
   after every other draw, so the rest of the population is byte-identical,
   verified for orders, events, lines and items across three seeds and two
   sizes.
+* `queue_stability()` and `capacity_admit()` — the attention constraint of
+  Chapter 15, replacing the `capacity_admit` roadmap stub. An exception channel
+  is a queue, so it has a utilization: the threshold of Chapter 14 that flags
+  90.9% of orders produces 37.9 alerts a day against a team serving 12, which
+  is a utilization of 3.16 and a backlog with no finite length.
+  `capacity_admit()` takes the top of a ranking instead and reports the
+  `marginal` table, which is the figure a capacity decision turns on: precision
+  in the first band of twenty-five is 0.68 while the fifth band is 0.36, and
+  the cumulative figure a report shows has only moved from 0.68 to 0.52.
+  Supplying `p_star` gives the depth at which the next review stops paying,
+  which is 75 items where a look costs as much as a miss and 225 where it costs
+  a quarter.
 * `baseline_cohort()`, `baseline_exceedance()`, `baseline_stability()` and
   `baseline_drift_decompose()` — the baselines of Chapter 12, replacing the
   `baseline_cohort` roadmap stub. A cohort scheme is validated on the cohort

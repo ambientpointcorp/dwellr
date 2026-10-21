@@ -133,6 +133,8 @@ reference:
 - title: "Part IV — Allocating attention"
   desc: Chapters 14 to 19.
   contents:
+  - queue_stability
+  - capacity_admit
   - threshold_from_cost
   - threshold_from_dwell_quantile
 

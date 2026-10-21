@@ -45,10 +45,6 @@ deadline_derive <- function(...) not_yet("deadline_derive()", "Chapter 13, deadl
 
 #' @rdname roadmap-operations
 #' @export
-capacity_admit <- function(...) not_yet("capacity_admit()", "Chapter 15, attention capacity")
-
-#' @rdname roadmap-operations
-#' @export
 route_action <- function(...) not_yet("route_action()", "Chapter 18, severity and routing")
 
 #' @rdname roadmap-operations
