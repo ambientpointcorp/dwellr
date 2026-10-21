@@ -142,7 +142,6 @@ reference:
   - decision_path
   - decision_audit
   - fallback_reasons
-  - inference_budget
 
 - title: "Part V — Multi-echelon networks"
   desc: Chapter 20.
@@ -167,6 +166,14 @@ reference:
   - rule_grammar
   - rule_compile
   - rule_apply
+
+- title: "Part V — The cost of observation"
+  desc: Chapter 23.
+  contents:
+  - observation_cost
+  - cadence
+  - miss_cost
+  - inference_budget
 
 - title: "Parts III-V — declared, not yet implemented"
   desc: >
