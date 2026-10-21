@@ -43,6 +43,3 @@ NULL
 #' @export
 deadline_derive <- function(...) not_yet("deadline_derive()", "Chapter 13, deadlines and date fields")
 
-#' @rdname roadmap-operations
-#' @export
-evaluate_policy <- function(...) not_yet("evaluate_policy()", "Chapter 21, evaluating a monitoring policy")

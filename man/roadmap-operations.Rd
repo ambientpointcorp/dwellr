@@ -3,12 +3,9 @@
 \name{roadmap-operations}
 \alias{roadmap-operations}
 \alias{deadline_derive}
-\alias{evaluate_policy}
 \title{Deadlines, capacity, routing and evaluation}
 \usage{
 deadline_derive(...)
-
-evaluate_policy(...)
 }
 \arguments{
 \item{...}{Arguments, once there are any.}

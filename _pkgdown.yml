@@ -151,6 +151,13 @@ reference:
   - echelon_optimize
   - bullwhip
 
+- title: "Part V — Evaluating a policy"
+  desc: Chapter 21.
+  contents:
+  - evaluate_policy
+  - rule_reachable
+  - offpolicy_value
+
 - title: "Parts III-V — declared, not yet implemented"
   desc: >
     Each errors with the chapter it belongs to rather than returning something
