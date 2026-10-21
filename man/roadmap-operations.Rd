@@ -3,13 +3,10 @@
 \name{roadmap-operations}
 \alias{roadmap-operations}
 \alias{deadline_derive}
-\alias{route_action}
 \alias{evaluate_policy}
 \title{Deadlines, capacity, routing and evaluation}
 \usage{
 deadline_derive(...)
-
-route_action(...)
 
 evaluate_policy(...)
 }

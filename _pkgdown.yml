@@ -135,6 +135,8 @@ reference:
   contents:
   - queue_stability
   - capacity_admit
+  - route_action
+  - routing_gaps
   - threshold_from_cost
   - threshold_from_dwell_quantile
 
