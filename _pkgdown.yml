@@ -139,6 +139,10 @@ reference:
   - routing_gaps
   - threshold_from_cost
   - threshold_from_dwell_quantile
+  - decision_path
+  - decision_audit
+  - fallback_reasons
+  - inference_budget
 
 - title: "Parts III-V — declared, not yet implemented"
   desc: >
