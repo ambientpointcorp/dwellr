@@ -56,6 +56,15 @@
 #'   replenishment `cycle_days`, `stockout_days`, `demand_rate` and the
 #'   `lead_time_mean` and `lead_time_sd` of its vendor.
 #'
+#'   Two order-level date fields support Chapter 13. `requested_date` equals
+#'   the order date on roughly 85% of orders, reproducing a field that defaults
+#'   to today and is occasionally overridden, which is the defect measured on a
+#'   hand-checked sample of 59 orders where 58 equaled the order date.
+#'   `promised_date` is the field that does carry a commitment: it exists only
+#'   where a person entered the order, never equals the order date, and has a
+#'   lead averaging five days. The contrast between the two is what
+#'   @sec-testing-a-date-field tests for.
+#'
 #'   The shortfall on a line is drawn before its stock position, and the line
 #'   is then matched to an item and instant whose position agrees with that
 #'   outcome. The joint distribution is the same under either factorization;
@@ -433,6 +442,28 @@ simulate_lifecycles <- function(n = 5000,
   events <- events[order(events$occurred_at, events$order_no), ]
   rownames(events) <- NULL
 
+  # ---- Date fields -------------------------------------------------------
+  #
+  # Chapter 13 asks which date fields carry a commitment. Most do not. In one
+  # field engagement the requested-date field equaled the order date on 58 of
+  # 59 sampled orders, because the entry screen defaulted it to today and
+  # nobody overrode it, so a severity rule keyed on "days past requested date"
+  # was reading elapsed time with extra steps.
+  #
+  # `requested_date` reproduces that defect at a declared rate.
+  # `promised_date` is the field that does carry a commitment, and it exists
+  # only where a person entered the order. Drawing both after everything above
+  # leaves the rest of the population byte-identical.
+  default_share <- 0.85
+  entered_day <- as.Date(entered)
+  requested_offset <- ifelse(stats::runif(n) < default_share, 0L,
+                             1L + stats::rpois(n, 4))
+  requested_date <- entered_day + requested_offset
+
+  has_promise <- source_ == "inside_sales" & stats::runif(n) < 0.70
+  promised_date <- entered_day + 2L + stats::rpois(n, 3)
+  promised_date[!has_promise] <- as.Date(NA)
+
   orders <- data.frame(
     order_no = order_no,
     entered_at = entered,
@@ -452,6 +483,8 @@ simulate_lifecycles <- function(n = 5000,
     fill_units = fill_units,
     fill_lines = fill_lines,
     fill_value = fill_value,
+    requested_date = requested_date,
+    promised_date = promised_date,
     stringsAsFactors = FALSE
   )
 

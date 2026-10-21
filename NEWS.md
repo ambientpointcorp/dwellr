@@ -18,6 +18,17 @@ First scaffold. Implemented and tested:
 * `dwell_mixture()` now returns the index of the `slow` component and a
   `posterior(time, censored)` function giving the probability that a visit
   belongs to it, which is the input `threshold_from_cost()` expects.
+* `simulate_lifecycles()` gains two order-level date fields for Chapter 13.
+  `requested_date` equals the order date on roughly 85% of orders, reproducing
+  a field that defaults to today and is occasionally overridden; a severity
+  term keyed on it agrees with elapsed lead time exactly on 84.8% of rows and
+  correlates at 0.9827, and a capped score built from it leaves 50 of 104
+  in-flight orders sharing the maximum. `promised_date` is the field that does
+  carry a commitment: it exists only where a person entered the order, never
+  equals the order date, and has a lead averaging 5.04 days. Both are drawn
+  after every other draw, so the rest of the population is byte-identical,
+  verified for orders, events, lines and items across three seeds and two
+  sizes.
 * `baseline_cohort()`, `baseline_exceedance()`, `baseline_stability()` and
   `baseline_drift_decompose()` — the baselines of Chapter 12, replacing the
   `baseline_cohort` roadmap stub. A cohort scheme is validated on the cohort

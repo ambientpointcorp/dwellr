@@ -48,6 +48,15 @@ quantity. Each item carries its \code{item_class}, \code{vendor}, \code{unit_cos
 replenishment \code{cycle_days}, \code{stockout_days}, \code{demand_rate} and the
 \code{lead_time_mean} and \code{lead_time_sd} of its vendor.
 
+Two order-level date fields support Chapter 13. \code{requested_date} equals
+the order date on roughly 85\% of orders, reproducing a field that defaults
+to today and is occasionally overridden, which is the defect measured on a
+hand-checked sample of 59 orders where 58 equaled the order date.
+\code{promised_date} is the field that does carry a commitment: it exists only
+where a person entered the order, never equals the order date, and has a
+lead averaging five days. The contrast between the two is what
+@sec-testing-a-date-field tests for.
+
 The shortfall on a line is drawn before its stock position, and the line
 is then matched to an item and instant whose position agrees with that
 outcome. The joint distribution is the same under either factorization;

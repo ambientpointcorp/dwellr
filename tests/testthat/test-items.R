@@ -61,3 +61,28 @@ test_that("position fields are internally coherent", {
   expect_true(all(L$promised_in_days >= 0, na.rm = TRUE))
   expect_equal(L$cover_ratio, round(L$on_hand_at_entry / L$qty_ordered, 3))
 })
+
+test_that("the two date fields differ in whether they carry a commitment", {
+  sim <- simulate_lifecycles(n = 3000, seed = 11)
+  o <- sim$orders
+  entered_day <- as.Date(o$entered_at)
+  req <- as.integer(o$requested_date - entered_day)
+  prom <- as.integer(o$promised_date - entered_day)
+  has_promise <- !is.na(o$promised_date)
+
+  # The requested date is a default with an override, which is what Chapter 13
+  # tests for: a commitment has a lead time that is positive and varies.
+  expect_gt(mean(req == 0), 0.75)
+  expect_true(all(req >= 0))
+  expect_gt(mean(req[req > 0]), 2)
+
+  # The promised date carries a commitment on the orders that have one, and it
+  # never equals the order date.
+  expect_gt(sum(has_promise), 100)
+  expect_equal(sum(prom[has_promise] == 0), 0)
+  expect_gt(mean(prom[has_promise]), 3)
+  expect_gt(sd(prom[has_promise]), 0.5)
+
+  # A promise exists only where a person entered the order.
+  expect_true(all(o$order_source[has_promise] == "inside_sales"))
+})
