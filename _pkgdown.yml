@@ -144,6 +144,13 @@ reference:
   - fallback_reasons
   - inference_budget
 
+- title: "Part V — Multi-echelon networks"
+  desc: Chapter 20.
+  contents:
+  - echelon_simulate
+  - echelon_optimize
+  - bullwhip
+
 - title: "Parts III-V — declared, not yet implemented"
   desc: >
     Each errors with the chapter it belongs to rather than returning something
