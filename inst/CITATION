@@ -1,0 +1,18 @@
+# Read by citation("dwellr"). Every field that can be derived from DESCRIPTION
+# is derived, so the entry cannot fall behind the package: the sibling packages
+# carried hand-written copies in their READMEs and one of them cited a version
+# three releases old before anyone noticed. `meta` is the DESCRIPTION, supplied
+# by R when this file is read.
+#
+# The year is the year of first commit rather than of the current version, so
+# it identifies the work and not the release being cited. The version is what
+# distinguishes releases, and it is in the note.
+
+bibentry(
+  bibtype = "Manual",
+  title   = paste0(meta$Package, ": ", gsub("\\s+", " ", meta$Title)),
+  author  = person("Ariel", "Rodr\u00edguez Herrera"),
+  year    = "2026",
+  note    = paste("R package version", meta$Version),
+  url     = paste0("https://github.com/ambientpointcorp/", meta$Package)
+)
