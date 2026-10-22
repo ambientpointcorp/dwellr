@@ -1,5 +1,12 @@
 # dwellr
 
+<!-- badges: start -->
+[![R-CMD-check](https://github.com/ambientpointcorp/dwellr/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/ambientpointcorp/dwellr/actions/workflows/R-CMD-check.yaml)
+[![pkgdown](https://github.com/ambientpointcorp/dwellr/actions/workflows/pkgdown.yaml/badge.svg)](https://github.com/ambientpointcorp/dwellr/actions/workflows/pkgdown.yaml)
+[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/license/mit)
+<!-- badges: end -->
+
 Lifecycle monitoring analytics for supply chain operations.
 
 An R package for measuring the time orders spend in each stage of their
