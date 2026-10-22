@@ -7,11 +7,17 @@
 # The year is the year of first commit rather than of the current version, so
 # it identifies the work and not the release being cited. The version is what
 # distinguishes releases, and it is in the note.
+#
+# The author is given as the sibling packages give it, which is deliberately
+# not the form in this package's own DESCRIPTION: Authors@R here carries
+# "Rodriguez Herrera" in full, and oasr and dnsr carry "R. H.". The three cite
+# alike on purpose. Changing one without the other two is what this note
+# exists to prevent.
 
 bibentry(
   bibtype = "Manual",
   title   = paste0(meta$Package, ": ", gsub("\\s+", " ", meta$Title)),
-  author  = person("Ariel", "Rodr\u00edguez Herrera"),
+  author  = person("Ariel", "R. H."),
   year    = "2026",
   note    = paste("R package version", meta$Version),
   url     = paste0("https://github.com/ambientpointcorp/", meta$Package)
