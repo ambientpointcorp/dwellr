@@ -1,0 +1,14 @@
+# The built reference site. It is published from the Actions artifact that
+# .github/workflows/pkgdown.yaml uploads, never from a committed copy, so a
+# local `pkgdown::build_site()` leaves nothing to review or to go stale.
+docs/
+
+# R CMD check writes these beside the package.
+*.Rcheck/
+*.tar.gz
+
+.Rhistory
+.RData
+.Rproj.user/
+*.Rproj
+.DS_Store

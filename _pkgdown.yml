@@ -11,10 +11,10 @@ template:
 # that a topic is not always a function: `fc_benchmarks` documents four
 # forecasting methods under one name.
 #
-# The `url:` above is where the site will live once GitHub Pages is enabled for
-# this repository. It is deliberately absent from DESCRIPTION until then,
-# because R CMD check --as-cran follows the URLs it finds there and the
-# workflow treats a NOTE as a failure.
+# The `url:` above has to agree with the one in DESCRIPTION: pkgdown refuses to
+# build without the site URL recorded there, and R CMD check --as-cran follows
+# the URLs it finds there. Both are satisfied only while the site is actually
+# deployed, which .github/workflows/pkgdown.yaml is what keeps true.
 reference:
 - title: Synthetic data
   desc: >

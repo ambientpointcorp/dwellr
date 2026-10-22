@@ -1,0 +1,67 @@
+# Builds the reference site and publishes it to GitHub Pages.
+#
+# The site's reference index is _pkgdown.yml, which is organized by the
+# chapter family each function belongs to rather than alphabetically, so the
+# published reference doubles as the book's function index. pkgdown fails the
+# build when a documented topic is missing from that index, which is what
+# catches a new function added without being filed anywhere.
+#
+# Runs on a release and on demand. It deliberately does NOT run on every push
+# to main: the site is a published artifact, and republishing it on each
+# commit makes the deployment history unreadable without telling anyone
+# anything a commit did not already say.
+name: pkgdown
+
+on:
+  push:
+    tags: ['v*']
+  release:
+    types: [published]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# A second run would race the first for the same Pages deployment. Queue
+# rather than cancel, so a dispatch during a release publish does not discard
+# whichever finishes second.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  pkgdown:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: r-lib/actions/setup-pandoc@v2
+
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          use-public-rspm: true
+
+      # `local::.` installs dwellr itself; pkgdown runs the examples on every
+      # help page, so the Suggests have to be present or the reference pages
+      # for the families that use them build without their output.
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          extra-packages: any::pkgdown, local::.
+          needs: website
+
+      - name: Build site
+        run: Rscript -e 'pkgdown::build_site_github_pages(new_process = FALSE, install = FALSE)'
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs
+
+      - id: deployment
+        uses: actions/deploy-pages@v4

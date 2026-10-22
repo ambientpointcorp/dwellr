@@ -28,13 +28,12 @@ and the built-in \link{orders} dataset is one call to it.
 Useful links:
 \itemize{
   \item \url{https://github.com/ambientpointcorp/dwellr}
-  \item \url{https://ambientpointcorp.github.io/dwellr/}
   \item Report bugs at \url{https://github.com/ambientpointcorp/dwellr/issues}
 }
 
 }
 \author{
-\strong{Maintainer}: Ariel Rodríguez Herrera \email{ariel.rodriguez.herrera@gmail.com}
+\strong{Maintainer}: Ariel Rodríguez Herrera \email{ariel@ambientpointcorp.com}
 
 }
 \keyword{internal}
