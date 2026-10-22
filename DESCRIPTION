@@ -9,7 +9,8 @@ Description: Methods for measuring and acting on the time that orders spend in
     together with stage dwell estimation under right-censoring, cohort and
     modeled baselines, fill rate on three dimensions, alerting thresholds
     derived from cost ratios, reviewer capacity, routing, and policy
-    evaluation. Companion to the book "Lifecycle Monitoring Analytics".
+    evaluation. The book "Lifecycle Monitoring Analytics" works through the
+    methods and documents the reasoning behind them.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Depends: R (>= 4.1)

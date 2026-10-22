@@ -112,9 +112,12 @@ reference:
   - stage_separation
 
 - title: "Interlude — Machine learning"
-  desc: Chapter 9.
+  desc: Chapter 9. Fitting under a validation protocol, and repairing a
+    probability scale.
   contents:
-  - roadmap-modeling
+  - fit_dwell_model
+  - calibrate_probability
+  - calibrate_reliability
 
 - title: "Part III — Measurement method"
   desc: Chapters 10 to 13.
@@ -129,6 +132,7 @@ reference:
   - segment_decision_shift
   - fill_rate
   - fill_dimensions
+  - deadline_derive
 
 - title: "Part IV — Allocating attention"
   desc: Chapters 14 to 19.
@@ -174,10 +178,3 @@ reference:
   - cadence
   - miss_cost
   - inference_budget
-
-- title: "Parts III-V — declared, not yet implemented"
-  desc: >
-    Each errors with the chapter it belongs to rather than returning something
-    plausible.
-  contents:
-  - roadmap-operations

@@ -2,17 +2,28 @@
 
 Lifecycle monitoring analytics for supply chain operations.
 
-Companion R package to the book *Lifecycle Monitoring Analytics: A toolkit for
-continuous supply chain operations*, by Ariel Rodríguez Herrera (CEO, Ambient
-Point Corp.), first edition, 2026.
+An R package for measuring the time orders spend in each stage of their
+lifecycle, and for deciding what to do about it: classical inventory control,
+stage dwell estimation under censoring, baselines, alerting thresholds derived
+from cost ratios, reviewer capacity, routing, and policy evaluation.
 
-**Private while the book is drafted.** It goes public, MIT licensed, at
-publication.
+The book *Lifecycle Monitoring Analytics: A toolkit for continuous supply chain
+operations*, by Ariel Rodríguez Herrera (CEO, Ambient Point Corp.), first
+edition 2026, works through the methods the package implements and is the place
+to read why each one is built the way it is. The package does not depend on the
+book.
 
-> **Status: 0.0.1.9000.** The generator, stage dwell estimation, thresholds,
-> fill rate and the classical results are implemented and tested. The rest of
-> the function families are declared with the chapter they belong to and error
-> if called — see [Roadmap](#roadmap).
+**Private until the book is published**, at which point it goes public under
+the MIT license.
+
+> **Status: 0.0.1.9000.** Every function family is implemented and tested: the
+> generator, stage dwell estimation under right-censoring, the classical
+> inventory models, fill rate on three dimensions, cohort and modeled
+> baselines, thresholds from cost ratios, reviewer capacity and admission,
+> routing, the decision path, policy evaluation, records, the serial echelon
+> simulator and the observation-cost family. 102 exported functions, 680
+> passing assertions. The interface is not yet stable, which is what the
+> fourth version component marks.
 
 ## What it does
 
@@ -125,18 +136,17 @@ breaks an example in the text fails the build.
 devtools::test()
 ```
 
-## Roadmap
+## Stability
 
-Declared and erroring until their chapter is drafted: the remaining lot-sizing
-models (`dls_wagner_whitin()`, `eoq_quantity_discount()`, `epq()`), the
-stochastic policies (`policy_base_stock()`, `policy_ss()`, `policy_rs()`),
-safety stock from measured dwell (`safety_stock()`,
-`dwell_variance_contribution()`), the modeling helpers (`fit_dwell_model()`,
-`calibrate_probability()`), and `baseline_cohort()`, `deadline_derive()`,
-`capacity_admit()`, `route_action()`, `evaluate_policy()`.
+Nothing is declared-but-unimplemented any more. Earlier versions carried stubs
+that errored with the chapter they belonged to, on the principle that an
+unimplemented method returning a plausible number is worse than one that
+refuses; all of them now have implementations and tests.
 
-Each errors with the chapter it belongs to. An unimplemented method that
-returns a plausible number is worse than one that refuses.
+The version stays below 1.0 because the interface is still free to change. Two
+things will be settled before it goes to 1.0: the argument names on the newest
+families, and whether the cost conventions should be carried in an object
+rather than passed to every call.
 
 ## License
 
