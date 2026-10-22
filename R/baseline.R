@@ -83,7 +83,7 @@ baseline_cohort <- function(dwell, cohort, p = 0.9, min_n = 50) {
 #' failure a global threshold produces and the reason for conditioning in the
 #' first place.
 #'
-#' @param dwell A holdout data frame from [stage_stage_dwell()], not used to fit.
+#' @param dwell A holdout data frame from [stage_dwell()], not used to fit.
 #' @param cohort Cohort keys for those rows.
 #' @param baseline A [baseline_cohort()] result.
 #'

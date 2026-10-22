@@ -7,7 +7,7 @@
 baseline_exceedance(dwell, cohort, baseline)
 }
 \arguments{
-\item{dwell}{A holdout data frame from \code{\link[=stage_stage_dwell]{stage_stage_dwell()}}, not used to fit.}
+\item{dwell}{A holdout data frame from \code{\link[=stage_dwell]{stage_dwell()}}, not used to fit.}
 
 \item{cohort}{Cohort keys for those rows.}
 

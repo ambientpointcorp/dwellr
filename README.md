@@ -13,8 +13,9 @@ edition 2026, works through the methods the package implements and is the place
 to read why each one is built the way it is. The package does not depend on the
 book.
 
-**Private until the book is published**, at which point it goes public under
-the MIT license.
+The book is forthcoming. The package stands on its own in the meantime: every
+function carries a help page with its arguments and its refusals, and nothing
+here requires the text.
 
 > **Status: 0.0.1.9000.** Every function family is implemented and tested: the
 > generator, stage dwell estimation under right-censoring, the classical

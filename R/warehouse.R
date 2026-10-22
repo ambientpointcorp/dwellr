@@ -36,6 +36,12 @@
 #' for (t in 0:19) w$ship(5, t)
 #' tail(w$history(), 2)
 #' @export
+#' @importFrom R6 R6Class
+# `R6::R6Class()` here is a top-level assignment, evaluated when the package is
+# installed rather than inside any function body. R CMD check scans function
+# bodies for `::` usage, so the qualification alone leaves R6 looking unused and
+# raises "Namespace in Imports field not imported from". The explicit importFrom
+# is what settles it.
 Warehouse <- R6::R6Class("Warehouse",
   public = list(
     #' @field stock Signed inventory level: held, less owed.

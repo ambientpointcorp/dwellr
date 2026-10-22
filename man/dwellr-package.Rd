@@ -34,7 +34,7 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Ariel Rodr<U+00ED>guez Herrera \email{ariel.rodriguez.herrera@gmail.com}
+\strong{Maintainer}: Ariel Rodríguez Herrera \email{ariel.rodriguez.herrera@gmail.com}
 
 }
 \keyword{internal}

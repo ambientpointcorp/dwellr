@@ -9,8 +9,12 @@ template:
 # pkgdown requires every documented topic to appear here exactly once, so this
 # file is what fails when a chapter adds a function and forgets the index. Note
 # that a topic is not always a function: `fc_benchmarks` documents four
-# forecasting methods under one name, and the two roadmap entries each cover a
-# family of declared stubs.
+# forecasting methods under one name.
+#
+# The `url:` above is where the site will live once GitHub Pages is enabled for
+# this repository. It is deliberately absent from DESCRIPTION until then,
+# because R CMD check --as-cran follows the URLs it finds there and the
+# workflow treats a NOTE as a failure.
 reference:
 - title: Synthetic data
   desc: >
