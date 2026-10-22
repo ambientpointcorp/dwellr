@@ -10,7 +10,19 @@ on:
     branches: [main]
   workflow_dispatch:
 
-permissions: read-all
+# Read-only. None of these jobs writes to the repository: results leave as an
+# artifact or as the job's own status, both of which the runtime handles
+# without a repository scope. `read-all` would also work and is what most of
+# these carried; this is the narrower claim that is actually true.
+permissions:
+  contents: read
+
+# One run per branch. A second push supersedes the first, and finishing a check
+# of code nobody will look at again costs minutes and publishes a status for a
+# commit that is no longer the tip.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   R-CMD-check:

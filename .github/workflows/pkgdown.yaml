@@ -1,44 +1,54 @@
 # Builds the reference site and publishes it to GitHub Pages.
 #
-# The site's reference index is _pkgdown.yml, which is organized by the
-# chapter family each function belongs to rather than alphabetically, so the
-# published reference doubles as the book's function index. pkgdown fails the
-# build when a documented topic is missing from that index, which is what
-# catches a new function added without being filed anywhere.
+# The reference index is _pkgdown.yml. pkgdown fails the build when a
+# documented topic is missing from it, which is what catches a function added
+# without being filed anywhere.
 #
 # Tracks main: the site is rebuilt and republished on every push, so the
-# published reference always describes the code at the head of the branch
-# rather than the code at the last release. A tag or release trigger would be
-# redundant under that rule, since a release is cut from a commit that has
-# already landed on main and already rebuilt the site.
+# published reference describes the code at the head of the branch rather than
+# the code at the last release. A tag or release trigger would be redundant
+# under that rule, since a release is cut from a commit that has already landed
+# on main and already rebuilt the site.
+#
+# A pull request builds the site and stops. That is worth the minutes: the
+# build is the only thing that checks _pkgdown.yml against the package, and
+# without it the first notice of a broken index is main already carrying it.
 name: pkgdown
 
 on:
   push:
     branches: [main]
+  pull_request:
+    branches: [main]
   workflow_dispatch:
 
+# Publishing goes through the Pages artifact rather than a gh-pages branch, so
+# nothing here needs to write to the repository and this is `contents: read`
+# rather than the `contents: write` a branch deploy requires. The rights to
+# publish are granted to the deploy job alone.
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
-# A second run would race the first for the same Pages deployment. An
-# in-progress run is allowed to finish rather than being cancelled, which is
-# what GitHub asks for a production deployment. A burst of commits is still
-# cheap: when a new run is queued the concurrency group cancels whatever was
-# already *pending* in it, so five pushes in a minute leave one build running
-# and one queued, not five builds of a site only the last of which is visible.
+# Pages allows one deployment at a time. An in-progress run is left to finish
+# rather than cancelled, which is what GitHub asks of a production deployment.
+# Queueing a newer run cancels whatever was still pending in the group, so a
+# burst of commits leaves one build running and one queued, not five builds of
+# a site only the last of which anybody sees.
 concurrency:
   group: pages
   cancel-in-progress: false
 
 jobs:
-  pkgdown:
+  # Build and publish are separate jobs because publishing is what a pull
+  # request must not do. Guarding a deploy step inside a single job would still
+  # attach every pull-request run to the github-pages environment and leave a
+  # deployment recorded against it; a job that never starts cannot.
+  build:
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+    env:
+      # Dependency resolution reads the GitHub API, which is rate-limited for
+      # anonymous callers and generous for authenticated ones.
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@v5
 
@@ -48,16 +58,17 @@ jobs:
         with:
           use-public-rspm: true
 
-      # `local::.` installs dwellr itself; pkgdown runs the examples on every
-      # help page, so the Suggests have to be present or the reference pages
-      # for the families that use them build without their output.
+      # `local::.` installs the package itself; pkgdown runs the examples on
+      # every help page, so the Suggests have to be present or the reference
+      # pages for the families that use them build without their output.
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
           extra-packages: any::pkgdown, local::.
           needs: website
 
       - name: Build site
-        run: Rscript -e 'pkgdown::build_site_github_pages(new_process = FALSE, install = FALSE)'
+        run: pkgdown::build_site_github_pages(new_process = FALSE, install = FALSE)
+        shell: Rscript {0}
 
       - uses: actions/configure-pages@v5
 
@@ -65,5 +76,16 @@ jobs:
         with:
           path: docs
 
+  deploy:
+    needs: build
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
       - id: deployment
         uses: actions/deploy-pages@v4
