@@ -6,17 +6,16 @@
 # build when a documented topic is missing from that index, which is what
 # catches a new function added without being filed anywhere.
 #
-# Runs on a release and on demand. It deliberately does NOT run on every push
-# to main: the site is a published artifact, and republishing it on each
-# commit makes the deployment history unreadable without telling anyone
-# anything a commit did not already say.
+# Tracks main: the site is rebuilt and republished on every push, so the
+# published reference always describes the code at the head of the branch
+# rather than the code at the last release. A tag or release trigger would be
+# redundant under that rule, since a release is cut from a commit that has
+# already landed on main and already rebuilt the site.
 name: pkgdown
 
 on:
   push:
-    tags: ['v*']
-  release:
-    types: [published]
+    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -24,9 +23,12 @@ permissions:
   pages: write
   id-token: write
 
-# A second run would race the first for the same Pages deployment. Queue
-# rather than cancel, so a dispatch during a release publish does not discard
-# whichever finishes second.
+# A second run would race the first for the same Pages deployment. An
+# in-progress run is allowed to finish rather than being cancelled, which is
+# what GitHub asks for a production deployment. A burst of commits is still
+# cheap: when a new run is queued the concurrency group cancels whatever was
+# already *pending* in it, so five pushes in a minute leave one build running
+# and one queued, not five builds of a site only the last of which is visible.
 concurrency:
   group: pages
   cancel-in-progress: false
