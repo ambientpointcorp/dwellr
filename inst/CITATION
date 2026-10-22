@@ -8,11 +8,10 @@
 # it identifies the work and not the release being cited. The version is what
 # distinguishes releases, and it is in the note.
 #
-# The author is given as the sibling packages give it, which is deliberately
-# not the form in this package's own DESCRIPTION: Authors@R here carries
-# "Rodriguez Herrera" in full, and oasr and dnsr carry "R. H.". The three cite
-# alike on purpose. Changing one without the other two is what this note
-# exists to prevent.
+# The author is the form all three packages now carry in Authors@R, so a
+# bibliography holding more than one of them lists one author rather than two
+# spellings of the same person. It is not the form on the book's cover, which
+# is the full name and stays that way.
 
 bibentry(
   bibtype = "Manual",

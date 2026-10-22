@@ -1,8 +1,8 @@
 Package: dwellr
 Title: Lifecycle Monitoring Analytics for Supply Chain Operations
 Version: 0.0.1.9000
-Authors@R: person("Ariel", "Rodríguez Herrera", role = c("aut", "cre"),
-    email = "ariel@ambientpointcorp.com")
+Authors@R: person("Ariel", "R. H.", email = "ariel@ambientpointcorp.com",
+    role = c("aut", "cre"))
 Description: Methods for measuring and acting on the time that orders spend in
     each stage of their lifecycle. Covers classical inventory control -- economic
     order quantities, lot sizing, stochastic policies and service levels --
