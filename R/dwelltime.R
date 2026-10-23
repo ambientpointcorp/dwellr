@@ -8,18 +8,23 @@
 #' argued. The same corpus, observed at a sequence of cutoffs, gives a sequence
 #' of in-flight sets, and the naive average over completed visits can be
 #' compared against an estimator that uses the censored ones at each.
-#' @param sim A `lifecycle_sim` from [simulate_lifecycles()].
+#' @param sim A `lifecycle_sim` from [simulate_lifecycles()] or
+#'   [as_lifecycle()].
 #' @param as_of Observation instant, a `POSIXct` at or before `sim$as_of`.
+#' @param spec Optional [stage_spec()], which decides which stages count as
+#'   an ending. Defaults to the one carried on `sim`.
 #'
-#' @return A `lifecycle_sim` observed at `as_of`.
+#' @return A `lifecycle_sim` observed at `as_of`, carrying the same `lines`,
+#'   `items` and `spec` as the input.
 #'
 #' @examples
 #' sim <- simulate_lifecycles(n = 500, seed = 1)
 #' earlier <- observe_at(sim, sim$as_of - 30 * 24 * 3600)
 #' earlier
 #' @export
-observe_at <- function(sim, as_of) {
+observe_at <- function(sim, as_of, spec = NULL) {
   stopifnot(inherits(as_of, "POSIXct"))
+  spec <- spec_of(sim, spec)
   ev <- sim$events[sim$events$occurred_at <= as_of, ]
   if (!nrow(ev)) stop("no events at or before as_of", call. = FALSE)
   ev <- ev[order(ev$order_no, ev$occurred_at), ]
@@ -30,12 +35,17 @@ observe_at <- function(sim, as_of) {
 
   o <- sim$orders[match(now$order_no, sim$orders$order_no), ]
   o$stage <- now$stage
-  o$is_terminal <- o$stage %in% c("shipped", "cancelled")
+  o$is_terminal <- o$stage %in% spec$terminal
   o$finished_at[!o$is_terminal] <- as.POSIXct(NA, tz = "UTC")
   rownames(o) <- NULL
   rownames(ev) <- NULL
 
-  structure(list(orders = o, events = ev, as_of = as_of),
+  # `lines`, `items` and `spec` travel with the window. Dropping them made an
+  # observed population unusable by every function that reads them -- fill
+  # rate, the item joins, anything spec-aware -- which is a silent loss, since
+  # the object still looks like a population.
+  structure(list(orders = o, events = ev, lines = sim$lines,
+                 items = sim$items, as_of = as_of, spec = spec),
             class = "lifecycle_sim")
 }
 
@@ -149,6 +159,7 @@ dwell_hazard <- function(dwell, breaks = c(0, 1, 2, 4, 8, 24, 48, 72, Inf)) {
 #' table(x$exit_type)
 #' @export
 stage_exit_type <- function(sim, stage, spec = NULL) {
+  spec <- spec_of(sim, spec)
   ev <- sim$events[order(sim$events$order_no, sim$events$occurred_at), ]
   nr <- nrow(ev)
   same <- c(ev$order_no[-1] == ev$order_no[-nr], FALSE)
@@ -156,18 +167,19 @@ stage_exit_type <- function(sim, stage, spec = NULL) {
   nxt[same] <- ev$stage[c(FALSE, same[-nr])]
 
   key <- paste(ev$order_no, ev$stage, format(ev$occurred_at, "%Y%m%d%H%M%OS3"))
-  d <- stage_dwell(sim, stage)
+  d <- stage_dwell(sim, stage, spec = spec)
   dkey <- paste(d$order_no, d$stage, format(d$entered_at, "%Y%m%d%H%M%OS3"))
   d$exit_to <- nxt[match(dkey, key)]
 
-  order_of <- if (is.null(spec)) NULL else stats::setNames(
-    seq_along(spec$stages), spec$stages)
+  order_of <- stats::setNames(seq_along(spec$stages), spec$stages)
+  # "cancelled" names an EXIT TYPE, not a stage. The stages that produce it
+  # are whichever ones the specification declares terminal without declaring
+  # them fulfilling -- an ending that delivered nothing.
   d$exit_type <- ifelse(
     d$censored | is.na(d$exit_to), "censored",
-    ifelse(d$exit_to == "cancelled", "cancelled",
-           if (is.null(order_of)) "forward"
-           else ifelse(order_of[d$exit_to] < order_of[d$stage],
-                       "backward", "forward")))
+    ifelse(d$exit_to %in% spec$abandoned, "cancelled",
+           ifelse(order_of[d$exit_to] < order_of[d$stage],
+                  "backward", "forward")))
   d
 }
 

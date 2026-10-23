@@ -4,7 +4,13 @@
 \alias{stage_spec}
 \title{Declare a stage set as a state machine}
 \usage{
-stage_spec(stages, transitions, terminal = character(0), class = NULL)
+stage_spec(
+  stages,
+  transitions,
+  terminal = character(0),
+  fulfilling = character(0),
+  class = NULL
+)
 }
 \arguments{
 \item{stages}{Character vector of stage names, in nominal order.}
@@ -14,11 +20,22 @@ stage_spec(stages, transitions, terminal = character(0), class = NULL)
 
 \item{terminal}{Stages an instance may stop in.}
 
+\item{fulfilling}{Stages in which the instance's work has been delivered,
+whole or in part. This is not the same property as \code{terminal} and neither
+implies the other: a partial shipment has delivered something and the
+instance is still running, while a cancellation is an ending in which
+nothing was delivered. Functions that ask whether an instance was
+satisfied read this; functions that ask whether it stopped read
+\code{terminal}. Stages that are terminal and not fulfilling are reported as
+\code{abandoned}.}
+
 \item{class}{Optional named character vector mapping stage to dwell class.
 Unnamed stages are classed \code{"unclassified"}.}
 }
 \value{
-An object of class \code{stage_spec}.
+An object of class \code{stage_spec}, carrying the declared \code{stages},
+\code{transitions}, \code{terminal}, \code{fulfilling} and \code{class}, plus the derived
+\code{abandoned} set.
 }
 \description{
 A stage set is not a list of names. It is a directed graph: which stages
@@ -38,6 +55,7 @@ spec <- stage_spec(
   stages = c("received", "released", "shipped"),
   transitions = c("received -> released", "released -> shipped"),
   terminal = "shipped",
+  fulfilling = "shipped",
   class = c(received = "queueing", released = "handling"))
 spec
 }

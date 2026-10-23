@@ -29,7 +29,7 @@ here requires the text.
 > inventory models, fill rate on three dimensions, cohort and modeled
 > baselines, thresholds from cost ratios, reviewer capacity and admission,
 > routing, the decision path, policy evaluation, records, the serial echelon
-> simulator and the observation-cost family. 102 exported functions, 680
+> simulator and the observation-cost family. 104 exported functions, 723
 > passing assertions. The interface is not yet stable, which is what the
 > fourth version component marks.
 
@@ -39,6 +39,12 @@ Classical inventory models size safety stock from lead-time variance. This
 package measures where that variance actually comes from: the time an order
 spends in each stage of its own lifecycle, much of it administrative rather
 than physical.
+
+Nothing here is specific to the synthetic corpus. `as_lifecycle()` builds the
+same population object from an event log an operation already keeps, and every
+function reads the stage vocabulary out of the `stage_spec()` it is given --
+so an operation whose work ends in `departed` is measured as correctly as one
+whose work ends in `shipped`.
 
 ```r
 library(dwellr)

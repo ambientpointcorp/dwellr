@@ -15,21 +15,32 @@
 #' @param transitions Character vector of legitimate moves, each written
 #'   `"from -> to"`. Any move not listed is a violation.
 #' @param terminal Stages an instance may stop in.
+#' @param fulfilling Stages in which the instance's work has been delivered,
+#'   whole or in part. This is not the same property as `terminal` and neither
+#'   implies the other: a partial shipment has delivered something and the
+#'   instance is still running, while a cancellation is an ending in which
+#'   nothing was delivered. Functions that ask whether an instance was
+#'   satisfied read this; functions that ask whether it stopped read
+#'   `terminal`. Stages that are terminal and not fulfilling are reported as
+#'   `abandoned`.
 #' @param class Optional named character vector mapping stage to dwell class.
 #'   Unnamed stages are classed `"unclassified"`.
 #'
-#' @return An object of class `stage_spec`.
+#' @return An object of class `stage_spec`, carrying the declared `stages`,
+#'   `transitions`, `terminal`, `fulfilling` and `class`, plus the derived
+#'   `abandoned` set.
 #'
 #' @examples
 #' spec <- stage_spec(
 #'   stages = c("received", "released", "shipped"),
 #'   transitions = c("received -> released", "released -> shipped"),
 #'   terminal = "shipped",
+#'   fulfilling = "shipped",
 #'   class = c(received = "queueing", released = "handling"))
 #' spec
 #' @export
 stage_spec <- function(stages, transitions, terminal = character(0),
-                       class = NULL) {
+                       fulfilling = character(0), class = NULL) {
   stopifnot(is.character(stages), length(stages) >= 1)
   parts <- strsplit(transitions, "\\s*->\\s*")
   if (any(lengths(parts) != 2))
@@ -38,9 +49,9 @@ stage_spec <- function(stages, transitions, terminal = character(0),
                    to   = vapply(parts, `[`, "", 2),
                    stringsAsFactors = FALSE)
 
-  unlisted <- setdiff(unique(c(tr$from, tr$to, terminal)), stages)
+  unlisted <- setdiff(unique(c(tr$from, tr$to, terminal, fulfilling)), stages)
   if (length(unlisted))
-    stop("transitions or terminal states name stages not declared: ",
+    stop("transitions, terminal or fulfilling states name stages not declared: ",
          paste(unlisted, collapse = ", "), call. = FALSE)
 
   cls <- stats::setNames(rep("unclassified", length(stages)), stages)
@@ -50,18 +61,23 @@ stage_spec <- function(stages, transitions, terminal = character(0),
   }
 
   structure(list(stages = stages, transitions = tr,
-                 terminal = terminal, class = cls),
+                 terminal = terminal, fulfilling = fulfilling,
+                 abandoned = setdiff(terminal, fulfilling), class = cls),
             class = "stage_spec")
 }
 
 #' @export
 print.stage_spec <- function(x, ...) {
-  cat(sprintf("<stage_spec> %d stages, %d legitimate transitions, %d terminal\n",
-              length(x$stages), nrow(x$transitions), length(x$terminal)))
+  cat(sprintf(
+    "<stage_spec> %d stages, %d legitimate transitions, %d terminal, %d fulfilling\n",
+    length(x$stages), nrow(x$transitions), length(x$terminal),
+    length(x$fulfilling)))
   for (s in x$stages) {
     out <- x$transitions$to[x$transitions$from == s]
+    mark <- paste(c(if (s %in% x$terminal) "terminal",
+                    if (s %in% x$fulfilling) "fulfilling"), collapse = ", ")
     cat(sprintf("  %-18s %-14s %s\n", s, paste0("[", x$class[[s]], "]"),
-                if (s %in% x$terminal) "(terminal)"
+                if (nzchar(mark)) paste0("(", mark, ")")
                 else paste("->", paste(out, collapse = ", "))))
   }
   invisible(x)
@@ -162,6 +178,10 @@ distribution_stage_spec <- function() {
       "backordered -> released",
       "partially_shipped -> shipped"),
     terminal = c("shipped", "cancelled"),
+    # Delivery, not ending. `partially_shipped` has put goods on a truck and
+    # is still running; `cancelled` is an ending that delivered nothing. The
+    # two properties cross, which is why they are declared separately.
+    fulfilling = c("partially_shipped", "shipped"),
     class = c(received          = "queueing",
               awaiting_supply   = "external supply",
               credit_hold       = "approval",
@@ -170,6 +190,30 @@ distribution_stage_spec <- function() {
               partially_shipped = "batching",
               shipped           = "terminal",
               cancelled         = "terminal"))
+}
+
+# Which stage specification applies to this call.
+#
+# Precedence, and the order is the whole point: an explicit `spec` argument
+# wins, then one carried on the object by [as_lifecycle()] or
+# [simulate_lifecycles()], and only then the book's own
+# [distribution_stage_spec()].
+#
+# The fallback exists for back-compatibility with a bare list assembled by
+# hand, which several help pages still document as acceptable input. It is NOT
+# a sensible default for a real event log: an operation whose terminal stage is
+# `departed` would be measured against a specification that has never heard of
+# it, and the symptom is a dwell quietly computed for a wait that was actually
+# the end of the lifecycle. [as_lifecycle()] requires a spec for exactly that
+# reason, so anything built through the documented route always carries one.
+spec_of <- function(sim, spec = NULL) {
+  if (!is.null(spec)) {
+    if (!inherits(spec, "stage_spec"))
+      stop("`spec` must be a stage_spec(), not ", class(spec)[1], call. = FALSE)
+    return(spec)
+  }
+  if (inherits(sim$spec, "stage_spec")) return(sim$spec)
+  distribution_stage_spec()
 }
 
 #' Decompose lead time into stage dwells
@@ -203,8 +247,12 @@ distribution_stage_spec <- function() {
 #' is the conditional figure, and the two differ by the visit share.
 #'
 #' @param sim A `lifecycle_sim` from [simulate_lifecycles()].
-#' @param through Terminal stage an instance must have reached to be counted.
-#' @param spec Optional [stage_spec()], used to label each stage with its class.
+#' @param through Stage an instance must have reached to be counted. Defaults
+#'   to the stages the specification declares both `terminal` and `fulfilling`
+#'   -- the endings in which the work was actually delivered, which is what a
+#'   lead time is the length of.
+#' @param spec Optional [stage_spec()]. Used to label each stage with its class
+#'   and to supply `through`. Defaults to the one carried on `sim`.
 #'
 #' @return A data frame of class `lead_time_decomposition`, one row per stage,
 #'   with the mean lead time and its standard deviation carried in the `total`
@@ -214,11 +262,21 @@ distribution_stage_spec <- function() {
 #' sim <- simulate_lifecycles(n = 1000, seed = 1)
 #' lead_time_decompose(sim, spec = distribution_stage_spec())
 #' @export
-lead_time_decompose <- function(sim, through = "shipped", spec = NULL) {
-  d <- stage_dwell(sim)
+lead_time_decompose <- function(sim, through = NULL, spec = NULL) {
+  spec <- spec_of(sim, spec)
+  if (is.null(through)) {
+    through <- intersect(spec$terminal, spec$fulfilling)
+    if (!length(through))
+      stop("the specification declares no stage that is both terminal and ",
+           "fulfilling, so `through` cannot be inferred -- name it",
+           call. = FALSE)
+  }
+  d <- stage_dwell(sim, spec = spec)
   done <- sim$orders$order_no[sim$orders$stage %in% through]
   d <- d[d$order_no %in% done, ]
-  if (!nrow(d)) stop("no instance reached '", through, "'", call. = FALSE)
+  if (!nrow(d))
+    stop("no instance reached '", paste(through, collapse = "' or '"), "'",
+         call. = FALSE)
 
   # One row per instance, one column per stage, summed over repeat visits so a
   # loop contributes its total wait rather than its last one.
@@ -230,8 +288,7 @@ lead_time_decompose <- function(sim, through = "shipped", spec = NULL) {
   stages <- colnames(wide)
   res <- data.frame(
     stage             = stages,
-    class             = if (is.null(spec)) NA_character_
-                        else unname(spec$class[stages]),
+    class             = unname(spec$class[stages]),
     visits            = as.integer(table(factor(d$stage, levels = stages))),
     visit_share       = vapply(stages, function(s) mean(wide[, s] > 0), 0),
     mean_hours        = vapply(stages, function(s) mean(wide[, s]), 0),
@@ -257,7 +314,7 @@ print.lead_time_decomposition <- function(x, digits = 2, ...) {
   tot <- attr(x, "total")
   if (!is.null(tot)) {
     cat(sprintf("<lead_time_decomposition> %d instances reaching '%s'\n",
-                tot[["n"]], attr(x, "through")))
+                tot[["n"]], paste(attr(x, "through"), collapse = "' or '")))
     cat(sprintf("  lead time: mean %.2f h, sd %.2f h\n",
                 tot[["mean"]], tot[["sd"]]))
   }

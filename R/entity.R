@@ -21,7 +21,10 @@
 #' reading it without the stage would credit an order sitting in `received`
 #' with a complete shipment.
 #'
-#' @param sim A `lifecycle_sim` from [simulate_lifecycles()].
+#' @param sim A `lifecycle_sim` from [simulate_lifecycles()] or
+#'   [as_lifecycle()].
+#' @param spec Optional [stage_spec()], which decides which stages count as
+#'   delivery and which as abandonment. Defaults to the one carried on `sim`.
 #'
 #' @return A data frame with one row per line: `order_no`, `line_no`, the
 #'   order's `stage`, `branch`, `order_source` and `lines`, a `value_share` of
@@ -34,11 +37,15 @@
 #' nrow(ln)
 #' table(ln$disposition)
 #' @export
-order_lines <- function(sim) {
+order_lines <- function(sim, spec = NULL) {
+  spec <- spec_of(sim, spec)
   o <- sim$orders
   stopifnot(all(c("lines", "fill_lines", "stage", "closed_short") %in% names(o)))
 
-  shipped_n <- ifelse(o$stage %in% c("shipped", "partially_shipped"),
+  # "a stage in which shipping has happened" is the specification's
+  # `fulfilling` set, which is why that property is declared separately from
+  # `terminal`: a partial shipment has delivered lines and has not ended.
+  shipped_n <- ifelse(o$stage %in% spec$fulfilling,
                       round(o$fill_lines * o$lines), 0)
   idx <- rep(seq_len(nrow(o)), o$lines)
   line_no <- sequence(o$lines)
@@ -72,7 +79,7 @@ order_lines <- function(sim) {
   out$disposition <- ifelse(
     out$shipped, "shipped",
     ifelse(o$closed_short[idx], "cancelled_at_close",
-           ifelse(o$stage[idx] == "cancelled", "cancelled", "open")))
+           ifelse(o$stage[idx] %in% spec$abandoned, "cancelled", "open")))
 
   # The derived flag asks whether the line's order ever went short, which
   # includes the shortfalls that were recovered and that no status code

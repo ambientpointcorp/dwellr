@@ -4,15 +4,20 @@
 \alias{observe_at}
 \title{Re-cut the observation window on an event log}
 \usage{
-observe_at(sim, as_of)
+observe_at(sim, as_of, spec = NULL)
 }
 \arguments{
-\item{sim}{A \code{lifecycle_sim} from \code{\link[=simulate_lifecycles]{simulate_lifecycles()}}.}
+\item{sim}{A \code{lifecycle_sim} from \code{\link[=simulate_lifecycles]{simulate_lifecycles()}} or
+\code{\link[=as_lifecycle]{as_lifecycle()}}.}
 
 \item{as_of}{Observation instant, a \code{POSIXct} at or before \code{sim$as_of}.}
+
+\item{spec}{Optional \code{\link[=stage_spec]{stage_spec()}}, which decides which stages count as
+an ending. Defaults to the one carried on \code{sim}.}
 }
 \value{
-A \code{lifecycle_sim} observed at \code{as_of}.
+A \code{lifecycle_sim} observed at \code{as_of}, carrying the same \code{lines},
+\code{items} and \code{spec} as the input.
 }
 \description{
 Returns the same population as it would have appeared at an earlier instant:

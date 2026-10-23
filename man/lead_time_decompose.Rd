@@ -4,14 +4,18 @@
 \alias{lead_time_decompose}
 \title{Decompose lead time into stage dwells}
 \usage{
-lead_time_decompose(sim, through = "shipped", spec = NULL)
+lead_time_decompose(sim, through = NULL, spec = NULL)
 }
 \arguments{
 \item{sim}{A \code{lifecycle_sim} from \code{\link[=simulate_lifecycles]{simulate_lifecycles()}}.}
 
-\item{through}{Terminal stage an instance must have reached to be counted.}
+\item{through}{Stage an instance must have reached to be counted. Defaults
+to the stages the specification declares both \code{terminal} and \code{fulfilling}
+-- the endings in which the work was actually delivered, which is what a
+lead time is the length of.}
 
-\item{spec}{Optional \code{\link[=stage_spec]{stage_spec()}}, used to label each stage with its class.}
+\item{spec}{Optional \code{\link[=stage_spec]{stage_spec()}}. Used to label each stage with its class
+and to supply \code{through}. Defaults to the one carried on \code{sim}.}
 }
 \value{
 A data frame of class \code{lead_time_decomposition}, one row per stage,

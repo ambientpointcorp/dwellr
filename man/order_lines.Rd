@@ -4,10 +4,14 @@
 \alias{order_lines}
 \title{Expand an order population to line grain}
 \usage{
-order_lines(sim)
+order_lines(sim, spec = NULL)
 }
 \arguments{
-\item{sim}{A \code{lifecycle_sim} from \code{\link[=simulate_lifecycles]{simulate_lifecycles()}}.}
+\item{sim}{A \code{lifecycle_sim} from \code{\link[=simulate_lifecycles]{simulate_lifecycles()}} or
+\code{\link[=as_lifecycle]{as_lifecycle()}}.}
+
+\item{spec}{Optional \code{\link[=stage_spec]{stage_spec()}}, which decides which stages count as
+delivery and which as abandonment. Defaults to the one carried on \code{sim}.}
 }
 \value{
 A data frame with one row per line: \code{order_no}, \code{line_no}, the

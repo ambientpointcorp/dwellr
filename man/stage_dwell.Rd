@@ -4,13 +4,17 @@
 \alias{stage_dwell}
 \title{Stage dwell times, with censoring}
 \usage{
-stage_dwell(sim, stage = NULL)
+stage_dwell(sim, stage = NULL, spec = NULL)
 }
 \arguments{
-\item{sim}{A \code{lifecycle_sim} from \code{\link[=simulate_lifecycles]{simulate_lifecycles()}}, or a list with
-\code{events} and \code{as_of}.}
+\item{sim}{A \code{lifecycle_sim} from \code{\link[=simulate_lifecycles]{simulate_lifecycles()}} or
+\code{\link[=as_lifecycle]{as_lifecycle()}}, or a list with \code{events} and \code{as_of}.}
 
 \item{stage}{Optional stage name to restrict to.}
+
+\item{spec}{Optional \code{\link[=stage_spec]{stage_spec()}}, which decides which stages are
+endings rather than waits. Defaults to the one carried on \code{sim}, and
+falls back to \code{\link[=distribution_stage_spec]{distribution_stage_spec()}} for a bare list.}
 }
 \value{
 A data frame with \code{order_no}, \code{stage}, \code{entered_at}, \code{left_at},

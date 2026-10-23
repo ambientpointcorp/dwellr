@@ -16,13 +16,16 @@ template:
 # the URLs it finds there. Both are satisfied only while the site is actually
 # deployed, which .github/workflows/pkgdown.yaml is what keeps true.
 reference:
-- title: Synthetic data
+- title: Lifecycle data
   desc: >
-    Start here. Everything else runs against this, and the built-in dataset is
-    one call to it.
+    Start here. Every other function reads a population in this shape, whether
+    it was generated or recorded: the built-in dataset is one call to the
+    generator, and `as_lifecycle()` builds the same object from an event log an
+    operation already keeps.
   contents:
   - simulate_lifecycles
   - orders
+  - as_lifecycle
 
 - title: "Part I — Inventory systems"
   desc: Chapter 1. State derived from a ledger rather than maintained beside one.

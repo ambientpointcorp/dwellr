@@ -488,8 +488,13 @@ simulate_lifecycles <- function(n = 5000,
     stringsAsFactors = FALSE
   )
 
+  # The generator knows which stage set it generated, so it says so. Every
+  # spec-aware function then resolves it from the object instead of assuming
+  # it, and the assumption that used to be spread across those functions lives
+  # in one place that is right by construction.
   structure(list(orders = orders, events = events, lines = lines_tbl,
-                 items = items, as_of = as_of), class = "lifecycle_sim")
+                 items = items, as_of = as_of,
+                 spec = distribution_stage_spec()), class = "lifecycle_sim")
 }
 
 #' @export
@@ -499,8 +504,13 @@ print.lifecycle_sim <- function(x, ...) {
               nrow(o), nrow(x$events), format(x$as_of, "%Y-%m-%d %H:%M")))
   cat(sprintf("  in flight (censored): %d (%.1f%%)\n",
               sum(!o$is_terminal), 100 * mean(!o$is_terminal)))
-  cat(sprintf("  residue -- finished but holding an open ticket: %d\n",
-              sum(o$open_ticket_residue & o$is_terminal)))
+  # The residue line is a property of the generator's own corpus. A
+  # population built by as_lifecycle() from recorded events carries whatever
+  # columns the source had, so the line is printed when it can be and
+  # omitted when it cannot, rather than erroring on a valid object.
+  if (!is.null(o$open_ticket_residue))
+    cat(sprintf("  residue -- finished but holding an open ticket: %d\n",
+                sum(o$open_ticket_residue & o$is_terminal)))
   cat("  stages: ")
   print(table(o$stage))
   invisible(x)
