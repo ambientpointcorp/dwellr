@@ -4,7 +4,7 @@
 \alias{order_lines}
 \title{Expand an order population to line grain}
 \usage{
-order_lines(sim, spec = NULL)
+order_lines(sim, spec = NULL, cols = NULL)
 }
 \arguments{
 \item{sim}{A \code{lifecycle_sim} from \code{\link[=simulate_lifecycles]{simulate_lifecycles()}} or
@@ -12,6 +12,14 @@ order_lines(sim, spec = NULL)
 
 \item{spec}{Optional \code{\link[=stage_spec]{stage_spec()}}, which decides which stages count as
 delivery and which as abandonment. Defaults to the one carried on \code{sim}.}
+
+\item{cols}{Optional named character vector renaming the columns this
+function reads on \code{sim$orders}, for a population that calls the same
+quantities something else. The names it understands are \code{lines}, \code{fill},
+\code{closed_short}, \code{shortfall}, \code{value}, \code{branch} and \code{source}; the defaults
+are the generator's own column names. Only \code{lines} and \code{fill} are
+required -- the optional four add columns to the result when present and
+are omitted from it when absent, which is stated per column in Value.}
 }
 \value{
 A data frame with one row per line: \code{order_no}, \code{line_no}, the

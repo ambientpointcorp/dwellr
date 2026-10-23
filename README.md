@@ -29,7 +29,7 @@ here requires the text.
 > inventory models, fill rate on three dimensions, cohort and modeled
 > baselines, thresholds from cost ratios, reviewer capacity and admission,
 > routing, the decision path, policy evaluation, records, the serial echelon
-> simulator and the observation-cost family. 104 exported functions, 723
+> simulator and the observation-cost family. 104 exported functions, 747
 > passing assertions. The interface is not yet stable, which is what the
 > fourth version component marks.
 
@@ -51,16 +51,16 @@ library(dwellr)
 
 # The built-in dataset is one call to the generator.
 orders
-#> <lifecycle_sim> 2000 orders, 6722 events, as of 2026-05-05 07:00
+#> <lifecycle_sim> 2000 orders, 6724 events, as of 2026-05-05 07:00
 #>   in flight (censored): 43 (2.1%)
-#>   residue -- finished but holding an open ticket: 600
+#>   residue -- finished but holding an open ticket: 591
 
 # Stage dwell, with still-open visits flagged rather than dropped.
 d <- stage_dwell(orders, stage = "released")
 
 # The operating quantiles a threshold should come from.
 dwell_quantile(d, c(0.5, 0.9))
-#> [1]  1.81 13.68
+#> [1]  1.78 13.08
 
 # A threshold wants a stall probability per order, which the two-component
 # mixture supplies: the chance a visit still open at t belongs to the slow
@@ -77,17 +77,17 @@ r$probability_threshold
 #> [1] 0.9091
 c(flagged = r$flagged_n, hours = round(r$hours, 2))
 #> flagged   hours
-#>  193.00   17.31
+#>  187.00   17.51
 
 # And the rule is checked against the two policies it has to beat.
 round(r$expected_cost)
 #>   rule   none    all
-#>   2571   9892 741878
+#>   2833  10015 742647
 
 # With no fitted probability available, the fallback reads the same cost ratio
 # off the dwell distribution instead, under the assumption its help documents.
 threshold_from_dwell_quantile(d, cost_miss = 40, cost_look = 400)$hours
-#> [1] 17.77
+#> [1] 16.57
 ```
 
 ### Why censoring is the first thing in the package
@@ -98,7 +98,7 @@ thing to do — removes exactly the orders that are stuck:
 
 ```r
 d <- stage_dwell(orders)
-median(d$dwell_hours[d$censored])    # still open:  29.6 h
+median(d$dwell_hours[d$censored])    # still open:  28.7 h
 median(d$dwell_hours[!d$censored])   # completed:    3.0 h
 ```
 

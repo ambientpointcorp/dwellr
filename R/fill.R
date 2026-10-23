@@ -19,6 +19,11 @@
 #' @param orders A data frame with `fill_units`, `fill_lines`, `fill_value`,
 #'   as produced by [simulate_lifecycles()].
 #'
+#' @param cols Optional named character vector renaming the columns read,
+#'   for a population that calls the fractions something else. Understands
+#'   `units`, `lines` and `value`; the defaults are the generator's own
+#'   names. The reported binding dimension is the quantity's name rather
+#'   than the column's, so results stay comparable across populations.
 #' @return The input with `fill_binding`, `fill_binding_dimension` and
 #'   `fill_defined` added.
 #'
@@ -29,9 +34,13 @@
 #' # The denominator a fill rate has to be quoted against.
 #' c(defined = sum(f$fill_defined), open = sum(!f$fill_defined))
 #' @export
-fill_rate <- function(orders) {
-  dims <- c("fill_units", "fill_lines", "fill_value")
-  stopifnot(all(dims %in% names(orders)))
+fill_rate <- function(orders, cols = NULL) {
+  cn <- resolve_cols(
+    orders,
+    default = c(units = "fill_units", lines = "fill_lines",
+                value = "fill_value"),
+    map = cols, what = "`orders`")
+  dims <- unname(cn[c("units", "lines", "value")])
   m <- as.matrix(orders[, dims])
   defined <- stats::complete.cases(m)
 
@@ -40,7 +49,10 @@ fill_rate <- function(orders) {
   if (any(defined)) {
     md <- m[defined, , drop = FALSE]
     binding[defined] <- apply(md, 1, min)
-    dimension[defined] <- sub("^fill_", "", dims[apply(md, 1, which.min)])
+    # The reported dimension is the quantity's name, not the column's, so a
+    # population whose columns are named differently still reports `units`,
+    # `lines` or `value` and stays comparable with every other.
+    dimension[defined] <- names(cn)[apply(md, 1, which.min)]
   }
 
   orders$fill_binding <- binding
@@ -70,6 +82,9 @@ fill_rate <- function(orders) {
 #'   `unit_price`, as returned in the `lines` element of
 #'   [simulate_lifecycles()] or by [order_lines()].
 #'
+#' @param cols Optional named character vector renaming the columns read.
+#'   Understands `order`, `ordered`, `shipped` and `price`; the defaults
+#'   are the generator's own names.
 #' @return A list with the pooled `units`, `lines` and `value` rates, the
 #'   `order_weighted` mean of each order's own rates, and the counts behind
 #'   them.
@@ -79,25 +94,33 @@ fill_rate <- function(orders) {
 #' fill_dimensions(sim$lines[sim$lines$order_no %in%
 #'   sim$orders$order_no[sim$orders$stage == "shipped"], ])
 #' @export
-fill_dimensions <- function(lines) {
-  need <- c("order_no", "qty_ordered", "qty_shipped", "unit_price")
-  stopifnot(all(need %in% names(lines)), nrow(lines) > 0)
+fill_dimensions <- function(lines, cols = NULL) {
+  cn <- resolve_cols(
+    lines,
+    default = c(order = "order_no", ordered = "qty_ordered",
+                shipped = "qty_shipped", price = "unit_price"),
+    map = cols, what = "`lines`")
+  stopifnot(nrow(lines) > 0)
+  order_no <- lines[[cn[["order"]]]]
+  qty_ordered <- lines[[cn[["ordered"]]]]
+  qty_shipped <- lines[[cn[["shipped"]]]]
+  unit_price <- lines[[cn[["price"]]]]
 
-  complete <- lines$qty_shipped >= lines$qty_ordered
-  ext_ord <- lines$qty_ordered * lines$unit_price
-  ext_shp <- lines$qty_shipped * lines$unit_price
+  complete <- qty_shipped >= qty_ordered
+  ext_ord <- qty_ordered * unit_price
+  ext_shp <- qty_shipped * unit_price
 
-  by_order <- function(x) as.numeric(tapply(x, lines$order_no, sum))
-  n_ord <- length(unique(lines$order_no))
-  ow <- c(units = mean(by_order(lines$qty_shipped) / by_order(lines$qty_ordered)),
-          lines = mean(as.numeric(tapply(complete, lines$order_no, mean))),
+  by_order <- function(x) as.numeric(tapply(x, order_no, sum))
+  n_ord <- length(unique(order_no))
+  ow <- c(units = mean(by_order(qty_shipped) / by_order(qty_ordered)),
+          lines = mean(as.numeric(tapply(complete, order_no, mean))),
           value = mean(by_order(ext_shp) / by_order(ext_ord)))
 
-  list(units = sum(lines$qty_shipped) / sum(lines$qty_ordered),
+  list(units = sum(qty_shipped) / sum(qty_ordered),
        lines = mean(complete),
        value = sum(ext_shp) / sum(ext_ord),
        order_weighted = ow,
        n_orders = n_ord,
        n_lines = nrow(lines),
-       units_ordered = sum(lines$qty_ordered))
+       units_ordered = sum(qty_ordered))
 }

@@ -8,13 +8,14 @@ stage_dwell(sim, stage = NULL, spec = NULL)
 }
 \arguments{
 \item{sim}{A \code{lifecycle_sim} from \code{\link[=simulate_lifecycles]{simulate_lifecycles()}} or
-\code{\link[=as_lifecycle]{as_lifecycle()}}, or a list with \code{events} and \code{as_of}.}
+\code{\link[=as_lifecycle]{as_lifecycle()}}. A bare list with \code{events} and \code{as_of} is accepted, but
+carries no specification, so \code{spec} must then be given.}
 
 \item{stage}{Optional stage name to restrict to.}
 
 \item{spec}{Optional \code{\link[=stage_spec]{stage_spec()}}, which decides which stages are
-endings rather than waits. Defaults to the one carried on \code{sim}, and
-falls back to \code{\link[=distribution_stage_spec]{distribution_stage_spec()}} for a bare list.}
+endings rather than waits. Defaults to the one carried on \code{sim}; required
+when the population carries none.}
 }
 \value{
 A data frame with \code{order_no}, \code{stage}, \code{entered_at}, \code{left_at},

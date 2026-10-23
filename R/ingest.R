@@ -161,3 +161,33 @@ as_lifecycle <- function(events, spec, orders = NULL, lines = NULL,
   structure(list(orders = o, events = ev, lines = lines, items = items,
                  as_of = as_of, spec = spec), class = "lifecycle_sim")
 }
+
+# Resolve a column map against a data frame.
+#
+# `default` names the columns the generator produces; `map` overrides any of
+# them for a population that calls the same quantity something else. The
+# refusal names the quantity AND the column looked for, because "fill_lines
+# not found" is useless to somebody whose extract calls it `line_fill_pct`.
+resolve_cols <- function(data, default, map = NULL, required = names(default),
+                         what = "data") {
+  cols <- default
+  if (!is.null(map)) {
+    if (is.null(names(map)) || any(!nzchar(names(map))))
+      stop("`cols` must be a named character vector, e.g. ",
+           "c(fill = \"line_fill_pct\")", call. = FALSE)
+    unknown <- setdiff(names(map), names(default))
+    if (length(unknown))
+      stop("`cols` names quantities this function does not use: ",
+           paste(unknown, collapse = ", "), ". It understands: ",
+           paste(names(default), collapse = ", "), call. = FALSE)
+    cols[names(map)] <- unname(map)
+  }
+  missing <- required[!cols[required] %in% names(data)]
+  if (length(missing))
+    stop(what, " is missing ",
+         paste(sprintf("%s (looked for column `%s`)", missing, cols[missing]),
+               collapse = ", "),
+         ". Pass `cols` to name the columns this population uses.",
+         call. = FALSE)
+  cols
+}

@@ -4,11 +4,17 @@
 \alias{fill_rate}
 \title{Fill rate on three dimensions}
 \usage{
-fill_rate(orders)
+fill_rate(orders, cols = NULL)
 }
 \arguments{
 \item{orders}{A data frame with \code{fill_units}, \code{fill_lines}, \code{fill_value},
 as produced by \code{\link[=simulate_lifecycles]{simulate_lifecycles()}}.}
+
+\item{cols}{Optional named character vector renaming the columns read,
+for a population that calls the fractions something else. Understands
+\code{units}, \code{lines} and \code{value}; the defaults are the generator's own
+names. The reported binding dimension is the quantity's name rather
+than the column's, so results stay comparable across populations.}
 }
 \value{
 The input with \code{fill_binding}, \code{fill_binding_dimension} and

@@ -10,11 +10,12 @@
 #' optimistic by most when the operation is performing worst (§6.2).
 #'
 #' @param sim A `lifecycle_sim` from [simulate_lifecycles()] or
-#'   [as_lifecycle()], or a list with `events` and `as_of`.
+#'   [as_lifecycle()]. A bare list with `events` and `as_of` is accepted, but
+#'   carries no specification, so `spec` must then be given.
 #' @param stage Optional stage name to restrict to.
 #' @param spec Optional [stage_spec()], which decides which stages are
-#'   endings rather than waits. Defaults to the one carried on `sim`, and
-#'   falls back to [distribution_stage_spec()] for a bare list.
+#'   endings rather than waits. Defaults to the one carried on `sim`; required
+#'   when the population carries none.
 #'
 #' @return A data frame with `order_no`, `stage`, `entered_at`, `left_at`,
 #'   `dwell_hours` and `censored` (`TRUE` when the visit was still open).

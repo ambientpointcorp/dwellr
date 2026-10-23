@@ -25,6 +25,13 @@
 #'   [as_lifecycle()].
 #' @param spec Optional [stage_spec()], which decides which stages count as
 #'   delivery and which as abandonment. Defaults to the one carried on `sim`.
+#' @param cols Optional named character vector renaming the columns this
+#'   function reads on `sim$orders`, for a population that calls the same
+#'   quantities something else. The names it understands are `lines`, `fill`,
+#'   `closed_short`, `shortfall`, `value`, `branch` and `source`; the defaults
+#'   are the generator's own column names. Only `lines` and `fill` are
+#'   required -- the optional four add columns to the result when present and
+#'   are omitted from it when absent, which is stated per column in Value.
 #'
 #' @return A data frame with one row per line: `order_no`, `line_no`, the
 #'   order's `stage`, `branch`, `order_source` and `lines`, a `value_share` of
@@ -37,29 +44,43 @@
 #' nrow(ln)
 #' table(ln$disposition)
 #' @export
-order_lines <- function(sim, spec = NULL) {
+order_lines <- function(sim, spec = NULL, cols = NULL) {
   spec <- spec_of(sim, spec)
   o <- sim$orders
-  stopifnot(all(c("lines", "fill_lines", "stage", "closed_short") %in% names(o)))
+  cn <- resolve_cols(
+    o,
+    default = c(lines = "lines", fill = "fill_lines",
+                closed_short = "closed_short", shortfall = "stock_shortfall",
+                value = "value", branch = "branch", source = "order_source"),
+    map = cols, required = c("lines", "fill"), what = "`sim$orders`")
+  if (!"stage" %in% names(o))
+    stop("`sim$orders` is missing `stage`", call. = FALSE)
+  have <- function(k) cn[[k]] %in% names(o)
+  n_lines <- o[[cn[["lines"]]]]
 
   # "a stage in which shipping has happened" is the specification's
   # `fulfilling` set, which is why that property is declared separately from
   # `terminal`: a partial shipment has delivered lines and has not ended.
   shipped_n <- ifelse(o$stage %in% spec$fulfilling,
-                      round(o$fill_lines * o$lines), 0)
-  idx <- rep(seq_len(nrow(o)), o$lines)
-  line_no <- sequence(o$lines)
+                      round(o[[cn[["fill"]]]] * n_lines), 0)
+  idx <- rep(seq_len(nrow(o)), n_lines)
+  line_no <- sequence(n_lines)
 
   out <- data.frame(
     order_no = o$order_no[idx],
     line_no = line_no,
     stage = o$stage[idx],
-    branch = o$branch[idx],
-    order_source = o$order_source[idx],
-    lines = o$lines[idx],
-    value_share = o$value[idx] / o$lines[idx],
+    lines = n_lines[idx],
     shipped = line_no <= shipped_n[idx],
     stringsAsFactors = FALSE)
+  # The cohort keys and the value share are carried when the population has
+  # them. They are descriptive rather than structural: an extract without a
+  # branch column can still be asked every question about grain that Chapter
+  # 10 poses, and refusing it for a missing label would be refusing the
+  # analysis over the annotation.
+  if (have("branch")) out$branch <- o[[cn[["branch"]]]][idx]
+  if (have("source")) out$order_source <- o[[cn[["source"]]]][idx]
+  if (have("value")) out$value_share <- o[[cn[["value"]]]][idx] / n_lines[idx]
 
   # Quantities and prices come from the generator's own line table, which is
   # where they are drawn. Joining on the pair rather than assuming row order
@@ -76,15 +97,19 @@ order_lines <- function(sim, spec = NULL) {
   # management system would hold: shipped, cancelled at close, or open. It is
   # a statement about where the line stands and not about what happened to it,
   # which is the distinction Section 10.8 measures.
+  short_close <- if (have("closed_short")) o[[cn[["closed_short"]]]][idx]
+                 else rep(FALSE, length(idx))
   out$disposition <- ifelse(
     out$shipped, "shipped",
-    ifelse(o$closed_short[idx], "cancelled_at_close",
+    ifelse(short_close, "cancelled_at_close",
            ifelse(o$stage[idx] %in% spec$abandoned, "cancelled", "open")))
 
   # The derived flag asks whether the line's order ever went short, which
   # includes the shortfalls that were recovered and that no status code
-  # retains.
-  out$shortfall <- o$stock_shortfall[idx] | o$closed_short[idx]
+  # retains. It needs a shortfall column to mean anything, so it appears only
+  # where one exists rather than reading FALSE and looking like an answer.
+  if (have("shortfall"))
+    out$shortfall <- o[[cn[["shortfall"]]]][idx] | short_close
   out
 }
 

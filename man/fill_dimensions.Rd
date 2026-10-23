@@ -4,12 +4,16 @@
 \alias{fill_dimensions}
 \title{Fill on three dimensions, computed from the lines}
 \usage{
-fill_dimensions(lines)
+fill_dimensions(lines, cols = NULL)
 }
 \arguments{
 \item{lines}{A line table with \code{order_no}, \code{qty_ordered}, \code{qty_shipped} and
 \code{unit_price}, as returned in the \code{lines} element of
 \code{\link[=simulate_lifecycles]{simulate_lifecycles()}} or by \code{\link[=order_lines]{order_lines()}}.}
+
+\item{cols}{Optional named character vector renaming the columns read.
+Understands \code{order}, \code{ordered}, \code{shipped} and \code{price}; the defaults
+are the generator's own names.}
 }
 \value{
 A list with the pooled \code{units}, \code{lines} and \code{value} rates, the

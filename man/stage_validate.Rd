@@ -7,8 +7,8 @@
 stage_validate(sim, spec)
 }
 \arguments{
-\item{sim}{A \code{lifecycle_sim} from \code{\link[=simulate_lifecycles]{simulate_lifecycles()}}, or a list with
-an \code{events} data frame.}
+\item{sim}{A \code{lifecycle_sim} from \code{\link[=simulate_lifecycles]{simulate_lifecycles()}} or
+\code{\link[=as_lifecycle]{as_lifecycle()}}, or a list with an \code{events} data frame.}
 
 \item{spec}{A \code{\link[=stage_spec]{stage_spec()}}.}
 }

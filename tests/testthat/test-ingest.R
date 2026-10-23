@@ -146,10 +146,12 @@ test_that("the specification resolves in a stated order of precedence", {
   expect_equal(nrow(stage_dwell(pop, spec = distribution_stage_spec())), 8)
   # Carried spec beats the package default.
   expect_equal(nrow(stage_dwell(pop)), 7)
-  # A bare list with neither falls back, which is the documented back-compat
-  # path and the reason as_lifecycle() requires a spec.
+  # A bare list carries no specification, and there is no third branch to
+  # fall back to. Refusing is the point: the fallback that used to live here
+  # answered with the book's stage set and no warning.
   bare <- list(events = pop$events, as_of = pop$as_of)
-  expect_equal(nrow(stage_dwell(bare)), 8)
+  expect_error(stage_dwell(bare), "no stage specification")
+  expect_equal(nrow(stage_dwell(bare, spec = freight_spec())), 7)
 
   expect_error(stage_dwell(pop, spec = "departed"), "must be a stage_spec")
 })
@@ -165,4 +167,86 @@ test_that("stage_spec separates delivery from ending", {
 
   expect_error(stage_spec(c("a", "b"), "a -> b", fulfilling = "z"),
                "not declared")
+})
+
+# Every exported function that takes a population is run against a vocabulary
+# that is not the book's. The table is the test: a new `sim`-taking export
+# with no row here fails the last expectation, so the coverage cannot quietly
+# lapse the way it did when the generator was the only way in.
+test_that("every population-taking export runs on a foreign vocabulary", {
+  t0 <- as.POSIXct("2026-01-01 00:00", tz = "UTC")
+  spec <- freight_spec()
+  pop <- as_lifecycle(freight_log(t0), spec, as_of = t0 + 3600 * 12)
+
+  # order_lines() reads quantities the log alone does not carry, so the
+  # population is given the two it requires under names that are NOT the
+  # generator's -- which exercises the column map at the same time.
+  pop$orders$truck_lines <- c(3L, 2L, 4L)
+  pop$orders$line_fill <- c(1, 0, 0.5)
+
+  calls <- list(
+    stage_dwell         = function() stage_dwell(pop),
+    stage_validate      = function() stage_validate(pop, spec),
+    stage_exit_type     = function() stage_exit_type(pop, "accumulating"),
+    stage_backlog       = function() stage_backlog(pop, "accumulating"),
+    observe_at          = function() observe_at(pop, t0 + 3600 * 8),
+    lead_time_decompose = function() lead_time_decompose(pop),
+    time_in_stage       = function() time_in_stage(pop, "accumulating"),
+    revisit_count       = function() revisit_count(pop),
+    lifecycle_variants  = function() lifecycle_variants(pop),
+    stage_separation    = function() stage_separation(pop, spec),
+    degenerate_stages   = function() degenerate_stages(pop),
+    queue_reconcile     = function() {
+      p <- pop; p$orders$ticket_open <- c(TRUE, FALSE, FALSE)
+      queue_reconcile(p, open_flag = "ticket_open")
+    },
+    order_lines         = function()
+      order_lines(pop, cols = c(lines = "truck_lines", fill = "line_fill"))
+  )
+
+  for (nm in names(calls)) {
+    expect_no_error(calls[[nm]](), message = paste(nm, "on a foreign vocabulary"))
+  }
+
+  # The guard: if a new export starts taking a population, it needs a row.
+  takes <- Filter(function(n) {
+    f <- get(n, envir = asNamespace("dwellr"))
+    is.function(f) && "sim" %in% names(formals(f))
+  }, getNamespaceExports("dwellr"))
+  expect_setequal(takes, names(calls))
+})
+
+test_that("a column map is how a population names things differently", {
+  o <- data.frame(pct_units = c(1, 0.5), pct_lines = c(1, 0.5),
+                  pct_value = c(1, 0.4))
+  expect_error(fill_rate(o), "looked for column `fill_units`")
+
+  f <- fill_rate(o, cols = c(units = "pct_units", lines = "pct_lines",
+                             value = "pct_value"))
+  # The binding dimension reports the quantity, not the column, so two
+  # populations with different column names stay comparable.
+  expect_equal(f$fill_binding, c(1, 0.4))
+  expect_equal(f$fill_binding_dimension, c("units", "value"))
+
+  expect_error(fill_rate(o, cols = c(unit = "pct_units")),
+               "does not use: unit")
+  expect_error(fill_rate(o, cols = "pct_units"), "must be a named")
+
+  # The generator's own names remain the defaults, so nothing that worked
+  # before needs a map.
+  expect_equal(fill_rate(orders$orders)$fill_binding,
+               fill_rate(orders$orders, cols = c(units = "fill_units"))$fill_binding)
+  expect_equal(fill_dimensions(orders$lines)$units,
+               fill_dimensions(orders$lines,
+                               cols = c(ordered = "qty_ordered"))$units)
+})
+
+test_that("the shipped dataset is what its builder produces", {
+  # data-raw/make_orders.R is one seeded call to the generator. When the
+  # generator changes and the dataset is not rebuilt, the two drift and the
+  # package ships data no longer reproducible from the script that documents
+  # it -- which is exactly what had happened before Chapter 13's date fields
+  # were added.
+  expect_identical(orders, simulate_lifecycles(n = 2000, seed = 42))
+  expect_s3_class(orders$spec, "stage_spec")
 })

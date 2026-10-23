@@ -5,7 +5,7 @@
 \alias{orders}
 \title{A synthetic population of order lifecycles}
 \format{
-An object of class \code{lifecycle_sim}: a list of three elements.
+An object of class \code{lifecycle_sim}: a list of six elements.
 \describe{
 \item{orders}{A data frame with 2,000 rows, one per order, carrying the
 identifier, entry and finish instants, current \code{stage}, whether that
@@ -16,8 +16,17 @@ of Chapter 8: \code{special_order}, \code{loops}, \code{partially_shipped},
 fill measures of Chapter 11.}
 \item{events}{The append-only event log, one row per transition, with
 \code{order_no}, \code{event}, \code{stage} and \code{occurred_at}.}
+\item{lines}{One row per order line, carrying \code{qty_ordered},
+\code{unit_price} and \code{qty_shipped} together with the stock position the
+line's item showed when the order was entered.}
+\item{items}{One row per item: its class, vendor, unit cost,
+replenishment cycle, demand rate and the vendor's lead-time mean and
+standard deviation.}
 \item{as_of}{The observation cutoff. Orders not finished by this instant
 are right-censored, which is the subject of Chapter 6.}
+\item{spec}{The \code{\link[=stage_spec]{stage_spec()}} the generator produced this corpus
+against, carried on the object so that every function reads the stage
+vocabulary rather than assuming one.}
 }
 
 A \code{lifecycle_sim}: a list of \code{orders} (2000 rows), \code{events}, and

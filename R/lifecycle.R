@@ -99,8 +99,8 @@ print.stage_spec <- function(x, ...) {
 #' Instances still in flight are not a violation. They end in a non-terminal
 #' stage because they have not finished, which is the subject of Chapter 6.
 #'
-#' @param sim A `lifecycle_sim` from [simulate_lifecycles()], or a list with
-#'   an `events` data frame.
+#' @param sim A `lifecycle_sim` from [simulate_lifecycles()] or
+#'   [as_lifecycle()], or a list with an `events` data frame.
 #' @param spec A [stage_spec()].
 #'
 #' @return A data frame with one row per check: `check`, `violations`, and a
@@ -194,18 +194,17 @@ distribution_stage_spec <- function() {
 
 # Which stage specification applies to this call.
 #
-# Precedence, and the order is the whole point: an explicit `spec` argument
-# wins, then one carried on the object by [as_lifecycle()] or
-# [simulate_lifecycles()], and only then the book's own
-# [distribution_stage_spec()].
+# An explicit `spec` argument wins; otherwise the one the population carries,
+# which [simulate_lifecycles()] and [as_lifecycle()] both attach. There is no
+# third branch, and that is the design rather than an omission.
 #
-# The fallback exists for back-compatibility with a bare list assembled by
-# hand, which several help pages still document as acceptable input. It is NOT
-# a sensible default for a real event log: an operation whose terminal stage is
-# `departed` would be measured against a specification that has never heard of
-# it, and the symptom is a dwell quietly computed for a wait that was actually
-# the end of the lifecycle. [as_lifecycle()] requires a spec for exactly that
-# reason, so anything built through the documented route always carries one.
+# An earlier version fell back to [distribution_stage_spec()] when a bare list
+# carried none. That default is right for exactly one corpus and silently
+# wrong for every other: an operation whose work ends in `departed` would be
+# measured against a stage set that has never heard of it, so every completed
+# instance gains a long open visit and the stage where the work finishes reads
+# as the worst in the operation. A wrong number with no warning is worse than
+# a refusal, so this refuses.
 spec_of <- function(sim, spec = NULL) {
   if (!is.null(spec)) {
     if (!inherits(spec, "stage_spec"))
@@ -213,7 +212,10 @@ spec_of <- function(sim, spec = NULL) {
     return(spec)
   }
   if (inherits(sim$spec, "stage_spec")) return(sim$spec)
-  distribution_stage_spec()
+  stop("no stage specification: the population carries none and none was ",
+       "given. Build the population with as_lifecycle(), which requires one, ",
+       "or pass spec = stage_spec(...) to this call. A stage set cannot be ",
+       "inferred from an event log.", call. = FALSE)
 }
 
 #' Decompose lead time into stage dwells
