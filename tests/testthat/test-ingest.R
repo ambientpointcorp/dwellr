@@ -247,6 +247,17 @@ test_that("the shipped dataset is what its builder produces", {
   # package ships data no longer reproducible from the script that documents
   # it -- which is exactly what had happened before Chapter 13's date fields
   # were added.
-  expect_identical(orders, simulate_lifecycles(n = 2000, seed = 42))
+  #
+  # expect_equal rather than expect_identical, because this is the one
+  # comparison in the suite that spans two R installations: the .rda was
+  # written by whichever R built it and the right-hand side is computed by
+  # whichever R is running the check. Bit-equality is not guaranteed across
+  # versions, and `fill_value` differed by one ulp -- 2.2e-16, against a
+  # tolerance of 1.5e-8 -- which failed the check on every CI platform while
+  # passing on the machine the dataset was built on. A real drift of the kind
+  # this test exists to catch is orders of magnitude larger than the
+  # tolerance. The same-session reproducibility check in test-simulate.R
+  # stays identical(): two calls on one build must agree exactly.
+  expect_equal(orders, simulate_lifecycles(n = 2000, seed = 42))
   expect_s3_class(orders$spec, "stage_spec")
 })
