@@ -56,8 +56,8 @@ jobs:
       - uses: r-lib/actions/check-r-package@v2
         with:
           upload-snapshots: true
-          # NOTE as error from the start. CRAN submission is planned for
-          # publication (see the book repo's publishing notes), and the cheapest
-          # time to keep a package submission-clean is continuously.
+          # NOTE as error from the start. CRAN submission is planned but not
+          # scheduled, and the cheapest time to keep a package submission-clean
+          # is continuously rather than in the week before it is submitted.
           args: 'c("--no-manual", "--as-cran")'
           error-on: '"note"'
