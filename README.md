@@ -18,8 +18,7 @@ The book *Lifecycle Monitoring Analytics: A toolkit for continuous supply chain
 operations*, by Ariel Rodríguez Herrera (CEO, Ambient Point Corp.), first
 edition 2026, works through the methods the package implements and is the place
 to read why each one is built the way it is. The package does not depend on the
-book: every function carries a help page with its arguments and its refusals,
-and nothing here requires the text.
+book.
 
 > **Status: 0.0.1.9000.** Every function family is implemented and tested: the
 > generator, stage dwell estimation under right-censoring, the classical
