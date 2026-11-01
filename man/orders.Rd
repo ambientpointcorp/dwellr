@@ -54,14 +54,14 @@ Two thousand synthetic orders and their event log, produced by
 every example and test runs on install, with no download.
 }
 \details{
-The dataset and the larger corpus in \code{dwellr-examples} come from the same
+The dataset and the larger corpus in \code{lifecycle-analytics-examples} come from the same
 generator at different sizes, so the two cannot drift apart. The generator
 is part of the package rather than a script beside it, because synthetic
 lifecycle data carrying the right pathologies is itself one of the things
 the book teaches.
 
 The full corpus the book's figures are built from is larger; it is generated
-by the same function in \code{dwellr-examples}, at a bigger \code{n}. One generator,
+by the same function in \code{lifecycle-analytics-examples}, at a bigger \code{n}. One generator,
 two scales, so they cannot drift apart.
 }
 \examples{

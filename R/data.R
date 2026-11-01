@@ -5,7 +5,7 @@
 #' package so that every help page example and every test runs against data on
 #' install, with no download and no setup.
 #'
-#' The dataset and the larger corpus in `dwellr-examples` come from the same
+#' The dataset and the larger corpus in `lifecycle-analytics-examples` come from the same
 #' generator at different sizes, so the two cannot drift apart. The generator
 #' is part of the package rather than a script beside it, because synthetic
 #' lifecycle data carrying the right pathologies is itself one of the things

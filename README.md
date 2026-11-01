@@ -133,7 +133,8 @@ carrying an open pick ticket, which is what overstates a naive work queue.
 
 The built-in `orders` dataset is one call at `n = 2000`. The full corpus the
 book's figures are built from is the same function at a larger `n`, in
-`dwellr-examples` — one generator, two scales, so they cannot drift apart.
+`lifecycle-analytics-examples` — one generator, two scales, so they cannot
+drift apart.
 
 ## Tests
 

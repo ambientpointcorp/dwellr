@@ -26,7 +26,7 @@
 #' every example and test runs on install, with no download.
 #'
 #' The full corpus the book's figures are built from is larger; it is generated
-#' by the same function in `dwellr-examples`, at a bigger `n`. One generator,
+#' by the same function in `lifecycle-analytics-examples`, at a bigger `n`. One generator,
 #' two scales, so they cannot drift apart.
 #'
 #' @format A `lifecycle_sim`: a list of `orders` (2000 rows), `events`, and
