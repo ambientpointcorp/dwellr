@@ -112,6 +112,11 @@ pow2_interval <- function(optimal_interval, base_interval) {
 
 #' Worst-case penalty of a powers-of-two policy
 #'
+#' The constant behind [pow2_interval()]: rounding the interval to a power of
+#' two costs at most 6.07 percent over the unconstrained optimum, whatever the
+#' demand rate and cost parameters. It is [eoq_penalty()] evaluated at the
+#' largest ratio the rounding can produce, \eqn{\sqrt{2}}.
+#'
 #' @return The bound 0.0607, as a fraction.
 #' @examples
 #' pow2_bound()

@@ -303,6 +303,11 @@ rule_compile <- function(text, fields) {
 
 #' Apply a compiled rule to a population
 #'
+#' Evaluates the terms a [rule_compile()] call parsed against the columns of a
+#' data frame and combines them with the rule's connective. A rule that failed
+#' to compile is an error here rather than a silent vector of `FALSE`, so a
+#' typo in the rule text cannot be mistaken for a population nothing matches.
+#'
 #' @param compiled A rule from [rule_compile()].
 #' @param data The population.
 #'

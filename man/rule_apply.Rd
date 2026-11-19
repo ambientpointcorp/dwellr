@@ -15,7 +15,10 @@ rule_apply(compiled, data)
 A logical vector, one entry per row.
 }
 \description{
-Apply a compiled rule to a population
+Evaluates the terms a \code{\link[=rule_compile]{rule_compile()}} call parsed against the columns of a
+data frame and combines them with the rule's connective. A rule that failed
+to compile is an error here rather than a silent vector of \code{FALSE}, so a
+typo in the rule text cannot be mistaken for a population nothing matches.
 }
 \examples{
 r <- rule_compile("value > 1000",
