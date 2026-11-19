@@ -8,8 +8,8 @@
 #' Relevant cost at a given order interval
 #'
 #' The EOQ objective expressed in terms of the replenishment interval
-#' \eqn{T = Q/d} rather than the quantity, which is the form
-#' @section Chapter 2: Section 2.6 uses for powers-of-two policies.
+#' \eqn{T = Q/d} rather than the quantity, which is the form Section 2.6 uses
+#' for powers-of-two policies.
 #'
 #' @param interval Replenishment interval \eqn{T}, in periods.
 #' @inheritParams eoq
