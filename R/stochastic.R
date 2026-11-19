@@ -7,10 +7,12 @@
 #' Complementary first order loss function
 #'
 #' @description
-#' \eqn{E[Q - \omega]^{+}}, the expected leftover stock when \eqn{Q} is
-#' stocked against demand \eqn{\omega}. For normal demand it has a closed form
-#' in terms of the standard normal density and distribution functions, with
-#' \eqn{z = (Q - \mu)/\sigma}:
+#' The expected leftover stock when a quantity is stocked against uncertain
+#' demand. For normal demand it has a closed form in terms of the standard
+#' normal density and distribution functions.
+#'
+#' @details
+#' Writing \eqn{\omega} for demand and \eqn{z = (Q - \mu)/\sigma},
 #'
 #' \deqn{E[Q - \omega]^{+} = (Q - \mu)\Phi(z) + \sigma\phi(z).}
 #'
@@ -28,9 +30,13 @@ nv_leftover <- function(Q, mean, sd) {
 
 #' First order loss function
 #'
-#' \eqn{E[\omega - Q]^{+}}, the expected unmet demand. Obtained from
-#' [nv_leftover()] by the identity
-#' \eqn{E[\omega - Q]^{+} = E[Q - \omega]^{+} - (Q - E[\omega])}.
+#' @description
+#' The expected unmet demand when a quantity is stocked against uncertain
+#' demand. Obtained from [nv_leftover()] by the identity relating the two
+#' loss functions.
+#'
+#' @details
+#' \deqn{E[\omega - Q]^{+} = E[Q - \omega]^{+} - (Q - E[\omega]).}
 #'
 #' @inheritParams nv_leftover
 #' @return Expected unmet demand.
@@ -97,9 +103,14 @@ nv_service_levels <- function(Q, mean, sd) {
 
 #' Quantity achieving a target service level
 #'
+#' @description
 #' For `type = "alpha"` this inverts the demand distribution directly. For
-#' `type = "beta"` it solves \eqn{E[\omega - Q]^{+}/E[\omega] = 1 - \beta}
-#' numerically, which has no closed form.
+#' `type = "beta"` it solves for the quantity at which expected unmet demand
+#' is the allowed fraction of expected demand, which has no closed form and is
+#' found numerically.
+#'
+#' @details
+#' The beta case solves \eqn{E[\omega - Q]^{+}/E[\omega] = 1 - \beta}.
 #'
 #' @inheritParams nv_leftover
 #' @param target Service level in (0, 1).
@@ -126,11 +137,13 @@ nv_quantity_for_service <- function(target, mean, sd,
 
 #' Base-stock policy by stochastic dynamic programming
 #'
+#' @description
 #' With no fixed ordering cost, the optimal policy is order-up-to: in each
-#' period, raise the inventory position to \eqn{S_t} if it is below, and
-#' otherwise do nothing. This function computes \eqn{S_t} by backward
+#' period, raise the inventory position to that period's level if it is below,
+#' and otherwise do nothing. This function computes those levels by backward
 #' recursion over a finite horizon (Section 3.5).
 #'
+#' @details
 #' Under stationary demand the levels are constant and coincide with the
 #' single-period Newsvendor solution at the critical fractile
 #' \eqn{b/(h+b)}, which is the cheapest check on the result.
@@ -170,8 +183,8 @@ policy_base_stock <- function(periods, support, probs, holding_cost,
 #' Long-run average cost of an (s, S) policy
 #'
 #' Evaluates a given policy exactly, by solving for the stationary
-#' distribution of the inventory position on the embedded Markov chain
-#' \eqn{\{s+1, \ldots, S\}} and applying renewal reward (Section 3.7).
+#' distribution of the inventory position on the embedded Markov chain whose
+#' states run from `s + 1` to `S`, and applying renewal reward (Section 3.7).
 #'
 #' @param s Reorder point: order when the position falls to `s` or below.
 #' @param S Order-up-to level.
@@ -210,9 +223,8 @@ ss_cost <- function(s, S, support, probs, order_cost, holding_cost,
 #' Optimal stationary (s, S) policy
 #'
 #' Searches the two parameters, evaluating each candidate exactly with
-#' [ss_cost()]. With a fixed ordering cost the optimal policy is of
-#' \eqn{(s, S)} form, a consequence of the K-convexity of the cost-to-go
-#' (Section 3.7).
+#' [ss_cost()]. With a fixed ordering cost the optimal policy is of `(s, S)`
+#' form, a consequence of the K-convexity of the cost-to-go (Section 3.7).
 #'
 #' The search is exhaustive over the supplied range rather than using the
 #' Zheng-Federgruen recursion, which is faster but harder to read; on the
@@ -244,8 +256,8 @@ policy_ss <- function(support, probs, order_cost, holding_cost,
 #'
 #' Periodic review: the position is inspected every `R` periods and raised to
 #' `S`. Between reviews the system is uncovered, so the quantity must span
-#' \eqn{R} periods of demand rather than one, and the cost is evaluated over
-#' the review interval (Section 3.10).
+#' `R` periods of demand rather than one, and the cost is evaluated over the
+#' review interval (Section 3.10).
 #'
 #' @param R Review interval, in periods.
 #' @param S Order-up-to level.

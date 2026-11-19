@@ -7,9 +7,9 @@
 
 #' Relevant cost at a given order interval
 #'
-#' The EOQ objective expressed in terms of the replenishment interval
-#' \eqn{T = Q/d} rather than the quantity, which is the form Section 2.6 uses
-#' for powers-of-two policies.
+#' The EOQ objective expressed in terms of the replenishment interval rather
+#' than the order quantity, which is the form Section 2.6 uses for
+#' powers-of-two policies.
 #'
 #' @param interval Replenishment interval \eqn{T}, in periods.
 #' @inheritParams eoq
@@ -28,16 +28,19 @@ eoq_cost_interval <- function(interval, demand_rate, order_cost,
 #' Cost penalty for departing from the economic order quantity
 #'
 #' @description
+#' What a given order quantity costs above the optimum, as a fraction of the
+#' optimal cost. The curve is flat near the optimum, which is what makes
+#' rounding to a case or pallet quantity essentially free (Section 2.3).
+#'
+#' @details
 #' The ratio of the cost at \eqn{Q} to the cost at \eqn{Q^*} depends only on
 #' \eqn{Q/Q^*}:
 #'
 #' \deqn{\frac{C_r(Q)}{C_r(Q^*)} = \frac{1}{2}\left(\frac{Q}{Q^*} +
 #'       \frac{Q^*}{Q}\right).}
 #'
-#' @details
-#' Every instance-specific quantity cancels, so one table serves all instances.
-#' The curve is flat near the optimum, which is what makes rounding to a case
-#' or pallet quantity essentially free (Section 2.3).
+#' Every instance-specific quantity cancels, so one table serves all
+#' instances.
 #'
 #' @param ratio \eqn{Q/Q^*}, the chosen quantity as a multiple of the optimum.
 #' @return Fractional cost penalty; `0` at `ratio = 1`.
@@ -52,6 +55,13 @@ eoq_penalty <- function(ratio) {
 
 #' Cost penalty from a misestimated ordering or holding cost
 #'
+#' @description
+#' What it costs to order the EOQ computed from a misestimated ordering or
+#' holding cost. An error by some factor in either one moves the quantity by
+#' its square root, so the penalty is the one `eoq_penalty()` already charges
+#' for being off by that much.
+#'
+#' @details
 #' Using \eqn{fK} in place of \eqn{K} gives \eqn{\sqrt{f}\,Q^*}, so the cost
 #' penalty is `eoq_penalty(sqrt(f))`. Because \eqn{K} and \eqn{h} enter
 #' \eqn{Q^*} symmetrically, an error of factor \eqn{f} in \eqn{h} carries the
@@ -88,11 +98,16 @@ reorder_point <- function(demand_rate, lead_time) {
 
 #' Powers-of-two replenishment interval
 #'
-#' Constrains the order interval to \eqn{T_b 2^k} for integer \eqn{k}, so that
-#' items on different cycles share delivery days instead of drifting in and out
-#' of alignment. Because the cost function is convex in \eqn{T}, the best
-#' admissible interval is the smallest \eqn{k} with
-#' \eqn{T_b 2^k \ge T^*/\sqrt{2}}.
+#' @description
+#' Constrains the order interval to a power-of-two multiple of a base period,
+#' so that items on different cycles share delivery days instead of drifting
+#' in and out of alignment. Because the cost is convex in the interval, the
+#' best admissible one is the smallest multiple that is not below the
+#' unconstrained optimum divided by root two.
+#'
+#' @details
+#' The admissible intervals are \eqn{T_b 2^k} for integer \eqn{k}, and the
+#' chosen one is the smallest \eqn{k} with \eqn{T_b 2^k \ge T^*/\sqrt{2}}.
 #'
 #' The resulting policy is never worse than
 #' \eqn{\frac{1}{2}(\sqrt{2} + 1/\sqrt{2}) = 1.0607} times the unconstrained
@@ -115,7 +130,7 @@ pow2_interval <- function(optimal_interval, base_interval) {
 #' The constant behind [pow2_interval()]: rounding the interval to a power of
 #' two costs at most 6.07 percent over the unconstrained optimum, whatever the
 #' demand rate and cost parameters. It is [eoq_penalty()] evaluated at the
-#' largest ratio the rounding can produce, \eqn{\sqrt{2}}.
+#' largest ratio the rounding can produce, a factor of root two.
 #'
 #' @return The bound 0.0607, as a fraction.
 #' @examples
@@ -126,7 +141,7 @@ pow2_bound <- function() eoq_penalty(sqrt(2))
 #' Order quantity under an all-units quantity discount
 #'
 #' Restores the purchase cost to the objective, which the EOQ drops because it
-#' does not depend on \eqn{Q}. Under an all-units schedule, reaching a
+#' does not depend on the order quantity. Under an all-units schedule, reaching a
 #' breakpoint lowers the price on the whole order, so the total cost function
 #' is discontinuous at each breakpoint and is **not** convex. The optimum is
 #' frequently at a breakpoint rather than at any band's EOQ, so the bands are
@@ -194,9 +209,14 @@ backorder_policy <- function(demand_rate, order_cost, holding_cost,
 
 #' Economic production quantity
 #'
+#' @description
 #' Replenishment at a finite rate rather than as a single delivery. Stock
-#' accumulates at \eqn{P - d} while it is being consumed, so the average
-#' inventory over a cycle is \eqn{Q(1-\rho)/2} with \eqn{\rho = d/P}.
+#' accumulates only at the excess of production over demand while it is being
+#' consumed, which lowers average inventory over a cycle by the utilization.
+#'
+#' @details
+#' Stock accumulates at \eqn{P - d}, so the average inventory over a cycle is
+#' \eqn{Q(1-\rho)/2} with \eqn{\rho = d/P}.
 #'
 #' The result is the EOQ with \eqn{h} replaced by \eqn{h(1-\rho)}: finite
 #' production acts exactly as a reduction in the holding cost. As

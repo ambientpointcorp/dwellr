@@ -13,6 +13,12 @@ eoq_misestimate_penalty(factor)
 Fractional cost penalty.
 }
 \description{
+What it costs to order the EOQ computed from a misestimated ordering or
+holding cost. An error by some factor in either one moves the quantity by
+its square root, so the penalty is the one \code{eoq_penalty()} already charges
+for being off by that much.
+}
+\details{
 Using \eqn{fK} in place of \eqn{K} gives \eqn{\sqrt{f}\,Q^*}, so the cost
 penalty is \code{eoq_penalty(sqrt(f))}. Because \eqn{K} and \eqn{h} enter
 \eqn{Q^*} symmetrically, an error of factor \eqn{f} in \eqn{h} carries the

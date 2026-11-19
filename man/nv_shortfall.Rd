@@ -15,9 +15,12 @@ nv_shortfall(Q, mean, sd)
 Expected unmet demand.
 }
 \description{
-\eqn{E[\omega - Q]^{+}}, the expected unmet demand. Obtained from
-\code{\link[=nv_leftover]{nv_leftover()}} by the identity
-\eqn{E[\omega - Q]^{+} = E[Q - \omega]^{+} - (Q - E[\omega])}.
+The expected unmet demand when a quantity is stocked against uncertain
+demand. Obtained from \code{\link[=nv_leftover]{nv_leftover()}} by the identity relating the two
+loss functions.
+}
+\details{
+\deqn{E[\omega - Q]^{+} = E[Q - \omega]^{+} - (Q - E[\omega]).}
 }
 \examples{
 nv_shortfall(11.93, mean = 10, sd = 2)

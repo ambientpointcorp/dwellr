@@ -15,13 +15,16 @@ pow2_interval(optimal_interval, base_interval)
 The chosen interval.
 }
 \description{
-Constrains the order interval to \eqn{T_b 2^k} for integer \eqn{k}, so that
-items on different cycles share delivery days instead of drifting in and out
-of alignment. Because the cost function is convex in \eqn{T}, the best
-admissible interval is the smallest \eqn{k} with
-\eqn{T_b 2^k \ge T^*/\sqrt{2}}.
+Constrains the order interval to a power-of-two multiple of a base period,
+so that items on different cycles share delivery days instead of drifting
+in and out of alignment. Because the cost is convex in the interval, the
+best admissible one is the smallest multiple that is not below the
+unconstrained optimum divided by root two.
 }
 \details{
+The admissible intervals are \eqn{T_b 2^k} for integer \eqn{k}, and the
+chosen one is the smallest \eqn{k} with \eqn{T_b 2^k \ge T^*/\sqrt{2}}.
+
 The resulting policy is never worse than
 \eqn{\frac{1}{2}(\sqrt{2} + 1/\sqrt{2}) = 1.0607} times the unconstrained
 optimum, a bound independent of the instance (Section 2.6).

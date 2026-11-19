@@ -22,10 +22,13 @@ utilization \code{rho}.
 }
 \description{
 Replenishment at a finite rate rather than as a single delivery. Stock
-accumulates at \eqn{P - d} while it is being consumed, so the average
-inventory over a cycle is \eqn{Q(1-\rho)/2} with \eqn{\rho = d/P}.
+accumulates only at the excess of production over demand while it is being
+consumed, which lowers average inventory over a cycle by the utilization.
 }
 \details{
+Stock accumulates at \eqn{P - d}, so the average inventory over a cycle is
+\eqn{Q(1-\rho)/2} with \eqn{\rho = d/P}.
+
 The result is the EOQ with \eqn{h} replaced by \eqn{h(1-\rho)}: finite
 production acts exactly as a reduction in the holding cost. As
 \eqn{P \to \infty} it recovers the EOQ (Section 2.9).

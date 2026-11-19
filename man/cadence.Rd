@@ -40,12 +40,15 @@ components at the optimum.
 A scan costs something and a condition that has arisen waits, on average,
 half the interval before the next scan finds it. Those two costs move
 oppositely in the interval, which makes the problem the one Chapter 2
-solves for order quantity:
+solves for order quantity.
+}
+\details{
+Writing \eqn{c_s} for the cost of a scan, \eqn{c_\ell} for the cost of a
+period of delay and \eqn{\lambda} for the rate at which conditions arise,
 
 \deqn{C(R) = \frac{c_s}{R} + \frac{\lambda c_\ell R}{2},
       \qquad R^{*} = \sqrt{\frac{2 c_s}{\lambda c_\ell}}.}
-}
-\details{
+
 The analogy carries the insensitivity with it. Half or double the optimal
 interval costs 25\% more, the same figure Chapter 2 measures for order
 quantity, which is the reason a cadence chosen to the nearest convenient

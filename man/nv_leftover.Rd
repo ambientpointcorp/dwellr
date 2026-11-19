@@ -15,10 +15,12 @@ nv_leftover(Q, mean, sd)
 Expected leftover stock.
 }
 \description{
-\eqn{E[Q - \omega]^{+}}, the expected leftover stock when \eqn{Q} is
-stocked against demand \eqn{\omega}. For normal demand it has a closed form
-in terms of the standard normal density and distribution functions, with
-\eqn{z = (Q - \mu)/\sigma}:
+The expected leftover stock when a quantity is stocked against uncertain
+demand. For normal demand it has a closed form in terms of the standard
+normal density and distribution functions.
+}
+\details{
+Writing \eqn{\omega} for demand and \eqn{z = (Q - \mu)/\sigma},
 
 \deqn{E[Q - \omega]^{+} = (Q - \mu)\Phi(z) + \sigma\phi(z).}
 }

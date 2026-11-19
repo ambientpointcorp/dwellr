@@ -31,13 +31,16 @@ with the totals in the \code{total} attribute.
 }
 \description{
 The quantity a replenishment policy consumes is the variance of lead-time
-demand,
-
-\deqn{\sigma_{LTD}^{2} = \bar{L}\,\sigma_d^{2} + \bar{d}^{\,2}\,\sigma_L^{2},}
-
-in which the lead-time term is multiplied by the square of mean demand.
+demand, in which the lead-time term is multiplied by the square of mean
+demand.
 }
 \details{
+Writing \eqn{\bar{L}} and \eqn{\sigma_L} for the mean and standard
+deviation of the lead time, and \eqn{\bar{d}} and \eqn{\sigma_d} for
+those of demand,
+
+\deqn{\sigma_{LTD}^{2} = \bar{L}\,\sigma_d^{2} + \bar{d}^{\,2}\,\sigma_L^{2}.}
+
 \code{\link[=lead_time_decompose]{lead_time_decompose()}} splits \eqn{\sigma_L^{2}} across stages by
 covariance with the total, so each stage's share can be carried straight
 into the expression above. What cannot be carried straight through is safety

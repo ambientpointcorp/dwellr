@@ -19,9 +19,9 @@ eoq_cost_interval(interval, demand_rate, order_cost, holding_cost)
 Relevant cost per unit time.
 }
 \description{
-The EOQ objective expressed in terms of the replenishment interval
-\eqn{T = Q/d} rather than the quantity, which is the form Section 2.6 uses
-for powers-of-two policies.
+The EOQ objective expressed in terms of the replenishment interval rather
+than the order quantity, which is the form Section 2.6 uses for
+powers-of-two policies.
 }
 \examples{
 eoq_cost_interval(4.4721, demand_rate = 10, order_cost = 100,

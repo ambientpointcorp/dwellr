@@ -25,14 +25,16 @@ The safety stock, in units.
 }
 \description{
 The stock held above expected lead-time demand so that a stockout occurs no
-more often than the target allows. For a normal lead-time demand,
-
-\deqn{SS = z_{\alpha}\,\sigma_{LTD},}
+more often than the target allows. Supply either \code{service_level} directly
+or a pair of costs, in which case the critical fractile of Section 3.1
+supplies it.
 }
 \details{
-\eqn{z_\alpha} is the standard normal quantile at the target. Supply
-either \code{service_level} directly or a pair of costs, in which case the
-critical fractile of Section 3.1 supplies it.
+For a normal lead-time demand,
+
+\deqn{SS = z_{\alpha}\,\sigma_{LTD},}
+
+in which \eqn{z_\alpha} is the standard normal quantile at the target.
 }
 \examples{
 ltd <- lead_time_demand(10, 3, 10, 2)

@@ -18,8 +18,12 @@ The quantity attaining \code{target}.
 }
 \description{
 For \code{type = "alpha"} this inverts the demand distribution directly. For
-\code{type = "beta"} it solves \eqn{E[\omega - Q]^{+}/E[\omega] = 1 - \beta}
-numerically, which has no closed form.
+\code{type = "beta"} it solves for the quantity at which expected unmet demand
+is the allowed fraction of expected demand, which has no closed form and is
+found numerically.
+}
+\details{
+The beta case solves \eqn{E[\omega - Q]^{+}/E[\omega] = 1 - \beta}.
 }
 \examples{
 nv_quantity_for_service(0.95, mean = 10, sd = 2, type = "alpha")

@@ -28,9 +28,8 @@ A list with \code{s}, \code{S} and \code{cost}.
 }
 \description{
 Searches the two parameters, evaluating each candidate exactly with
-\code{\link[=ss_cost]{ss_cost()}}. With a fixed ordering cost the optimal policy is of
-\eqn{(s, S)} form, a consequence of the K-convexity of the cost-to-go
-(Section 3.7).
+\code{\link[=ss_cost]{ss_cost()}}. With a fixed ordering cost the optimal policy is of \verb{(s, S)}
+form, a consequence of the K-convexity of the cost-to-go (Section 3.7).
 }
 \details{
 The search is exhaustive over the supplied range rather than using the

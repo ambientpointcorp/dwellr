@@ -2,11 +2,8 @@
 #'
 #' @description
 #' The quantity a replenishment policy consumes is the variance of lead-time
-#' demand,
-#'
-#' \deqn{\sigma_{LTD}^{2} = \bar{L}\,\sigma_d^{2} + \bar{d}^{\,2}\,\sigma_L^{2},}
-#'
-#' in which the lead-time term is multiplied by the square of mean demand.
+#' demand, in which the lead-time term is multiplied by the square of mean
+#' demand.
 #'
 #' @param dec A `lead_time_decomposition` from [lead_time_decompose()], whose
 #'   dwells are in hours.
@@ -18,6 +15,12 @@
 #'   combination and the usual place to get the units wrong.
 #'
 #' @details
+#' Writing \eqn{\bar{L}} and \eqn{\sigma_L} for the mean and standard
+#' deviation of the lead time, and \eqn{\bar{d}} and \eqn{\sigma_d} for
+#' those of demand,
+#'
+#' \deqn{\sigma_{LTD}^{2} = \bar{L}\,\sigma_d^{2} + \bar{d}^{\,2}\,\sigma_L^{2}.}
+#'
 #' [lead_time_decompose()] splits \eqn{\sigma_L^{2}} across stages by
 #' covariance with the total, so each stage's share can be carried straight
 #' into the expression above. What cannot be carried straight through is safety
@@ -296,9 +299,9 @@ service_level_gap <- function(demand_mean, demand_sd,
 
 #' Lead-time demand by convolution, without the normal assumption
 #'
-#' The closed form for \eqn{\sigma_{LTD}} is a statement about the first two
-#' moments, and turning it into a safety stock multiplies it by a normal
-#' quantile. On a dwell distribution as dispersed as the ones Part II measures,
+#' The closed form for the standard deviation of lead-time demand is a
+#' statement about its first two moments, and turning it into a safety stock
+#' multiplies it by a normal quantile. On a dwell distribution as dispersed as the ones Part II measures,
 #' the normal that matches those moments puts substantial probability on
 #' negative demand, so its shape is wrong even where its upper quantile is
 #' close.

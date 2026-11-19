@@ -13,16 +13,19 @@ eoq_penalty(ratio)
 Fractional cost penalty; \code{0} at \code{ratio = 1}.
 }
 \description{
+What a given order quantity costs above the optimum, as a fraction of the
+optimal cost. The curve is flat near the optimum, which is what makes
+rounding to a case or pallet quantity essentially free (Section 2.3).
+}
+\details{
 The ratio of the cost at \eqn{Q} to the cost at \eqn{Q^*} depends only on
 \eqn{Q/Q^*}:
 
 \deqn{\frac{C_r(Q)}{C_r(Q^*)} = \frac{1}{2}\left(\frac{Q}{Q^*} +
       \frac{Q^*}{Q}\right).}
-}
-\details{
-Every instance-specific quantity cancels, so one table serves all instances.
-The curve is flat near the optimum, which is what makes rounding to a case
-or pallet quantity essentially free (Section 2.3).
+
+Every instance-specific quantity cancels, so one table serves all
+instances.
 }
 \examples{
 eoq_penalty(1.2)   # ordering 20\% above the optimum costs 1.67\%

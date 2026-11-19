@@ -18,12 +18,15 @@ A list with \code{mean}, \code{variance}, \code{sd}, and \code{demand_share} and
 }
 \description{
 The distribution a reorder point is set against: total demand over a lead
-time that is itself uncertain. With demand and lead time independent,
+time that is itself uncertain. Returns its mean and variance, and the share
+of that variance each of the two sources contributes.
+}
+\details{
+With demand and lead time independent,
 
 \deqn{E[D] = \bar{L}\,\bar{d}, \qquad
       \mathrm{Var}[D] = \bar{L}\,\sigma_d^{2} + \bar{d}^{\,2}\,\sigma_L^{2}.}
-}
-\details{
+
 The second variance term is quadratic in mean demand, so for a fast-moving
 item it dominates the first even when the lead time looks reasonably
 consistent. Section 4.11 works an instance; Part II takes the term apart

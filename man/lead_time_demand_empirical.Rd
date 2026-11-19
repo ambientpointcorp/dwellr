@@ -29,9 +29,9 @@ quantile at \code{service_level}, the implied \code{safety_stock}, and the
 \code{normal_mass_below_zero} as a check on the approximation.
 }
 \description{
-The closed form for \eqn{\sigma_{LTD}} is a statement about the first two
-moments, and turning it into a safety stock multiplies it by a normal
-quantile. On a dwell distribution as dispersed as the ones Part II measures,
+The closed form for the standard deviation of lead-time demand is a
+statement about its first two moments, and turning it into a safety stock
+multiplies it by a normal quantile. On a dwell distribution as dispersed as the ones Part II measures,
 the normal that matches those moments puts substantial probability on
 negative demand, so its shape is wrong even where its upper quantile is
 close.

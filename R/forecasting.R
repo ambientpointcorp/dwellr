@@ -127,12 +127,15 @@ fc_rolling_origin <- function(y, fn, h = 1, n_origins = 20) {
 #'
 #' @description
 #' The distribution a reorder point is set against: total demand over a lead
-#' time that is itself uncertain. With demand and lead time independent,
+#' time that is itself uncertain. Returns its mean and variance, and the share
+#' of that variance each of the two sources contributes.
+#'
+#' @details
+#' With demand and lead time independent,
 #'
 #' \deqn{E[D] = \bar{L}\,\bar{d}, \qquad
 #'       \mathrm{Var}[D] = \bar{L}\,\sigma_d^{2} + \bar{d}^{\,2}\,\sigma_L^{2}.}
 #'
-#' @details
 #' The second variance term is quadratic in mean demand, so for a fast-moving
 #' item it dominates the first even when the lead time looks reasonably
 #' consistent. Section 4.11 works an instance; Part II takes the term apart
@@ -164,14 +167,16 @@ lead_time_demand <- function(demand_mean, demand_sd,
 #'
 #' @description
 #' The stock held above expected lead-time demand so that a stockout occurs no
-#' more often than the target allows. For a normal lead-time demand,
+#' more often than the target allows. Supply either `service_level` directly
+#' or a pair of costs, in which case the critical fractile of Section 3.1
+#' supplies it.
+#'
+#' @details
+#' For a normal lead-time demand,
 #'
 #' \deqn{SS = z_{\alpha}\,\sigma_{LTD},}
 #'
-#' @details
-#' \eqn{z_\alpha} is the standard normal quantile at the target. Supply
-#' either `service_level` directly or a pair of costs, in which case the
-#' critical fractile of Section 3.1 supplies it.
+#' in which \eqn{z_\alpha} is the standard normal quantile at the target.
 #'
 #' @param ltd A list from [lead_time_demand()], or a numeric standard
 #'   deviation of lead-time demand.

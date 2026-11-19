@@ -13,7 +13,7 @@ The bound 0.0607, as a fraction.
 The constant behind \code{\link[=pow2_interval]{pow2_interval()}}: rounding the interval to a power of
 two costs at most 6.07 percent over the unconstrained optimum, whatever the
 demand rate and cost parameters. It is \code{\link[=eoq_penalty]{eoq_penalty()}} evaluated at the
-largest ratio the rounding can produce, \eqn{\sqrt{2}}.
+largest ratio the rounding can produce, a factor of root two.
 }
 \examples{
 pow2_bound()
