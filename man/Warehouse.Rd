@@ -4,18 +4,14 @@
 \alias{Warehouse}
 \title{A single-SKU warehouse with an append-only ledger}
 \description{
-A single-SKU warehouse with an append-only ledger
-
-A single-SKU warehouse with an append-only ledger
-}
-\details{
 The simulation model developed in Chapter 1. It maintains two mutable
 numbers — the signed inventory level and the quantity on order — and appends
 a row to a private ledger whenever either changes. Every other quantity is
 derived from those two on demand, using the identities of Section 1.2:
 
 \deqn{I_t = I_t^{+} - I_t^{-}, \qquad IP_t = I_t + O_t.}
-
+}
+\details{
 Deriving state from a ledger rather than maintaining it alongside one is the
 approach Part II applies to real operations, where the ledger is an ERP's
 event stream rather than a list built in a loop.
@@ -26,22 +22,6 @@ A receipt is posted at \code{period}; an issue is posted at \code{period + 1}. T
 offset encodes an ordering within the period — arrivals first, demand
 afterward. This is an assumption, not a property of the data, and whether it
 holds in a given operation depends on receiving hours and pick waves.
-}
-
-\section{Methods}{
-
-\describe{
-\item{\code{place(qty, period)}}{Record an order placed: position rises, level
-does not.}
-\item{\code{receive(qty, period)}}{Record a receipt: level rises, outstanding
-falls.}
-\item{\code{ship(qty, period)}}{Record an issue. The level may go negative,
-which records a backorder.}
-\item{\code{pickable()}}{\eqn{I_t^{+}}, the quantity available to pick.}
-\item{\code{owed()}}{\eqn{I_t^{-}}, the quantity owed.}
-\item{\code{position()}}{\eqn{IP_t = I_t + O_t}.}
-\item{\code{history()}}{The ledger as a data frame.}
-}
 }
 
 \examples{
@@ -95,7 +75,7 @@ Create a warehouse.
 \if{html}{\out{<a id="method-Warehouse-place"></a>}}
 \if{latex}{\out{\hypertarget{method-Warehouse-place}{}}}
 \subsection{Method \code{place()}}{
-Record an order placed.
+Record an order placed: position rises, level does not.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Warehouse$place(qty, period)}\if{html}{\out{</div>}}
 }
@@ -114,7 +94,8 @@ Record an order placed.
 \if{html}{\out{<a id="method-Warehouse-receive"></a>}}
 \if{latex}{\out{\hypertarget{method-Warehouse-receive}{}}}
 \subsection{Method \code{receive()}}{
-Record a receipt, at the start of a period.
+Record a receipt, at the start of a period: level rises,
+outstanding falls.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Warehouse$receive(qty, period)}\if{html}{\out{</div>}}
 }
@@ -133,7 +114,8 @@ Record a receipt, at the start of a period.
 \if{html}{\out{<a id="method-Warehouse-ship"></a>}}
 \if{latex}{\out{\hypertarget{method-Warehouse-ship}{}}}
 \subsection{Method \code{ship()}}{
-Record an issue, at the end of a period.
+Record an issue, at the end of a period. The level may go
+negative, which records a backorder.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Warehouse$ship(qty, period)}\if{html}{\out{</div>}}
 }
@@ -152,7 +134,8 @@ Record an issue, at the end of a period.
 \if{html}{\out{<a id="method-Warehouse-pickable"></a>}}
 \if{latex}{\out{\hypertarget{method-Warehouse-pickable}{}}}
 \subsection{Method \code{pickable()}}{
-On hand inventory.
+On hand inventory: \eqn{I_t^{+}}, the quantity available
+to pick.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Warehouse$pickable()}\if{html}{\out{</div>}}
 }
@@ -162,7 +145,7 @@ On hand inventory.
 \if{html}{\out{<a id="method-Warehouse-owed"></a>}}
 \if{latex}{\out{\hypertarget{method-Warehouse-owed}{}}}
 \subsection{Method \code{owed()}}{
-Backorders.
+Backorders: \eqn{I_t^{-}}, the quantity owed.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Warehouse$owed()}\if{html}{\out{</div>}}
 }
@@ -172,7 +155,7 @@ Backorders.
 \if{html}{\out{<a id="method-Warehouse-position"></a>}}
 \if{latex}{\out{\hypertarget{method-Warehouse-position}{}}}
 \subsection{Method \code{position()}}{
-Inventory position.
+Inventory position: \eqn{IP_t = I_t + O_t}.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Warehouse$position()}\if{html}{\out{</div>}}
 }
@@ -182,7 +165,7 @@ Inventory position.
 \if{html}{\out{<a id="method-Warehouse-history"></a>}}
 \if{latex}{\out{\hypertarget{method-Warehouse-history}{}}}
 \subsection{Method \code{history()}}{
-The ledger.
+The ledger, as a data frame.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Warehouse$history()}\if{html}{\out{</div>}}
 }

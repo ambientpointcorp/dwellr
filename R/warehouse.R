@@ -1,5 +1,6 @@
 #' A single-SKU warehouse with an append-only ledger
 #'
+#' @description
 #' The simulation model developed in Chapter 1. It maintains two mutable
 #' numbers — the signed inventory level and the quantity on order — and appends
 #' a row to a private ledger whenever either changes. Every other quantity is
@@ -7,6 +8,7 @@
 #'
 #' \deqn{I_t = I_t^{+} - I_t^{-}, \qquad IP_t = I_t + O_t.}
 #'
+#' @details
 #' Deriving state from a ledger rather than maintaining it alongside one is the
 #' approach Part II applies to real operations, where the ledger is an ERP's
 #' event stream rather than a list built in a loop.
@@ -16,20 +18,6 @@
 #' offset encodes an ordering within the period — arrivals first, demand
 #' afterward. This is an assumption, not a property of the data, and whether it
 #' holds in a given operation depends on receiving hours and pick waves.
-#'
-#' @section Methods:
-#' \describe{
-#'   \item{`place(qty, period)`}{Record an order placed: position rises, level
-#'     does not.}
-#'   \item{`receive(qty, period)`}{Record a receipt: level rises, outstanding
-#'     falls.}
-#'   \item{`ship(qty, period)`}{Record an issue. The level may go negative,
-#'     which records a backorder.}
-#'   \item{`pickable()`}{\eqn{I_t^{+}}, the quantity available to pick.}
-#'   \item{`owed()`}{\eqn{I_t^{-}}, the quantity owed.}
-#'   \item{`position()`}{\eqn{IP_t = I_t + O_t}.}
-#'   \item{`history()`}{The ledger as a data frame.}
-#' }
 #'
 #' @examples
 #' w <- Warehouse$new(100)
@@ -59,7 +47,7 @@ Warehouse <- R6::R6Class("Warehouse",
       private$post(0, "opening", opening)
     },
 
-    #' @description Record an order placed.
+    #' @description Record an order placed: position rises, level does not.
     #' @param qty Quantity ordered.
     #' @param period Period in which the order is placed.
     place = function(qty, period) {
@@ -68,7 +56,8 @@ Warehouse <- R6::R6Class("Warehouse",
       invisible(self)
     },
 
-    #' @description Record a receipt, at the start of a period.
+    #' @description Record a receipt, at the start of a period: level rises,
+    #'   outstanding falls.
     #' @param qty Quantity received.
     #' @param period Period in which the receipt lands.
     receive = function(qty, period) {
@@ -78,7 +67,8 @@ Warehouse <- R6::R6Class("Warehouse",
       invisible(self)
     },
 
-    #' @description Record an issue, at the end of a period.
+    #' @description Record an issue, at the end of a period. The level may go
+    #'   negative, which records a backorder.
     #' @param qty Quantity issued.
     #' @param period Period in which demand occurs.
     ship = function(qty, period) {
@@ -87,14 +77,15 @@ Warehouse <- R6::R6Class("Warehouse",
       invisible(self)
     },
 
-    #' @description On hand inventory.
+    #' @description On hand inventory: \eqn{I_t^{+}}, the quantity available
+    #'   to pick.
     pickable = function() max(0,  self$stock),
-    #' @description Backorders.
+    #' @description Backorders: \eqn{I_t^{-}}, the quantity owed.
     owed     = function() max(0, -self$stock),
-    #' @description Inventory position.
+    #' @description Inventory position: \eqn{IP_t = I_t + O_t}.
     position = function() self$stock + self$outstanding,
 
-    #' @description The ledger.
+    #' @description The ledger, as a data frame.
     history = function() {
       d <- do.call(rbind, lapply(private$ledger, as.data.frame))
       rownames(d) <- NULL
