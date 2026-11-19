@@ -15,11 +15,11 @@ Fractional cost penalty; \code{0} at \code{ratio = 1}.
 \description{
 The ratio of the cost at \eqn{Q} to the cost at \eqn{Q^*} depends only on
 \eqn{Q/Q^*}:
-}
-\details{
+
 \deqn{\frac{C_r(Q)}{C_r(Q^*)} = \frac{1}{2}\left(\frac{Q}{Q^*} +
       \frac{Q^*}{Q}\right).}
-
+}
+\details{
 Every instance-specific quantity cancels, so one table serves all instances.
 The curve is flat near the optimum, which is what makes rounding to a case
 or pallet quantity essentially free (Section 2.3).

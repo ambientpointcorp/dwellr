@@ -19,8 +19,7 @@ Expected leftover stock.
 stocked against demand \eqn{\omega}. For normal demand it has a closed form
 in terms of the standard normal density and distribution functions, with
 \eqn{z = (Q - \mu)/\sigma}:
-}
-\details{
+
 \deqn{E[Q - \omega]^{+} = (Q - \mu)\Phi(z) + \sigma\phi(z).}
 }
 \examples{

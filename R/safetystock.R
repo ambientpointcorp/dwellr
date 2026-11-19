@@ -1,11 +1,13 @@
 #' Attribute lead-time demand variance, and safety stock, across stages
 #'
+#' @description
 #' The quantity a replenishment policy consumes is the variance of lead-time
 #' demand,
 #'
 #' \deqn{\sigma_{LTD}^{2} = \bar{L}\,\sigma_d^{2} + \bar{d}^{\,2}\,\sigma_L^{2},}
 #'
 #' in which the lead-time term is multiplied by the square of mean demand.
+#'
 #' @param dec A `lead_time_decomposition` from [lead_time_decompose()], whose
 #'   dwells are in hours.
 #' @param demand_mean,demand_sd Demand per period, in the period named by

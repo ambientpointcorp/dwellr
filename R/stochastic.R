@@ -6,6 +6,7 @@
 
 #' Complementary first order loss function
 #'
+#' @description
 #' \eqn{E[Q - \omega]^{+}}, the expected leftover stock when \eqn{Q} is
 #' stocked against demand \eqn{\omega}. For normal demand it has a closed form
 #' in terms of the standard normal density and distribution functions, with
