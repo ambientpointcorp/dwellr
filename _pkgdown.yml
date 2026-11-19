@@ -3,6 +3,14 @@ url: https://ambientpointcorp.github.io/dwellr/
 template:
   bootstrap: 5
 
+  # pkgdown writes `\eqn` and `\deqn` out as TeX between `\(...\)` and
+  # `$$...$$` and leaves the rendering to the browser. Its default,
+  # `math-rendering: mathml`, only reaches the equations that pandoc converts
+  # on the way through -- the home page and any vignettes -- so every formula
+  # on a reference page stayed on the site as raw TeX. KaTeX is loaded on every
+  # page instead, which is the one setting that covers the reference.
+  math-rendering: katex
+
 # Organized by chapter, so the reference doubles as the book's function index
 # and Appendix E does not have to maintain a second copy of this list.
 #
