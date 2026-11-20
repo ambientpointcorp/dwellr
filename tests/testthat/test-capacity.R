@@ -5,7 +5,7 @@ test_that("queue stability turns on the utilization", {
   expect_true(is.finite(ok$queue_length))
 
   # At or above one the backlog has no finite expectation, and reporting a
-  # number there would be worse than reporting none (§15.1).
+  # number there would be worse than reporting none.
   bad <- queue_stability(alerts_per_day = 37.9, reviews_per_day = 12)
   expect_false(bad$stable)
   expect_true(is.infinite(bad$queue_length))

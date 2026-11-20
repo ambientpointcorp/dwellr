@@ -10,8 +10,8 @@ test_that("fill_rate takes the minimum across dimensions", {
 
 test_that("an order that has not shipped has no fill rate", {
   # NA rather than 1. Crediting an open order with a complete shipment is the
-  # censoring error of Section 6.2 pointed the other way, and averaging over
-  # the column would then report every backlog as perfectly filled (§11.2).
+  # censoring error pointed the other way, and averaging over the column
+  # would then report every backlog as perfectly filled.
   o <- data.frame(fill_units = c(1, NA, 0.5),
                   fill_lines = c(1, NA, 0.8),
                   fill_value = c(1, NA, 0.9))

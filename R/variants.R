@@ -4,7 +4,7 @@
 #' which ones occur, or how often, and those are the facts that decide where
 #' measurement effort belongs. Enumerating the paths before writing a state
 #' machine is what keeps the machine descriptive of the operation it is
-#' supposed to describe (§8.7).
+#' supposed to describe.
 #'
 #' The enumeration is the simplest form of process mining: group the event log
 #' by instance, reduce each to its ordered sequence of stages, and count. No
@@ -73,8 +73,7 @@ lifecycle_variants <- function(sim, min_share = 0.005) {
 #'
 #' A lifecycle that returns to a stage it has already left is a loop, and a
 #' loop is the case most reporting is not built for. Counting revisits is the
-#' first step, and §8.6 uses the count as a severity signal in its
-#' own right.
+#' first step, and the count is a severity signal in its own right.
 #'
 #' @param sim A `lifecycle_sim` from [simulate_lifecycles()].
 #' @param stage Optional stage to restrict to.
@@ -102,7 +101,7 @@ revisit_count <- function(sim, stage = NULL) {
 #' An operational report almost always shows time since the instance entered
 #' its current stage, because that is the quantity a status field supports.
 #' Where an instance has looped, that figure restarts on re-entry and the wait
-#' already endured disappears from it (§8.1).
+#' already endured disappears from it.
 #'
 #' Both quantities are returned so the gap between them can be measured. The
 #' one to alert on is `total_hours`, since an order on its second pass has
@@ -140,7 +139,7 @@ time_in_stage <- function(sim, stage) {
 #' A queue built by counting open work items counts two things that are not
 #' work: items belonging to instances that have already finished, and items
 #' recorded against instances that were cancelled. Both are residue, and
-#' neither can be acted on (§8.3).
+#' neither can be acted on.
 #'
 #' The reconciliation is a two-way comparison, because the reverse error exists
 #' as well. An instance can be genuinely in flight and carry no open item,
@@ -176,10 +175,10 @@ queue_reconcile <- function(sim, open_flag = "open_ticket_residue") {
 
 #' Do two stages hold distinguishable dwells?
 #'
-#' Section 5.8 argued that a stage earns its place in a specification
-#' only if it has a dwell distribution of its own, and that criterion is
-#' testable. Two adjacent stages whose dwells cannot be told apart carry
-#' parameters and no information, and collapsing them loses nothing (§8.8).
+#' A stage earns its place in a specification only if it has a dwell
+#' distribution of its own, and that criterion is testable. Two adjacent stages
+#' whose dwells cannot be told apart carry parameters and no information, and
+#' collapsing them loses nothing.
 #'
 #' The test is a log-rank comparison, which uses the censored visits and
 #' assumes nothing about shape. Read it with the sample sizes beside it: a

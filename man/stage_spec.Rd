@@ -40,11 +40,11 @@ An object of class \code{stage_spec}, carrying the declared \code{stages},
 \description{
 A stage set is not a list of names. It is a directed graph: which stages
 exist, which moves between them are legitimate, which stages an instance can
-stop in, and what kind of wait each stage represents. Writing it down is what
-makes an event log checkable (§5.3).
+stop in, and what kind of wait each stage represents. Writing it down is
+what makes an event log checkable.
 }
 \details{
-The \code{class} argument carries the taxonomy of §5.5 -- whether a stage holds
+The \code{class} argument carries the stage taxonomy -- whether a stage holds
 physical work, a queue, a batch, an approval, or nothing at all. It is
 optional for the mechanics and essential for the diagnosis, because the
 remedy for a long approval wait has nothing in common with the remedy for a

@@ -19,7 +19,7 @@ observation window -- which is itself a finding, not a failure.
 \description{
 The dwell time by which a given share of orders has left the stage,
 estimated from the censored distribution rather than from completed visits
-only. This is the quantity a threshold should be set from (§6.7).
+only. This is the quantity a threshold should be set from.
 }
 \examples{
 sim <- simulate_lifecycles(n = 800, seed = 1)

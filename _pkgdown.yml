@@ -11,13 +11,10 @@ template:
   # page instead, which is the one setting that covers the reference.
   math-rendering: katex
 
-# Organized by chapter, so the reference doubles as the book's function index
-# and Appendix E does not have to maintain a second copy of this list.
-#
-# pkgdown requires every documented topic to appear here exactly once, so this
-# file is what fails when a chapter adds a function and forgets the index. Note
-# that a topic is not always a function: `fc_benchmarks` documents four
-# forecasting methods under one name.
+# Organized by topic. pkgdown requires every documented topic to appear here
+# exactly once, so this file is what fails when a new function is added and the
+# index is not updated. Note that a topic is not always a function:
+# `fc_benchmarks` documents four forecasting methods under one name.
 #
 # The `url:` above has to agree with the one in DESCRIPTION: pkgdown refuses to
 # build without the site URL recorded there, and R CMD check --as-cran follows
@@ -35,13 +32,13 @@ reference:
   - orders
   - as_lifecycle
 
-- title: "Part I — Inventory systems"
-  desc: Chapter 1. State derived from a ledger rather than maintained beside one.
+- title: Inventory systems
+  desc: State derived from a ledger rather than maintained beside one.
   contents:
   - Warehouse
 
-- title: "Part I — Deterministic models"
-  desc: Chapter 2. Lot sizing under known, constant demand.
+- title: Deterministic models
+  desc: Lot sizing under known, constant demand.
   contents:
   - eoq
   - eoq_cost
@@ -58,8 +55,8 @@ reference:
   - jrp
   - dls_wagner_whitin
 
-- title: "Part I — Stochastic models and service levels"
-  desc: Chapter 3. The newsvendor, the standard policies, and what service costs.
+- title: Stochastic models and service levels
+  desc: The newsvendor, the standard policies, and what service costs.
   contents:
   - nv_critical_fractile
   - nv_quantity
@@ -73,8 +70,8 @@ reference:
   - policy_rs
   - ss_cost
 
-- title: "Part I — Demand forecasting"
-  desc: Chapter 4. Benchmarks first, then accuracy, then what feeds safety stock.
+- title: Demand forecasting
+  desc: Benchmarks first, then accuracy, then what feeds safety stock.
   contents:
   - fc_benchmarks
   - fc_accuracy
@@ -82,8 +79,8 @@ reference:
   - lead_time_demand
   - safety_stock
 
-- title: "Part II — Decomposing lead time"
-  desc: Chapter 5. Stages declared, validated, and attributed.
+- title: Decomposing lead time
+  desc: Stages declared, validated, and attributed.
   contents:
   - stage_spec
   - stage_validate
@@ -91,8 +88,8 @@ reference:
   - lead_time_decompose
   - degenerate_stages
 
-- title: "Part II — Measuring dwell time"
-  desc: Chapter 6. Stage dwell under right-censoring.
+- title: Measuring dwell time
+  desc: Stage dwell under right-censoring.
   contents:
   - stage_dwell
   - dwell_survival
@@ -107,8 +104,8 @@ reference:
   - observe_at
   - stage_backlog
 
-- title: "Part II — From dwell variance to safety stock"
-  desc: Chapter 7. What the variance is worth, and to which stage it belongs.
+- title: From dwell variance to safety stock
+  desc: What the variance is worth, and to which stage it belongs.
   contents:
   - dwell_variance_contribution
   - variance_reduction_value
@@ -117,8 +114,8 @@ reference:
   - lead_time_demand_empirical
   - monitoring_budget
 
-- title: "Part II — Lifecycles that are not chains"
-  desc: Chapter 8. Loops, partial completion, residue, and path enumeration.
+- title: Lifecycles that are not chains
+  desc: Loops, partial completion, residue, and path enumeration.
   contents:
   - lifecycle_variants
   - revisit_count
@@ -126,16 +123,17 @@ reference:
   - queue_reconcile
   - stage_separation
 
-- title: "Interlude — Machine learning"
-  desc: Chapter 9. Fitting under a validation protocol, and repairing a
-    probability scale.
+- title: Machine learning
+  desc: Fitting under a validation protocol, and repairing a probability scale.
   contents:
   - fit_dwell_model
   - calibrate_probability
   - calibrate_reliability
 
-- title: "Part III — Measurement method"
-  desc: Chapters 10 to 13.
+- title: Measurement method
+  desc: >
+    Baselines a deviation is read against, the entity and identifier checks a
+    measurement rests on, fill rate, and deadlines derived from date fields.
   contents:
   - baseline_cohort
   - baseline_exceedance
@@ -149,8 +147,10 @@ reference:
   - fill_dimensions
   - deadline_derive
 
-- title: "Part IV — Allocating attention"
-  desc: Chapters 14 to 19.
+- title: Allocating attention
+  desc: >
+    Thresholds derived from cost ratios, reviewer capacity and admission,
+    routing, and the decision path a flagged order takes.
   contents:
   - queue_stability
   - capacity_admit
@@ -162,22 +162,22 @@ reference:
   - decision_audit
   - fallback_reasons
 
-- title: "Part V — Multi-echelon networks"
-  desc: Chapter 20.
+- title: Multi-echelon networks
+  desc: A serial echelon simulated, optimized, and measured for bullwhip.
   contents:
   - echelon_simulate
   - echelon_optimize
   - bullwhip
 
-- title: "Part V — Evaluating a policy"
-  desc: Chapter 21.
+- title: Evaluating a policy
+  desc: What a monitoring policy is worth, and whether its rules can fire at all.
   contents:
   - evaluate_policy
   - rule_reachable
   - offpolicy_value
 
-- title: "Part V — Records and configuration"
-  desc: Chapter 22.
+- title: Records and configuration
+  desc: What a decision recorded, and the rule grammar it was taken under.
   contents:
   - decision_record
   - record_conformance
@@ -186,8 +186,8 @@ reference:
   - rule_compile
   - rule_apply
 
-- title: "Part V — The cost of observation"
-  desc: Chapter 23.
+- title: The cost of observation
+  desc: What it costs to look, how often to look, and what a miss costs.
   contents:
   - observation_cost
   - cadence

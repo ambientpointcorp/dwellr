@@ -24,8 +24,8 @@ attribute.
 }
 \description{
 Lead time is the sum of the time an instance spends in each stage of its own
-lifecycle. This function performs that sum per instance and then reports what
-each stage contributes to the mean and to the variance of the total (§5.4).
+lifecycle. This function performs that sum per instance and then reports
+what each stage contributes to the mean and to the variance of the total.
 }
 \details{
 Two details of the arithmetic are worth stating, because the obvious version

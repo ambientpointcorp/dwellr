@@ -1,4 +1,4 @@
-# Figures printed in Chapter 4.
+# The published figures for the forecasting family.
 
 demand_series <- function() {
   set.seed(42)
@@ -27,7 +27,7 @@ test_that("MASE is 1 for the naive forecast on its own training data", {
   expect_equal(unname(acc["MAE"]), mean(e), tolerance = 1e-12)
 })
 
-test_that("the benchmark comparison reproduces Section 4.2", {
+test_that("the benchmark comparison reproduces its published figures", {
   y <- demand_series()
   train <- y[1:130]; test <- y[131:156]; h <- length(test)
   tab <- rbind(
@@ -55,7 +55,7 @@ test_that("rolling-origin evaluation agrees with the single split here", {
   expect_equal(round(r_naive[["RMSE"]], 3), 17.022)
 })
 
-test_that("lead-time demand matches Section 4.11", {
+test_that("lead-time demand matches its published instance", {
   ltd <- lead_time_demand(demand_mean = 10, demand_sd = 3,
                           lead_time_mean = 10, lead_time_sd = 2)
   expect_equal(ltd$mean, 100)
@@ -65,7 +65,7 @@ test_that("lead-time demand matches Section 4.11", {
   expect_equal(ltd$demand_share + ltd$lead_time_share, 1)
 
   # With a constant lead time the second term vanishes and the first is all
-  # that remains, which is the Chapter 2 case.
+  # that remains, which is the constant-lead-time case.
   const <- lead_time_demand(10, 3, 10, 0)
   expect_equal(const$variance, 90)
   expect_equal(const$lead_time_share, 0)

@@ -2,7 +2,7 @@
 % Please edit documentation in R/model.R
 \name{fit_dwell_model}
 \alias{fit_dwell_model}
-\title{Fit a model for a stage outcome under the book's validation protocol}
+\title{Fit a model for a stage outcome under a stated validation protocol}
 \usage{
 fit_dwell_model(
   data,
@@ -55,12 +55,12 @@ function makes all three explicitly rather than by default.
 The split respects time where a timestamp is supplied: fit on the earlier
 period and evaluate on the later one. A random split lets a model learn from
 the period it is tested on and reports a figure answering a question nobody
-asks (§9.12).
+asks.
 
 The metrics are the ones the decision consumes. Discrimination is reported
 as AUC, which is what a ranking needs, alongside precision at a stated
-review capacity, which is what Chapter 15 actually acts on, and
-the calibration summaries of \code{\link[=calibrate_reliability]{calibrate_reliability()}}, since a threshold
+review capacity, which is what a reviewer actually acts on, and the
+calibration summaries of \code{\link[=calibrate_reliability]{calibrate_reliability()}}, since a threshold
 compares a probability against a number.
 
 The estimator is \code{"logistic"} by default because it needs nothing beyond

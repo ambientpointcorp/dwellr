@@ -3,11 +3,11 @@
 #' Reduces an event log to one row per (order, stage visit) with the time spent
 #' in that stage and whether the visit had ended by `as_of`.
 #'
-#' The `censored` column is the point. An order sitting in a stage right now has
-#' not finished waiting, so its dwell is a lower bound, not an observation.
+#' The `censored` column is the point. An order sitting in a stage right now
+#' has not finished waiting, so its dwell is a lower bound, not an observation.
 #' Dropping those rows -- which is what a naive average over completed visits
 #' does -- removes exactly the orders that are stuck, and biases the result
-#' optimistic by most when the operation is performing worst (§6.2).
+#' optimistic by most when the operation is performing worst.
 #'
 #' @param sim A `lifecycle_sim` from [simulate_lifecycles()] or
 #'   [as_lifecycle()]. A bare list with `events` and `as_of` is accepted, but
@@ -88,7 +88,7 @@ dwell_survival <- function(dwell, by = NULL) {
 #'
 #' The dwell time by which a given share of orders has left the stage,
 #' estimated from the censored distribution rather than from completed visits
-#' only. This is the quantity a threshold should be set from (§6.7).
+#' only. This is the quantity a threshold should be set from.
 #'
 #' @param dwell A data frame from [stage_dwell()].
 #' @param p Share left, between 0 and 1. `p = 0.9` returns the time by which

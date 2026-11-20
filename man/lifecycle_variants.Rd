@@ -22,7 +22,7 @@ A stage specification declares which paths are legitimate. It does not say
 which ones occur, or how often, and those are the facts that decide where
 measurement effort belongs. Enumerating the paths before writing a state
 machine is what keeps the machine descriptive of the operation it is
-supposed to describe (§8.7).
+supposed to describe.
 }
 \details{
 The enumeration is the simplest form of process mining: group the event log

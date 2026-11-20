@@ -3,7 +3,7 @@
 #' An exception is useful to the person who receives it only if they can do
 #' something about it. Routing on what is wrong sends a credit hold to a
 #' warehouse that cannot release it; routing on what needs doing sends it to
-#' whoever can clear credit (§18.4).
+#' whoever can clear credit.
 #'
 #' The table is therefore keyed on the required action and not on the symptom.
 #' Several conditions often need the same action, and one condition sometimes
@@ -11,7 +11,7 @@
 #' rather than inferred from a stage name.
 #'
 #' `matched` is the column to test. An item with no rule is not routed to
-#' nobody by accident: it is reported, and Section 18.8 measures what a
+#' nobody by accident: it is reported, and [routing_gaps()] measures what a
 #' silent default costs.
 #'
 #' @param keys Routing key for each item, one per item.
@@ -59,9 +59,9 @@ route_action <- function(keys, table, default = NULL) {
 #' Which routing keys the table does not cover
 #'
 #' Routing-table completeness is an invariant, which means it can be tested
-#' rather than hoped for. In one engagement four items fell through to a default
-#' map carrying no action type, and the highest-value order in the queue
-#' escalated to no recipient at all (§18.8).
+#' rather than hoped for. In one engagement four items fell through to a
+#' default map carrying no action type, and the highest-value order in the
+#' queue escalated to no recipient at all.
 #'
 #' The test to run is this one, on the live population and not on the keys
 #' somebody remembered when the table was written. A key that appears once a

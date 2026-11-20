@@ -1,9 +1,9 @@
-# Each test asserts a figure printed in the book, so a change that alters a
-# published result fails the build rather than going unnoticed.
+# Each test asserts a published figure, so a change that alters a documented
+# result fails the build rather than going unnoticed.
 
-K <- 100; d <- 10; h <- 1    # the instance carried through Chapter 2
+K <- 100; d <- 10; h <- 1    # the instance used throughout
 
-test_that("powers-of-two policy matches Section 2.6", {
+test_that("powers-of-two policy matches its published figures", {
   T_star <- eoq(d, K, h) / d
   expect_equal(round(T_star, 4), 4.4721)
 
@@ -32,7 +32,7 @@ test_that("all-units discounts put the optimum at a breakpoint (2.7)", {
   expect_true(best$Q > eoq(d, K, h))    # ordering above the EOQ, deliberately
 })
 
-test_that("planned backorders match Section 2.8", {
+test_that("planned backorders match their published figures", {
   bp <- backorder_policy(d, K, h, shortage_cost = 5)
   expect_equal(round(bp$Q, 2), 48.99)
   expect_equal(bp$fraction, 1/6, tolerance = 1e-9)
@@ -48,7 +48,7 @@ test_that("planned backorders match Section 2.8", {
   expect_equal(far$Q, eoq(d, K, h), tolerance = 1e-3)
 })
 
-test_that("EPQ matches Section 2.9 and reduces to the EOQ", {
+test_that("EPQ matches its published figures and reduces to the EOQ", {
   ep <- epq(d, K, h, production_rate = 20)
   expect_equal(ep$rho, 0.5)
   expect_equal(round(ep$Q, 4), 63.2456)
@@ -62,7 +62,7 @@ test_that("EPQ matches Section 2.9 and reduces to the EOQ", {
   expect_equal(fast$Q, eoq(d, K, h), tolerance = 1e-3)
 })
 
-test_that("the ELSP common cycle is feasible on the Chapter 2 instance", {
+test_that("the ELSP common cycle is feasible on the standard instance", {
   items <- data.frame(d = c(10, 5, 8), P = c(50, 40, 60),
                       K = c(100, 60, 80), h = c(1, 2, 1.5))
   r <- elsp_common_cycle(items)
@@ -86,7 +86,7 @@ test_that("joint replenishment lets a slow mover ride along (2.11)", {
   expect_equal(round(100 * (1 - r$cost / independent), 1), 24.4)
 })
 
-test_that("Wagner-Whitin matches Section 2.12 and beats both naive policies", {
+test_that("Wagner-Whitin matches its figures and beats both naive policies", {
   demand <- c(20, 50, 10, 50, 30)
   ww <- dls_wagner_whitin(demand, order_cost = 100, holding_cost = 1)
   expect_equal(ww$cost, 300)
@@ -105,10 +105,10 @@ test_that("Wagner-Whitin matches Section 2.12 and beats both naive policies", {
                length(demand))
 })
 
-test_that("the reorder point is the pipeline inventory (1.6, 2.5)", {
+test_that("the reorder point is the pipeline inventory", {
   expect_equal(reorder_point(demand_rate = 10, lead_time = 0.5), 5)
-  # Section 1.6 derived L * d as pipeline inventory; 2.5 derives it as the
-  # position at which to order. They are the same quantity.
+  # L * d is pipeline inventory in one derivation and the position at which
+  # to order in the other. They are the same quantity.
   L <- 2
   expect_equal(reorder_point(10, L), L * 10)
 })

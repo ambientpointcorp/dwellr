@@ -19,23 +19,23 @@
 #' rule against the two policies it has to beat, reviewing nothing and
 #' reviewing everything.
 #'
-#' The expression is the newsvendor critical fractile of Chapter 3
+#' The expression is the newsvendor critical fractile
 #' ([nv_critical_fractile()]) with the costs in the other order, and the
 #' reversal is not cosmetic. The newsvendor chooses a stocking quantity, where
 #' holding more is what protects against the expensive shortage, so its
 #' fractile rises with the underage cost. Alerting chooses when to spend
-#' attention, where looking sooner is what protects against the expensive
-#' miss. The threshold therefore falls as a missed stall gets dearer and rises
-#' as reviewer attention does.
+#' attention, where looking sooner is what protects against the expensive miss.
+#' The threshold therefore falls as a missed stall gets dearer and rises as
+#' reviewer attention does.
 #'
 #' Two honest limits. The threshold is only as good as the two costs, and
 #' `c_miss` is the hard one, since it has to be priced through the service
-#' consequence and the safety-stock valuation of Chapter 7. And the
-#' probabilities have to be calibrated, not merely ranked: a model that orders
-#' orders correctly but reports 0.4 where the observed rate is 0.1 will cross
-#' `p*` at the wrong place, which is why Chapter 9 calibrates before
-#' thresholding. Compare the flagged count against review capacity with
-#' [monitoring_budget()].
+#' consequence and the safety-stock valuation of [variance_reduction_value()].
+#' And the probabilities have to be calibrated, not merely ranked: a model that
+#' orders orders correctly but reports 0.4 where the observed rate is 0.1 will
+#' cross `p*` at the wrong place, which is why [calibrate_probability()]
+#' belongs before thresholding. Compare the flagged count against review
+#' capacity with [monitoring_budget()].
 #'
 #' A rule is also only as discriminating as the probabilities handed to it. A
 #' `p*` that falls below the lowest probability in `prob` flags the whole

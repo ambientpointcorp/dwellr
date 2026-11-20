@@ -1,9 +1,9 @@
-# Chapter 9 models. The value here is the protocol rather than the estimator:
-# a split that respects time, metrics that match the decision, and a
-# calibration check. The estimator itself is a few lines either way, and the
-# chapter prints those lines in full because choosing one is the reader's job.
+# The value here is the protocol rather than the estimator: a split that
+# respects time, metrics that match the decision, and a calibration check. The
+# estimator itself is a few lines either way, and which one to fit is the
+# caller's choice.
 
-#' Fit a model for a stage outcome under the book's validation protocol
+#' Fit a model for a stage outcome under a stated validation protocol
 #'
 #' Three choices decide whether a fitted model means anything, and this
 #' function makes all three explicitly rather than by default.
@@ -11,12 +11,12 @@
 #' The split respects time where a timestamp is supplied: fit on the earlier
 #' period and evaluate on the later one. A random split lets a model learn from
 #' the period it is tested on and reports a figure answering a question nobody
-#' asks (§9.12).
+#' asks.
 #'
 #' The metrics are the ones the decision consumes. Discrimination is reported
 #' as AUC, which is what a ranking needs, alongside precision at a stated
-#' review capacity, which is what Chapter 15 actually acts on, and
-#' the calibration summaries of [calibrate_reliability()], since a threshold
+#' review capacity, which is what a reviewer actually acts on, and the
+#' calibration summaries of [calibrate_reliability()], since a threshold
 #' compares a probability against a number.
 #'
 #' The estimator is `"logistic"` by default because it needs nothing beyond

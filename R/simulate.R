@@ -2,43 +2,43 @@
 #'
 #' Generates a synthetic population of orders moving through a distribution
 #' lifecycle, as an event log plus one row per order. Everything else in this
-#' package, and every example in the book, runs against its output.
+#' package runs against its output.
 #'
 #' The generator exists so that worked examples can be published without
-#' exposing anyone's operational data, and so that the pathologies the book is
-#' about are present to be measured. It reproduces, deliberately:
+#' exposing anyone's operational data, and so that the pathologies these
+#' methods are about are present to be measured. It reproduces, deliberately:
 #'
 #' * **Right-censoring.** Orders still in flight at `as_of` have not finished,
-#'   so their current dwell is a lower bound. This is the bias of Chapter 6.
+#'   so their current dwell is a lower bound. This is the censoring bias
+#'   [dwell_survival()] corrects for.
 #' * **Mixed dwell populations.** Each stage holds a fast population and a
-#'   stuck one, so a single quantile over the mixture serves neither (§6.5).
+#'   stuck one, so a single quantile over the mixture serves neither.
 #' * **Partial fills and loops.** Some orders ship in parts; a short pick sends
-#'   an order back from `released` to `backordered` (§8.1, §8.2).
+#'   an order back from `released` to `backordered`.
 #' * **Residue.** Some finished orders still carry an open pick ticket, which
-#'   is what overstates a naive work queue (§8.3).
+#'   is what overstates a naive work queue.
 #' * **Special orders.** Items bought from a vendor per order wait in
-#'   `awaiting_supply` on a vendor clock, not a warehouse one (§5.7).
+#'   `awaiting_supply` on a vendor clock, not a warehouse one.
 #' * **Covariate effects.** Dwell in `released` scales with the order's line
-#'   count, and dwell in `received` depends on branch and channel, so that the
-#'   regressions of §6.9 have something to recover and the recovered
+#'   count, and dwell in `received` depends on branch and channel, so that
+#'   [dwell_regression()] has something to recover and the recovered
 #'   coefficients can be checked against the values used here.
 #'
 #' It is not a model of any real operation and its parameters are not fitted to
 #' one. Treat the numbers it produces as illustrative.
 #'
 #' @param n Number of orders to generate.
-#' @param seed Optional integer seed. Supply one for a reproducible corpus;
-#'   the book's figures do.
+#' @param seed Optional integer seed. Supply one for a reproducible corpus.
 #' @param as_of Observation cutoff as a `POSIXct`. Orders not finished by this
 #'   instant are censored. Defaults to `start + horizon_days`, which leaves a
 #'   small share of the population in flight -- a couple of percent at the
 #'   default parameters, because most dwells are hours and the entry window is
 #'   months. That is realistic rather than convenient: a live work queue is a
-#'   small fraction of every order ever taken. What matters for Chapter 6 is not
-#'   the size of the censored set but its composition, and it is composed almost
-#'   entirely of the stuck population -- which is exactly why averaging
-#'   completed visits only runs optimistic. Shorten `horizon_days`, or pass an
-#'   earlier `as_of`, for a larger censored share.
+#'   small fraction of every order ever taken. What matters is not the size of
+#'   the censored set but its composition, and it is composed almost entirely
+#'   of the stuck population -- which is exactly why averaging completed visits
+#'   only runs optimistic. Shorten `horizon_days`, or pass an earlier `as_of`,
+#'   for a larger censored share.
 #' @param horizon_days Days of order entry to generate.
 #' @param start Entry date of the first order.
 #'
@@ -56,30 +56,29 @@
 #'   replenishment `cycle_days`, `stockout_days`, `demand_rate` and the
 #'   `lead_time_mean` and `lead_time_sd` of its vendor.
 #'
-#'   Two order-level date fields support Chapter 13. `requested_date` equals
-#'   the order date on roughly 85% of orders, reproducing a field that defaults
-#'   to today and is occasionally overridden, which is the defect measured on a
-#'   hand-checked sample of 59 orders where 58 equaled the order date.
-#'   `promised_date` is the field that does carry a commitment: it exists only
-#'   where a person entered the order, never equals the order date, and has a
-#'   lead averaging five days. The contrast between the two is what
-#'   @sec-testing-a-date-field tests for.
+#'   Two order-level date fields support [deadline_derive()]. `requested_date`
+#'   equals the order date on roughly 85% of orders, reproducing a field that
+#'   defaults to today and is occasionally overridden, which is the defect
+#'   measured on a hand-checked sample of 59 orders where 58 equaled the order
+#'   date. `promised_date` is the field that does carry a commitment: it exists
+#'   only where a person entered the order, never equals the order date, and
+#'   has a lead averaging five days. The contrast between the two is what a
+#'   test of a date field looks for.
 #'
 #'   The shortfall on a line is drawn before its stock position, and the line
 #'   is then matched to an item and instant whose position agrees with that
 #'   outcome. The joint distribution is the same under either factorization;
-#'   implementing this one keeps every figure in Chapters 5 to 11 unchanged.
-#'   Roughly an eighth of lines are left deliberately inconsistent, which is
-#'   what bounds how well a model can do: a shortfall predictor on these
-#'   features reaches an AUC near 0.86, against 0.58 on order attributes
-#'   alone and 0.83 for the single comparison of on-hand against the quantity
-#'   ordered.
+#'   implementing this one leaves every measured quantity unchanged. Roughly an
+#'   eighth of lines are left deliberately inconsistent, which is what bounds
+#'   how well a model can do: a shortfall predictor on these features reaches
+#'   an AUC near 0.86, against 0.58 on order attributes alone and 0.83 for the
+#'   single comparison of on-hand against the quantity ordered.
 #'
 #'   The extended value of an order's lines sums to its `value`, and the three
 #'   `fill_*` columns on `orders` are computed from the lines rather than drawn
-#'   separately, so that the dimensions of Chapter 11 describe one population.
-#'   They are `NA` where the order has not reached a shipping stage, because an
-#'   order that has not shipped has no fill rate yet.
+#'   separately, so that the three dimensions describe one population. They are
+#'   `NA` where the order has not reached a shipping stage, because an order
+#'   that has not shipped has no fill rate yet.
 #'
 #' @examples
 #' sim <- simulate_lifecycles(n = 500, seed = 1)
@@ -99,8 +98,8 @@ simulate_lifecycles <- function(n = 5000,
 
   hrs <- function(x) x * 3600
 
-  # Order attributes. The branch and channel splits are the ones the book uses
-  # as cohort keys in Chapter 12; the channel split is the stronger of the two.
+  # Order attributes. The branch and channel splits are the ones used as cohort
+  # keys by the baselines; the channel split is the stronger of the two.
   branch  <- sample(c("60", "30"), n, TRUE, prob = c(0.77, 0.23))
   source_ <- sample(c("estore", "inside_sales"), n, TRUE, prob = c(0.76, 0.24))
   value   <- round(stats::rlnorm(n, meanlog = 6.1, sdlog = 1.15), 2)
@@ -122,21 +121,21 @@ simulate_lifecycles <- function(n = 5000,
     out
   }
 
-  # received -> released. Chapter 5 measured 18% past 24h and 12% past 72h.
+  # received -> released. The target: 18% past 24h and 12% past 72h.
   d_received <- mixed_dwell(n, 0.18, 5, log(40), 1.25)
   # awaiting_supply runs on a vendor lead time: days to weeks, and not a stall.
   d_supply <- stats::rlnorm(n, log(96), 0.8)
   d_credit <- mixed_dwell(n, 0.25, 3, log(30), 1.0)
-  # released -> shipped. Chapter 6: p50 1.7h, p90 20h, p99 3.8d.
+  # released -> shipped. The target: p50 1.7h, p90 20h, p99 3.8d.
   d_released <- mixed_dwell(n, 0.16, 1.9, log(26), 1.3)
   d_partial  <- mixed_dwell(n, 0.30, 9, log(60), 1.0)
 
   # Covariate effects on dwell. Without them every dwell is independent of
   # everything recorded about the order, a regression on this corpus correctly
-  # finds nothing, and Chapter 6 can demonstrate only what a null result looks
-  # like. The effects are declared here, rather than buried in the draws, so
-  # that a coefficient recovered in Chapter 6 or Chapter 9 can be checked
-  # against the value that produced it.
+  # finds nothing, and a worked regression can demonstrate only what a null
+  # result looks like. The effects are declared here, rather than buried in the
+  # draws, so that a coefficient recovered by `dwell_regression()` or
+  # `fit_dwell_model()` can be checked against the value that produced it.
   #
   #   released: handling work, so dwell scales with the work content of the
   #     order, sublinearly in the number of lines -- picking a second line
@@ -146,14 +145,14 @@ simulate_lifecycles <- function(n = 5000,
   #     an inside-sales order needs a person where an e-store order does not.
   #
   # Nothing here makes dwell depend on the backlog present on arrival, because
-  # the generator has no queue: orders do not compete for a resource. Section
-  # 6.9 tests for a backlog effect and correctly finds none, which is the
-  # result to expect from data built this way and is stated there as such.
+  # the generator has no queue: orders do not compete for a resource. A
+  # regression on a backlog term correctly finds nothing here, which is the
+  # result to expect from data built this way.
   # Each factor is divided by its own mean over the population, so it changes
   # which orders wait longer without changing how long the stage holds orders
-  # on average. That matters beyond tidiness: the stage decomposition of
-  # Chapter 5 is computed from these same draws, and a factor with a mean above
-  # one would silently relabel which stage carries the most lead time.
+  # on average. That matters beyond tidiness: the stage decomposition is
+  # computed from these same draws, and a factor with a mean above one would
+  # silently relabel which stage carries the most lead time.
   centered <- function(x) x / mean(x)
 
   f_lines   <- centered((lines_n / 3)^0.45)
@@ -166,8 +165,8 @@ simulate_lifecycles <- function(n = 5000,
   # Events accumulate into preallocated vectors rather than into a list of
   # one-row data frames. The list version was quadratic: do.call(rbind, ...)
   # over tens of thousands of frames dominated the run, so n = 5000 took 27
-  # seconds and n = 20000 would have taken minutes. Every chapter of the book
-  # regenerates this corpus, so the cost was paid eight times per build.
+  # seconds and n = 20000 would have taken minutes. The corpus is regenerated
+  # on every build, so that cost was paid repeatedly.
   #
   # The draws are untouched and happen in the same order, so the output is
   # identical to the list version; only the assembly changed.
@@ -241,7 +240,7 @@ simulate_lifecycles <- function(n = 5000,
     add(order_no[i], "pick_ticket_released", "released", t)
     stage_now[i] <- "released"
 
-    # A short pick bounces the order back. This is the loop of Chapter 8.
+    # A short pick bounces the order back. This is a lifecycle loop.
     if (stats::runif(1) < 0.09) {
       t <- t + hrs(stats::runif(1, 0.5, 8))
       if (t > as_of) next
@@ -257,7 +256,7 @@ simulate_lifecycles <- function(n = 5000,
     if (t > as_of) next
 
     # Some orders ship in parts and then sit. The remaining lines belong to no
-    # queue in most systems, which is why the book counts them (§8.2).
+    # queue in most systems, which is why they are counted here.
     if (lines_n[i] > 1L && stats::runif(1) < 0.14) {
       add(order_no[i], "partial_shipment", "partially_shipped", t)
       stage_now[i] <- "partially_shipped"; partial[i] <- TRUE
@@ -275,7 +274,7 @@ simulate_lifecycles <- function(n = 5000,
     # An order that shipped in parts either completes or is CLOSED SHORT, the
     # remaining lines cancelled. Resetting fill to 1 on every shipment -- the
     # obvious thing to write -- would mean no order ever records a short fill,
-    # and Chapter 11 would have nothing to measure.
+    # and the fill measures would have nothing to report.
     if (partial[i] && stats::runif(1) < 0.45) {
       short_close[i] <- TRUE          # keep the partial fill as the final fill
     } else {
@@ -283,16 +282,16 @@ simulate_lifecycles <- function(n = 5000,
     }
 
     # Residue: a finished order still carrying an open pick ticket. Counting
-    # open tickets rather than owed work overstates the queue (§8.3).
+    # open tickets rather than owed work overstates the queue.
     if (stats::runif(1) < 0.30) residue[i] <- TRUE
   }
 
   # ---- Order lines, with quantities and prices ----------------------------
   #
-  # Chapter 11 measures fill on units, lines and value, and the three can only
-  # disagree if the lines of an order differ in size and in price. The order
-  # record cannot carry that: a fraction of units filled says nothing about
-  # which line was short.
+  # Fill is measured on units, lines and value, and the three can only disagree
+  # if the lines of an order differ in size and in price. The order record
+  # cannot carry that: a fraction of units filled says nothing about which line
+  # was short.
   #
   # Every draw below is vectorized and happens after the loop above, so adding
   # this leaves the rest of the population byte-identical. That was verified
@@ -324,10 +323,10 @@ simulate_lifecycles <- function(n = 5000,
 
   # ---- Items, and the stock position behind a shortfall --------------------
   #
-  # Chapter 11 found that no model trained on order attributes can predict a
-  # shortfall, because whether an item is on the shelf on a given day is a fact
-  # about inventory and not about the order. Parts IV and V need that fact, so
-  # the items carry it.
+  # No model trained on order attributes can predict a shortfall, because
+  # whether an item is on the shelf on a given day is a fact about inventory
+  # and not about the order. The threshold and routing families need that fact,
+  # so the items carry it.
   #
   # Each item replenishes on its own cycle and is out of stock for a window at
   # the end of each cycle, while the replenishment is in transit. Position is
@@ -337,7 +336,7 @@ simulate_lifecycles <- function(n = 5000,
   #
   # The direction of causation in this code runs from the shortfall to the
   # position, because the shortfall was already drawn in the loop above and
-  # every figure in Chapters 5 to 11 depends on it. Lines are therefore matched
+  # every measured quantity depends on it. Lines are therefore matched
   # to an (item, time) pair whose stock position agrees with the outcome the
   # loop settled. The joint distribution of position and shortfall is the same
   # either way round; only the factorization differs, and stating which one is
@@ -424,8 +423,8 @@ simulate_lifecycles <- function(n = 5000,
   # dimensions describe one population rather than three independent draws.
   # They are NA where the order has not reached a shipping stage: an order that
   # has not shipped has no fill rate yet, which is the same censoring problem
-  # Chapter 6 treats for dwell, and crediting it with 1 would report every
-  # open order as perfectly filled.
+  # the dwell estimators treat, and crediting it with 1 would report every open
+  # order as perfectly filled.
   shipped_stage <- stage_now %in% c("shipped", "partially_shipped")
   sum_by <- function(x) as.numeric(tapply(x, line_order, sum)[order_no])
   fill_units <- ifelse(shipped_stage, sum_by(qty_shipped) / sum_by(qty_ordered), NA)
@@ -444,8 +443,8 @@ simulate_lifecycles <- function(n = 5000,
 
   # ---- Date fields -------------------------------------------------------
   #
-  # Chapter 13 asks which date fields carry a commitment. Most do not. In one
-  # field engagement the requested-date field equaled the order date on 58 of
+  # Which date fields carry a commitment? Most do not. In one field
+  # engagement the requested-date field equaled the order date on 58 of
   # 59 sampled orders, because the entry screen defaulted it to today and
   # nobody overrode it, so a severity rule keyed on "days past requested date"
   # was reading elapsed time with extra steps.

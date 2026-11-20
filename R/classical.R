@@ -1,7 +1,7 @@
 #' Economic order quantity
 #'
 #' The order quantity minimizing the sum of fixed ordering and holding cost
-#' under known, constant demand (§2.2).
+#' under known, constant demand.
 #'
 #' @param demand_rate Demand per unit time.
 #' @param order_cost Fixed cost `K` of placing an order.
@@ -19,7 +19,7 @@ eoq <- function(demand_rate, order_cost, holding_cost) {
 
 #' Total relevant cost of an order quantity
 #'
-#' Evaluates the EOQ objective at any `Q`, which is how §2.3 shows how flat the
+#' Evaluates the EOQ objective at any `Q`, which is what shows how flat the
 #' cost curve is near the optimum -- and therefore how much rounding to a case
 #' quantity actually costs.
 #'
@@ -41,10 +41,10 @@ eoq_cost <- function(demand_rate, order_cost, holding_cost, Q) {
 
 #' Newsvendor critical fractile
 #'
-#' The service level implied by a pair of overage and underage costs (§3.1).
-#' Chapter 14 reuses this expression for alerting, on the complementary tail
-#' because the decision variable there is a waiting time rather than a
-#' stocking quantity; see [threshold_from_cost()].
+#' The service level implied by a pair of overage and underage costs. The same
+#' expression is reused for alerting, on the complementary tail because the
+#' decision variable there is a waiting time rather than a stocking quantity;
+#' see [threshold_from_cost()].
 #'
 #' @param overage Cost per unit left unsold, `o`.
 #' @param underage Cost per unit of unmet demand, `u`.

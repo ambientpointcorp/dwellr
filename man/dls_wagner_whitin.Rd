@@ -22,7 +22,7 @@ Exact lot sizing for demand that is known but not constant. Two properties
 make it tractable: it is never optimal to order while stock remains, and
 each order therefore covers a contiguous block of periods. The problem
 reduces to a shortest path on an acyclic graph and is solved by one forward
-pass (Section 2.12).
+pass.
 }
 \examples{
 dls_wagner_whitin(c(20, 50, 10, 50, 30), order_cost = 100,

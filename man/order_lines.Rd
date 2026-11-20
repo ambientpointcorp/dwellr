@@ -29,9 +29,8 @@ code, and the derived \code{shortfall} flag.
 }
 \description{
 The order table carries a line count and a line fill fraction. This expands
-it into one row per line, which is the grain Chapter 10 needs in order to
-ask what changes when the entity is finer than the record the events were
-written against.
+it into one row per line, which is the grain needed to ask what changes when
+the entity is finer than the record the events were written against.
 }
 \details{
 The expansion is deterministic and it is an expansion, not an independent
@@ -41,7 +40,7 @@ them. That supports questions about grain, aggregation and identity, since
 those depend on how many lines an order has and on how many were satisfied.
 It does not support questions about lines moving independently of their
 order, because in this table they cannot: a line has no events of its own.
-Section 8.5 measures the independent case from the split records, which is
+The independent case has to be measured from the split records, which is
 where that question belongs.
 
 A line counts as shipped only when the order reached a stage in which

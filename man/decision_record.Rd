@@ -48,7 +48,7 @@ the conformance check of \code{\link[=record_conformance]{record_conformance()}}
 A record of what the system did is not enough to review it. The question a
 reviewer asks is whether the decision was right given what was known and
 what the policy was, and answering it needs the policy version, the model
-version where one applied, and the basis the decision rested on (§22.1).
+version where one applied, and the basis the decision rested on.
 }
 \details{
 Every field is required rather than optional, and a missing one is an error.

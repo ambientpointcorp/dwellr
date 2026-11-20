@@ -13,8 +13,9 @@ backorder_policy(demand_rate, order_cost, holding_cost, shortage_cost)
 
 \item{holding_cost}{Holding cost \code{h} per unit per unit time.}
 
-\item{shortage_cost}{Shortage cost \eqn{b} per unit per period. The book
-reserves \eqn{p} for the selling price and uses \eqn{b} throughout.}
+\item{shortage_cost}{Shortage cost \eqn{b} per unit per period. Throughout
+the package \eqn{p} is reserved for the selling price, so the shortage
+cost is \eqn{b}.}
 }
 \value{
 A list with the order quantity \code{Q}, the planned backordered
@@ -22,13 +23,12 @@ A list with the order quantity \code{Q}, the planned backordered
 }
 \description{
 Treats a shortage as a cost to be traded off rather than avoided. Valid only
-under the backorder regime of Section 1.4, where unmet demand waits rather
-than departing.
+under a backorder regime, where unmet demand waits rather than departing.
 }
 \details{
 The order quantity is the ordinary EOQ inflated by \eqn{\sqrt{(h+b)/b}}, and
 the optimal backordered fraction depends only on the ratio of \eqn{h} to
-\eqn{b} (Section 2.8).
+\eqn{b}.
 }
 \examples{
 backorder_policy(demand_rate = 10, order_cost = 100,

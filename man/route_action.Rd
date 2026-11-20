@@ -24,7 +24,7 @@ A data frame with one row per item: \code{key}, \code{action}, \code{recipient},
 An exception is useful to the person who receives it only if they can do
 something about it. Routing on what is wrong sends a credit hold to a
 warehouse that cannot release it; routing on what needs doing sends it to
-whoever can clear credit (§18.4).
+whoever can clear credit.
 }
 \details{
 The table is therefore keyed on the required action and not on the symptom.
@@ -33,7 +33,7 @@ needs several, so the mapping is many-to-many and has to be written down
 rather than inferred from a stage name.
 
 \code{matched} is the column to test. An item with no rule is not routed to
-nobody by accident: it is reported, and Section 18.8 measures what a
+nobody by accident: it is reported, and \code{\link[=routing_gaps]{routing_gaps()}} measures what a
 silent default costs.
 }
 \examples{

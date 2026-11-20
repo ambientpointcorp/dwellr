@@ -1,6 +1,6 @@
-# A lifecycle whose vocabulary is nothing like the book's, which is the whole
-# point: every assertion here fails if a function reads a stage name out of a
-# literal instead of out of the specification.
+# A lifecycle whose vocabulary is nothing like the bundled corpus's, which is
+# the whole point: every assertion here fails if a function reads a stage name
+# out of a literal instead of out of the specification.
 freight_spec <- function() {
   stage_spec(
     stages      = c("open", "accumulating", "tendered", "departed", "cancelled"),
@@ -89,8 +89,8 @@ test_that("a terminal stage is not measured as a wait, whatever it is called", {
   expect_equal(nrow(d), 7)
   expect_equal(sum(d$censored), 1)
 
-  # The regression this guards: measured against the book's own stage set,
-  # `departed` is not terminal and is counted as a three-hour wait.
+  # The regression this guards: measured against the package's default stage
+  # set, `departed` is not terminal and is counted as a three-hour wait.
   wrong <- stage_dwell(pop, spec = distribution_stage_spec())
   expect_true("departed" %in% wrong$stage)
   expect_equal(nrow(wrong), 8)
@@ -148,7 +148,7 @@ test_that("the specification resolves in a stated order of precedence", {
   expect_equal(nrow(stage_dwell(pop)), 7)
   # A bare list carries no specification, and there is no third branch to
   # fall back to. Refusing is the point: the fallback that used to live here
-  # answered with the book's stage set and no warning.
+  # answered with the default stage set and no warning.
   bare <- list(events = pop$events, as_of = pop$as_of)
   expect_error(stage_dwell(bare), "no stage specification")
   expect_equal(nrow(stage_dwell(bare, spec = freight_spec())), 7)
@@ -170,7 +170,7 @@ test_that("stage_spec separates delivery from ending", {
 })
 
 # Every exported function that takes a population is run against a vocabulary
-# that is not the book's. The table is the test: a new `sim`-taking export
+# that is not the generator's. The table is the test: a new `sim`-taking export
 # with no row here fails the last expectation, so the coverage cannot quietly
 # lapse the way it did when the generator was the only way in.
 test_that("every population-taking export runs on a foreign vocabulary", {
@@ -245,8 +245,8 @@ test_that("the shipped dataset is what its builder produces", {
   # data-raw/make_orders.R is one seeded call to the generator. When the
   # generator changes and the dataset is not rebuilt, the two drift and the
   # package ships data no longer reproducible from the script that documents
-  # it -- which is exactly what had happened before Chapter 13's date fields
-  # were added.
+  # it -- which is exactly what had happened before the date fields were
+  # added.
   #
   # expect_equal rather than expect_identical, because this is the one
   # comparison in the suite that spans two R installations: the .rda was

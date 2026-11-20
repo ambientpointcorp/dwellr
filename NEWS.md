@@ -3,7 +3,7 @@
 First scaffold. Implemented and tested:
 
 * `simulate_lifecycles()` — the synthetic order generator. Everything else in
-  the package, and every example in the book, runs against its output.
+  the package runs against its output.
 * `stage_dwell()`, `dwell_survival()`, `dwell_quantile()` — stage dwell under
   right-censoring.
 * `threshold_from_cost()` — an alerting threshold on a vector of calibrated
@@ -18,8 +18,8 @@ First scaffold. Implemented and tested:
 * `dwell_mixture()` now returns the index of the `slow` component and a
   `posterior(time, censored)` function giving the probability that a visit
   belongs to it, which is the input `threshold_from_cost()` expects.
-* `simulate_lifecycles()` gains two order-level date fields for Chapter 13.
-  `requested_date` equals the order date on roughly 85% of orders, reproducing
+* `simulate_lifecycles()` gains two order-level date fields for deadline
+  derivation. `requested_date` equals the order date on roughly 85% of orders, reproducing
   a field that defaults to today and is occasionally overridden; a severity
   term keyed on it agrees with elapsed lead time exactly on 84.8% of rows and
   correlates at 0.9827, and a capped score built from it leaves 50 of 104
@@ -29,10 +29,10 @@ First scaffold. Implemented and tested:
   after every other draw, so the rest of the population is byte-identical,
   verified for orders, events, lines and items across three seeds and two
   sizes.
-* `queue_stability()` and `capacity_admit()` — the attention constraint of
-  Chapter 15, replacing the `capacity_admit` roadmap stub. An exception channel
-  is a queue, so it has a utilization: the threshold of Chapter 14 that flags
-  90.9% of orders produces 37.9 alerts a day against a team serving 12, which
+* `queue_stability()` and `capacity_admit()` — the attention constraint,
+  replacing the `capacity_admit` roadmap stub. An exception channel is a queue,
+  so it has a utilization: a cost-ratio threshold that flags 90.9% of orders
+  produces 37.9 alerts a day against a team serving 12, which
   is a utilization of 3.16 and a backlog with no finite length.
   `capacity_admit()` takes the top of a ranking instead and reports the
   `marginal` table, which is the figure a capacity decision turns on: precision
@@ -42,7 +42,7 @@ First scaffold. Implemented and tested:
   which is 75 items where a look costs as much as a miss and 225 where it costs
   a quarter.
 * `baseline_cohort()`, `baseline_exceedance()`, `baseline_stability()` and
-  `baseline_drift_decompose()` — the baselines of Chapter 12, replacing the
+  `baseline_drift_decompose()` — the cohort baselines, replacing the
   `baseline_cohort` roadmap stub. A cohort scheme is validated on the cohort
   and not on the population: on the order population every granularity from one
   key to four holds an overall exceedance within 1.7 points of its 10% target
@@ -57,8 +57,7 @@ First scaffold. Implemented and tested:
   writes them in a different order from `tapply`, and that produced a mix
   effect of +85 hours against a true +12 in a first draft.
 * `order_lines()`, `entity_check()`, `identifier_audit()` and
-  `segment_decision_shift()` — the entity decision of Chapter 10.
-  `entity_check()` applies the two conditions a candidate entity has to meet,
+  `segment_decision_shift()` — the entity decision. `entity_check()` applies the two conditions a candidate entity has to meet,
   that every event attaches to exactly one instance and that an instance can
   say whether work is still owed; on the order population the pick ticket
   fails the first at an attachment rate of 0.857 and the customer fails the
@@ -66,8 +65,8 @@ First scaffold. Implemented and tested:
   visits it reclassifies under the operating threshold rather than by whether
   its groups differ.
 * `fill_rate()`, `fill_dimensions()` — fill on units, lines and value, with the
-  binding dimension, for Chapter 11. `simulate_lifecycles()` now returns a
-  `lines` table carrying an ordered quantity and a unit price per line, and the
+  binding dimension. `simulate_lifecycles()` now returns a `lines` table
+  carrying an ordered quantity and a unit price per line, and the
   three `fill_*` columns are computed from it rather than drawn separately, so
   the dimensions describe one population and can disagree the way they do in
   an order book. They are `NA` where the order has not reached a shipping
@@ -77,12 +76,12 @@ First scaffold. Implemented and tested:
   and happen after every other draw, so the rest of the population is
   byte-identical, verified across three seeds and two sizes.
 * `eoq()`, `eoq_cost()`, `nv_critical_fractile()`, `nv_quantity()` — the
-  classical results the later chapters reuse. Their tests reproduce the
-  instance carried through Chapter 2 (K = 100, h = 1, d = 10), the flatness
-  figures of Section 2.3, and the cost-misestimation figures of Section 2.4.
+  classical results the later families reuse. Their tests reproduce the
+  standard instance (K = 100, h = 1, d = 10), the flatness figures for the cost
+  curve, and the cost-misestimation figures.
 
 Declared with a roadmap and not yet implemented: the remaining `eoq_*`/`dls_*`
 lot-sizing models, the stochastic policies, the `fit_*`/`calibrate_*` modeling
 helpers, `baseline_*`, `deadline_*`, `capacity_*`, `route_*` and `evaluate_*`.
-Each errors with the chapter it belongs to rather than returning something
+Each errors with the method it stands for rather than returning something
 plausible.

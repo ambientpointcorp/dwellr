@@ -20,7 +20,7 @@ A data frame with one row per instance that visited the stage:
 An operational report almost always shows time since the instance entered
 its current stage, because that is the quantity a status field supports.
 Where an instance has looped, that figure restarts on re-entry and the wait
-already endured disappears from it (§8.1).
+already endured disappears from it.
 }
 \details{
 Both quantities are returned so the gap between them can be measured. The

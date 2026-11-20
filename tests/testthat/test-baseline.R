@@ -38,7 +38,7 @@ test_that("exceedance is reported per cohort, not only overall", {
   expect_true(e$overall > 0 && e$overall < 1)
   expect_equal(e$worst_cohort_error, max(e$by_cohort$error))
   # An overall figure can hide a cohort; the worst cohort is at least as far
-  # from target as the population is (§12.2).
+  # from target as the population is.
   expect_gte(e$worst_cohort_error, e$error - 1e-9)
 
   # An open visit that has not yet passed its threshold is undecided and is
@@ -81,7 +81,7 @@ test_that("drift decomposition separates mix from process", {
 test_that("drift decomposition aligns by name", {
   # tapply returns its groups in sorted order, so a caller writing the weights
   # in the order the cohorts occur to them would otherwise pair each weight
-  # with the wrong cohort. The first draft of Section 12.10 reported a mix
+  # with the wrong cohort. An early draft of the decomposition reported a mix
   # effect of +85 hours that way against a true +12.
   v <- c(specialty = 160, stock = 40)
   w <- c(specialty = 0.1, stock = 0.9)

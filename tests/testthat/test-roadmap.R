@@ -1,11 +1,11 @@
 # Nothing in the package is declared-but-unimplemented any more. Earlier
-# versions carried stubs that errored with the chapter they belonged to, on the
-# principle that a reader who calls a function named in the reference should be
-# told it is not written rather than handed a plausible number.
+# versions carried stubs that errored with the method they stood for, on the
+# principle that a caller who reaches a function named in the reference should
+# be told it is not written rather than handed a plausible number.
 #
 # The check is kept, inverted: the invariant now is that no stub exists. It is
-# DERIVED rather than hand-kept, which is the same discipline Section 20.10
-# describes -- a hand-maintained list falls silently out of step with what it
+# DERIVED rather than hand-kept, on the same principle as every other derived
+# list here -- a hand-maintained list falls silently out of step with what it
 # is supposed to describe.
 
 stub_names <- function() {

@@ -18,7 +18,7 @@ The optimal quantity \verb{Q*}.
 }
 \description{
 The order quantity minimizing the sum of fixed ordering and holding cost
-under known, constant demand (§2.2).
+under known, constant demand.
 }
 \examples{
 eoq(demand_rate = 10, order_cost = 100, holding_cost = 2)

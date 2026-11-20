@@ -25,7 +25,7 @@ total \code{cost} per unit time.
 Splits the fixed cost into a major cost incurred whenever any order is
 placed and a minor cost per item included in it. Each item joins every
 \code{m}-th order, so items that are slow moving and cheap to hold ride along
-with deliveries that would have been made regardless (Section 2.11).
+with deliveries that would have been made regardless.
 }
 \details{
 Solved by alternating between the base interval and the multiples, which

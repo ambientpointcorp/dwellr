@@ -31,7 +31,7 @@ Stock accumulates at \eqn{P - d}, so the average inventory over a cycle is
 
 The result is the EOQ with \eqn{h} replaced by \eqn{h(1-\rho)}: finite
 production acts exactly as a reduction in the holding cost. As
-\eqn{P \to \infty} it recovers the EOQ (Section 2.9).
+\eqn{P \to \infty} it recovers the EOQ.
 }
 \examples{
 epq(demand_rate = 10, order_cost = 100, holding_cost = 1,

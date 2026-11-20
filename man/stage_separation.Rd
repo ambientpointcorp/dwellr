@@ -17,10 +17,10 @@ A data frame with one row per adjacent pair: the two stages, their
 visit counts and median dwells, the log-rank \code{p}, and a \code{verdict}.
 }
 \description{
-Section 5.8 argued that a stage earns its place in a specification
-only if it has a dwell distribution of its own, and that criterion is
-testable. Two adjacent stages whose dwells cannot be told apart carry
-parameters and no information, and collapsing them loses nothing (§8.8).
+A stage earns its place in a specification only if it has a dwell
+distribution of its own, and that criterion is testable. Two adjacent stages
+whose dwells cannot be told apart carry parameters and no information, and
+collapsing them loses nothing.
 }
 \details{
 The test is a log-rank comparison, which uses the censored visits and

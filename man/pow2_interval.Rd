@@ -27,7 +27,7 @@ chosen one is the smallest \eqn{k} with \eqn{T_b 2^k \ge T^*/\sqrt{2}}.
 
 The resulting policy is never worse than
 \eqn{\frac{1}{2}(\sqrt{2} + 1/\sqrt{2}) = 1.0607} times the unconstrained
-optimum, a bound independent of the instance (Section 2.6).
+optimum, a bound independent of the instance.
 }
 \examples{
 pow2_interval(optimal_interval = 4.4721, base_interval = 0.7)

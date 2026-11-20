@@ -25,9 +25,9 @@ The safety stock, in units.
 }
 \description{
 The stock held above expected lead-time demand so that a stockout occurs no
-more often than the target allows. Supply either \code{service_level} directly
-or a pair of costs, in which case the critical fractile of Section 3.1
-supplies it.
+more often than the target allows. Supply either \code{service_level} directly or
+a pair of costs, in which case the critical fractile of
+\code{\link[=nv_critical_fractile]{nv_critical_fractile()}} supplies it.
 }
 \details{
 For a normal lead-time demand,

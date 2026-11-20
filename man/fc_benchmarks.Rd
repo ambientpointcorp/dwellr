@@ -27,8 +27,8 @@ fc_seasonal_naive(y, h, period)
 A numeric vector of length \code{h}.
 }
 \description{
-The four methods any more sophisticated forecast must beat (Section 4.2).
-Each returns a numeric vector of length \code{h}.
+The four methods any more sophisticated forecast must beat. Each returns a
+numeric vector of length \code{h}.
 }
 \details{
 \itemize{

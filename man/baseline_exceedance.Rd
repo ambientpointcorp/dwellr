@@ -21,7 +21,7 @@ A list with the \code{overall} exceedance rate, its \code{target}, the absolute
 A baseline set at the 90th percentile is a claim that one visit in ten will
 exceed it. The claim is testable on data the baseline was not fitted to, and
 it is the only check that distinguishes a cohort scheme that helps from one
-that has fitted noise (§12.2).
+that has fitted noise.
 }
 \details{
 Read the per-cohort column rather than the total. A scheme can deliver 10\%

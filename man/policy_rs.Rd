@@ -23,9 +23,9 @@ Expected cost per period.
 }
 \description{
 Periodic review: the position is inspected every \code{R} periods and raised to
-\code{S}. Between reviews the system is uncovered, so the quantity must span
-\code{R} periods of demand rather than one, and the cost is evaluated over the
-review interval (Section 3.10).
+\code{S}. Between reviews the system is uncovered, so the quantity must span \code{R}
+periods of demand rather than one, and the cost is evaluated over the review
+interval.
 }
 \examples{
 d <- 0:40

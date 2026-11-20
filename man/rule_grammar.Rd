@@ -13,12 +13,12 @@ A list with the permitted \code{operators}, \code{connectives}, and the
 \description{
 An admission rule is the one setting that resists being reduced to a form,
 so it gets written. A deliberately small grammar is what keeps a written
-rule checkable: a short list of operators, two connectives, no negation,
-no arithmetic and no function calls (§22.9).
+rule checkable: a short list of operators, two connectives, no negation, no
+arithmetic and no function calls.
 }
 \details{
 The limits are returned alongside the vocabulary, because a limit nobody
-wrote down becomes a workaround nobody remembers (§22.10).
+wrote down becomes a workaround nobody remembers.
 }
 \examples{
 rule_grammar()$cannot_express

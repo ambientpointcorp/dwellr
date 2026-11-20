@@ -15,8 +15,7 @@ nv_service_levels(Q, mean, sd)
 A list with \code{alpha} and \code{beta}.
 }
 \description{
-The two targets practitioners impose in place of explicit costs
-(Section 3.2).
+The two targets practitioners impose in place of explicit costs.
 }
 \details{
 The \strong{alpha} service level is the probability of no stockout in a cycle,

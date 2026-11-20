@@ -41,7 +41,7 @@ different one, provided the logged policy had some chance of taking the
 action the proposal would take. Inverse propensity weighting reweights each
 logged decision by that chance; the doubly robust form subtracts a reward
 model and adds it back, which leaves the estimate correct if either the
-propensities or the model are (§21.4).
+propensities or the model are.
 }
 \details{
 The assumption that fails in practice is positivity, and it fails silently.

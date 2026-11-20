@@ -42,7 +42,7 @@ test_that("isotonic repairs the level and ties predictions as it goes", {
   rp <- predict(cal, inflated)
 
   expect_lt(abs(mean(rp) - mean(truth)), 0.01)
-  # a step function is only weakly increasing: §9.14's qualification
+  # a step function is only weakly increasing, which is the qualification
   expect_lt(length(unique(rp)), length(unique(inflated)))
 })
 

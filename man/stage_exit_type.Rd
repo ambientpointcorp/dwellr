@@ -24,8 +24,7 @@ columns: \code{exit_to}, the stage moved to, and \code{exit_type}, one of
 An instance can leave a stage by advancing, by going backwards, or by being
 cancelled, and those exits have different causes and different remedies.
 Treating them as one event confounds the hazard, because the estimator is
-then answering a question about a mixture of outcomes nobody asked about
-(§6.8).
+then answering a question about a mixture of outcomes nobody asked about.
 }
 \examples{
 sim <- simulate_lifecycles(n = 800, seed = 1)

@@ -6,8 +6,8 @@ test_that("the two terms of the variance expression are reported separately", {
 
   expect_equal(tot[["demand_variance"]] + tot[["lead_variance"]],
                tot[["ltd_variance"]], tolerance = 1e-10)
-  # Section 7.1: the lead-time term is multiplied by the square of mean demand
-  # and dominates once the lead time is dispersed.
+  # The lead-time term is multiplied by the square of mean demand and
+  # dominates once the lead time is dispersed.
   expect_gt(tot[["lead_variance"]] / tot[["ltd_variance"]], 0.9)
   expect_equal(unname(tot[["safety_stock"]]),
                qnorm(0.95) * unname(tot[["ltd_sd"]]), tolerance = 1e-10)
@@ -96,8 +96,8 @@ test_that("driver attribution ranks the drivers and reports what it cannot expla
   expect_equal(dv$ranking$term[1], "lines")
   expect_equal(dv$ranking$share_of_log_variance,
                sort(dv$ranking$share_of_log_variance, decreasing = TRUE))
-  # Section 7.3: almost all of the variance is the fast-and-stuck mixture of
-  # Section 6.5, which no order attribute predicts. The ranking is a ranking.
+  # Almost all of the variance is the fast-and-stuck mixture, which no order
+  # attribute predicts. The ranking is a ranking.
   expect_gt(dv$unexplained, 0.9)
   expect_lt(dv$max_correlation, 0.1)
 })

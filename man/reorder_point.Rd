@@ -16,9 +16,9 @@ The reorder point \eqn{r = dL}.
 }
 \description{
 The inventory \strong{position} at which a replenishment must be placed so that
-it arrives as stock reaches zero. Numerically identical to the pipeline
-inventory of Section 1.6: one is the stock that must be in transit, the
-other the position at which transit must begin.
+it arrives as stock reaches zero. Numerically identical to pipeline
+inventory: one is the stock that must be in transit, the other the position
+at which transit must begin.
 }
 \examples{
 reorder_point(demand_rate = 10, lead_time = 0.5)

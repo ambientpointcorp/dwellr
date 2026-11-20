@@ -2,7 +2,7 @@
 % Please edit documentation in R/lifecycle.R
 \name{distribution_stage_spec}
 \alias{distribution_stage_spec}
-\title{The stage set used throughout the book}
+\title{The stage set the bundled corpus uses}
 \usage{
 distribution_stage_spec()
 }
@@ -10,9 +10,9 @@ distribution_stage_spec()
 A \code{\link[=stage_spec]{stage_spec()}}.
 }
 \description{
-The specification derived in §5.3 from the event log of
-\code{\link[=simulate_lifecycles]{simulate_lifecycles()}}, supplied as a function so that every chapter
-validates against one definition rather than retyping it.
+The specification derived from the event log of \code{\link[=simulate_lifecycles]{simulate_lifecycles()}},
+supplied as a function so that every caller validates against one definition
+rather than retyping it.
 }
 \examples{
 distribution_stage_spec()

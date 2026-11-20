@@ -16,7 +16,7 @@ test_that("the event log is well formed", {
   expect_true(all(sim$events$occurred_at <= sim$as_of))
 })
 
-test_that("the pathologies the book measures are present", {
+test_that("the pathologies the package measures are present", {
   sim <- simulate_lifecycles(n = 2000, seed = 42)
   o <- sim$orders
   expect_gt(sum(!o$is_terminal), 0)            # censoring
@@ -27,7 +27,7 @@ test_that("the pathologies the book measures are present", {
   expect_gt(sum(o$open_ticket_residue), 0)     # residue on finished orders
 })
 
-test_that("censored visits are the slow ones, which is the Chapter 6 bias", {
+test_that("censored visits are the slow ones, which is the censoring bias", {
   sim <- simulate_lifecycles(n = 2000, seed = 42)
   d <- stage_dwell(sim)
   open_med <- stats::median(d$dwell_hours[d$censored])
@@ -40,8 +40,8 @@ test_that("censored visits are the slow ones, which is the Chapter 6 bias", {
 test_that("the event log assembles the same way at every size", {
   # The assembly was rewritten from a list of one-row data frames to
   # preallocated vectors, because do.call(rbind, ...) over tens of thousands
-  # of frames made the generator quadratic: n = 5000 took 27 seconds and every
-  # chapter of the book regenerates that corpus. The draws are unchanged, so
+  # of frames made the generator quadratic: n = 5000 took 27 seconds and the
+  # corpus is regenerated on every build. The draws are unchanged, so
   # this guards the property that made the rewrite safe -- the log is still
   # assembled in one order, sorted by instant then identifier, with no gaps.
   sim <- simulate_lifecycles(n = 1500, seed = 11)

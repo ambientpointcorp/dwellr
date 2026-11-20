@@ -38,12 +38,12 @@ from the averages.}
 
 \item{stall}{Optional list with \code{stage}, \code{probability} and \code{periods}: with
 that probability a shipment into that stage is delayed by that many extra
-periods. This is the administrative stall of §20.6, which is a lead time
-from downstream and nothing else.}
+periods. This is an administrative stall, which is a lead time from
+downstream and nothing else.}
 
 \item{review}{Periods between orders. One is continuous review; a larger
-value is the \verb{(R,S)} batching of §17.4, which is the administrative cause
-of the amplification measured in §20.7.}
+value is \verb{(R,S)} batching, which is an administrative cause of the
+amplification \code{\link[=bullwhip]{bullwhip()}} measures.}
 
 \item{policy}{\code{"echelon"} or \code{"installation"}.}
 
@@ -58,16 +58,15 @@ the most upstream stage, the realized \code{demand}, and two identity checks,
 \code{identity} on echelon stock and \code{net_inventory_identity} on stage 1.
 }
 \description{
-Stage 1 faces demand and stage \code{N} orders from an outside source. Each
-stage raises its \emph{echelon} inventory position -- the stock at that stage and
+Stage 1 faces demand and stage \code{N} orders from an outside source. Each stage
+raises its \emph{echelon} inventory position -- the stock at that stage and
 everything below it, in transit included, net of backorders -- to its base
-stock level, shipping downstream only what it has on hand (§20.1).
+stock level, shipping downstream only what it has on hand.
 }
 \details{
 Echelon positions are what make the policy work on a network: a stage
-ordering against its own local stock alone is the installation policy of
-§20.1, which is also available here and which carries more stock for the
-same service.
+ordering against its own local stock alone is the installation policy, which
+is also available here and which carries more stock for the same service.
 
 Two identities are returned for checking, because a simulator that gets
 them wrong gets everything else wrong too. Mean echelon-j stock, units in

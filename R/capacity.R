@@ -3,7 +3,7 @@
 #' Alerts arrive and reviewers serve them, which makes an exception channel a
 #' queue and gives it the property every queue has: if work arrives faster than
 #' it is served, the backlog grows without bound and no amount of effort inside
-#' the channel repairs it (§15.1).
+#' the channel repairs it.
 #'
 #' The ratio of the two rates is the utilization. Below one the queue is
 #' stable and the backlog has a finite expectation; at or above one it is not,
@@ -42,15 +42,15 @@ queue_stability <- function(alerts_per_day, reviews_per_day) {
 #' Admit a queue against a review capacity
 #'
 #' A threshold answers whether an instance is worth reviewing. It does not ask
-#' whether anybody is free to review it, and Section 14.3 showed
-#' that a cost ratio with a dear miss admits almost the whole population. Where
-#' capacity binds, the operating question is not which instances qualify but
-#' which `capacity` of them to work first (§15.5).
+#' whether anybody is free to review it, and a cost ratio with a dear miss
+#' admits almost the whole population. Where capacity binds, the operating
+#' question is not which instances qualify but which `capacity` of them to work
+#' first.
 #'
 #' Admission by capacity turns the threshold problem into a ranking problem.
 #' The instances admitted are the top `capacity` by score, and what matters
 #' about the score stops being its calibration and becomes its ordering, which
-#' is the reverse of the emphasis in Section 14.5 and worth
+#' is the reverse of the emphasis a cost-ratio threshold needs, and worth
 #' noticing when the same model serves both.
 #'
 #' The `marginal` table is the part to read. Average precision over an admitted

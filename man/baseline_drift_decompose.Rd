@@ -21,8 +21,8 @@ its decomposition into \code{process} and \code{mix} components.
 An aggregate dwell figure rises for two different reasons, and the response
 to each is different. The process may have slowed, or the mix may have
 shifted toward cohorts that were always slower. Direct standardization
-separates them by holding the mix fixed at the base period's and letting only
-the within-cohort figures move (§12.10).
+separates them by holding the mix fixed at the base period's and letting
+only the within-cohort figures move.
 }
 \details{
 The \code{process} component is what remains after the mix is held constant, and

@@ -1,7 +1,7 @@
-# Chapter 21 models. Evaluating a monitoring policy rather than the model
-# inside it. The asymmetry the whole chapter turns on is that a false positive
-# leaves a record and a false negative leaves nothing, so anything measured
-# from the program's own output is measured on the half that is visible.
+# Evaluating a monitoring policy rather than the model inside it. The
+# asymmetry everything here turns on is that a false positive leaves a record
+# and a false negative leaves nothing, so anything measured from the program's
+# own output is measured on the half that is visible.
 
 #' Compare a proposed monitoring policy against the one running today
 #'
@@ -9,7 +9,7 @@
 #' surfaces that the current policy does not, what it stops surfacing, and
 #' where the urgency changes. The middle list is the one no reporting tool
 #' produces on its own, because an item that stops being flagged produces no
-#' output at all (§21.6).
+#' output at all.
 #'
 #' Both policies are evaluated on the same population, which should be the
 #' live one rather than a sample. An item ceasing to surface is reported with
@@ -22,7 +22,7 @@
 #' @param value Optional exposure per item.
 #' @param outcome Optional logical: whether the item turned out to need the
 #'   attention. Where it is supplied, precision and recall are reported for
-#'   both policies, with the caveat of §21.3 attached to any outcome collected
+#'   both policies, with the caveat that attaches to any outcome collected
 #'   under the current policy.
 #' @param levels The severity scale, ordered from least to most severe.
 #' @param acted Levels that count as acting on an item.
@@ -94,12 +94,12 @@ evaluate_policy <- function(current, proposed, id = NULL, value = NULL,
 #' Can a rule fire at all?
 #'
 #' A rule that did not fire because nothing qualified and a rule that cannot
-#' fire read identically in a report: both produce no alerts (§21.9). The
-#' difference is worth a test, because the second kind has been seen to sit in
-#' production for months -- a stage list that never contained credit holds
-#' made every credit-hold rule unreachable from the day it was written, and a
-#' value field spelled differently from what the evaluator read returned null
-#' on every item and disabled the rule that depended on it.
+#' fire read identically in a report: both produce no alerts. The difference is
+#' worth a test, because the second kind has been seen to sit in production for
+#' months -- a stage list that never contained credit holds made every
+#' credit-hold rule unreachable from the day it was written, and a value field
+#' spelled differently from what the evaluator read returned null on every item
+#' and disabled the rule that depended on it.
 #'
 #' Each rule is checked in three steps: the field it reads has to exist, it
 #' has to be populated on at least one row, and at least one row has to
@@ -171,7 +171,7 @@ rule_reachable <- function(rules, data) {
 #' action the proposal would take. Inverse propensity weighting reweights each
 #' logged decision by that chance; the doubly robust form subtracts a reward
 #' model and adds it back, which leaves the estimate correct if either the
-#' propensities or the model are (§21.4).
+#' propensities or the model are.
 #'
 #' The assumption that fails in practice is positivity, and it fails silently.
 #' A deterministic logged policy took what it took with probability one, so

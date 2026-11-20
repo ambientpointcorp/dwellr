@@ -5,8 +5,8 @@ test_that("variants enumerate the paths that occur and concentrate in a few", {
   expect_equal(sum(v$instances), nrow(sim$orders))
   expect_equal(sum(v$share), 1, tolerance = 1e-10)
   expect_equal(v$instances, sort(v$instances, decreasing = TRUE))
-  # Section 8.7: a handful of paths carry nearly all of the population, which
-  # is the argument for enumerating them before writing a state machine.
+  # A handful of paths carry nearly all of the population, which is the
+  # argument for enumerating them before writing a state machine.
   expect_gt(sum(v$share[1:5]), 0.85)
   expect_equal(v$path[1], "received > released > shipped")
   # A truncated path belongs to work in flight, and is reported as censored.
@@ -43,7 +43,7 @@ test_that("time since entry understates the wait on a looped instance", {
   looped <- t[t$visits > 1, ]
   expect_gt(nrow(looped), 300)
   expect_true(all(looped$total_hours > looped$since_entry_hours))
-  # Section 8.1: the figure an operational report shows loses most of the wait.
+  # The figure an operational report shows loses most of the wait.
   expect_gt(median(looped$understated), 0.5)
 })
 
@@ -85,13 +85,13 @@ test_that("a split that holds the same wait is told to collapse", {
     terminal = "shipped")
   s <- stage_separation(split_sim, spec)
   # Splitting one stage at random produces two stages holding one wait, and
-  # the verdict says so instead of accepting the split (Section 8.8).
+  # the verdict says so instead of accepting the split.
   #
   # The assertion is on the verdict and not on p > 0.05 deliberately. With
   # thousands of visits on each side a log-rank test has the power to reject a
   # random split now and then -- this split lands at p = 0.019 -- which is why
-  # stage_separation() calls it at 0.01 and why Section 8.8 reads the test with
-  # the effect size beside it.
+  # stage_separation() calls it at 0.01 and why the test is read with the
+  # effect size beside it.
   expect_equal(s$verdict[1], "collapse")
   expect_gt(s$p[1], 0.01)
   expect_lt(abs(s$median_a[1] / s$median_b[1] - 1), 0.1)

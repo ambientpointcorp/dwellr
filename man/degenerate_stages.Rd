@@ -22,9 +22,9 @@ A data frame, one row per stage, with \code{n}, \code{n_measurable},
 }
 \description{
 A stage that every instance leaves at the instant it arrives is not a stage.
-It is a flag, or a system event, or a configuration row that was never a wait
-in the first place, and it will never produce a measurement worth acting on
-(§5.6).
+It is a flag, or a system event, or a configuration row that was never a
+wait in the first place, and it will never produce a measurement worth
+acting on.
 }
 \details{
 The scan is a dwell distribution per stage with the share of visits ending

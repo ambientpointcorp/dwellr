@@ -22,9 +22,9 @@ every period.}
 Expected cost per period.
 }
 \description{
-Evaluates a given policy exactly, by solving for the stationary
-distribution of the inventory position on the embedded Markov chain whose
-states run from \code{s + 1} to \code{S}, and applying renewal reward (Section 3.7).
+Evaluates a given policy exactly, by solving for the stationary distribution
+of the inventory position on the embedded Markov chain whose states run from
+\code{s + 1} to \code{S}, and applying renewal reward.
 }
 \examples{
 d <- 0:40

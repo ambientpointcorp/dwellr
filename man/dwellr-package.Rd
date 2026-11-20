@@ -6,19 +6,19 @@
 \alias{dwellr-package}
 \title{dwellr: Lifecycle Monitoring Analytics for Supply Chain Operations}
 \description{
-Companion package to the book \emph{Lifecycle Monitoring Analytics: A toolkit for
-continuous supply chain operations}.
+Measures the time orders spend in each stage of their lifecycle, and
+supports deciding what to do about it.
 }
 \details{
-Functions are named by the chapter family they belong to, which is what
-keeps a package spanning EOQ through routing navigable:
+Functions are named by the family they belong to, which is what keeps a
+package spanning EOQ through routing navigable:
 \itemize{
-\item \verb{eoq_*}, \verb{dls_*}, \verb{nv_*}, \verb{policy_*} — classical inventory control (Part I)
-\item \verb{simulate_*}, \verb{stage_*}, \verb{dwell_*}, \verb{safety_*} — stage process (Part II)
-\item \verb{fit_*}, \verb{calibrate_*} — modeling (Chapter 9)
-\item \verb{fill_*}, \verb{baseline_*}, \verb{deadline_*} — measurement (Part III)
-\item \verb{threshold_*}, \verb{capacity_*}, \verb{route_*} — attention (Part IV)
-\item \verb{evaluate_*} — evaluation (Part V)
+\item \verb{eoq_*}, \verb{dls_*}, \verb{nv_*}, \verb{policy_*} — classical inventory control
+\item \verb{simulate_*}, \verb{stage_*}, \verb{dwell_*}, \verb{safety_*} — the stage process
+\item \verb{fit_*}, \verb{calibrate_*} — modeling
+\item \verb{fill_*}, \verb{baseline_*}, \verb{deadline_*} — measurement
+\item \verb{threshold_*}, \verb{capacity_*}, \verb{route_*} — allocating attention
+\item \verb{evaluate_*} — policy evaluation
 }
 
 Start with \code{\link[=simulate_lifecycles]{simulate_lifecycles()}}: everything else runs against its output,

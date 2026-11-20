@@ -1,5 +1,5 @@
-# Chapter 22 models. A decision record that supports review, and the narrow
-# configuration grammar that keeps a written rule checkable.
+# A decision record that supports review, and the narrow configuration grammar
+# that keeps a written rule checkable.
 #
 # The requirement throughout is that a decision resolve to the thing that
 # decided it. A record saying what happened, without saying what the policy
@@ -10,7 +10,7 @@
 #' A record of what the system did is not enough to review it. The question a
 #' reviewer asks is whether the decision was right given what was known and
 #' what the policy was, and answering it needs the policy version, the model
-#' version where one applied, and the basis the decision rested on (§22.1).
+#' version where one applied, and the basis the decision rested on.
 #'
 #' Every field is required rather than optional, and a missing one is an error.
 #' A provenance field that is sometimes absent is one nobody can rely on, and
@@ -86,15 +86,15 @@ decision_record <- function(decided, id, at, policy_version, source,
 
 #' The contract a decision record has to satisfy
 #'
-#' Everything downstream of the decision path reads its output, so the shape
-#' of that output is an interface and benefits from being versioned like one
-#' (§22.7). A conformance check establishes mechanically that the columns are
-#' present, that the enumerated ones carry only declared values, and that the
-#' required ones are populated.
+#' Everything downstream of the decision path reads its output, so the shape of
+#' that output is an interface and benefits from being versioned like one. A
+#' conformance check establishes mechanically that the columns are present,
+#' that the enumerated ones carry only declared values, and that the required
+#' ones are populated.
 #'
 #' What it cannot establish is that the values are correct. A record declaring
 #' policy version `v4` conforms whether or not `v4` is the version that ran,
-#' which is why §22.6 replays rather than inspects.
+#' which is why [replay_check()] replays rather than inspects.
 #'
 #' @param record A data frame as returned by [decision_record()].
 #' @param levels Permitted values of `decided`.
@@ -153,7 +153,7 @@ record_conformance <- function(record,
 #'
 #' A replay is faithful when it returns what the record says happened. Running
 #' the current configuration over historical data is a different exercise and
-#' answers a different question, so the two are worth keeping apart (§22.6).
+#' answers a different question, so the two are worth keeping apart.
 #'
 #' Divergence is reported per item rather than as a count, because the useful
 #' question about a replay that failed is which decisions moved.
@@ -196,11 +196,11 @@ replay_check <- function(record, replayed) {
 #'
 #' An admission rule is the one setting that resists being reduced to a form,
 #' so it gets written. A deliberately small grammar is what keeps a written
-#' rule checkable: a short list of operators, two connectives, no negation,
-#' no arithmetic and no function calls (§22.9).
+#' rule checkable: a short list of operators, two connectives, no negation, no
+#' arithmetic and no function calls.
 #'
 #' The limits are returned alongside the vocabulary, because a limit nobody
-#' wrote down becomes a workaround nobody remembers (§22.10).
+#' wrote down becomes a workaround nobody remembers.
 #'
 #' @return A list with the permitted `operators`, `connectives`, and the
 #'   `cannot_express` constructs, each with the usual workaround named.
@@ -230,10 +230,9 @@ rule_grammar <- function() {
 #' Compile a written rule against a declared vocabulary of fields
 #'
 #' The three controls that make a written rule safe are validation by the same
-#' evaluator production uses, a visible vocabulary of the fields available,
-#' and an evaluation showing which items the rule catches (§22.9). This
-#' supplies the first two; [rule_apply()] and [evaluate_policy()] supply the
-#' third.
+#' evaluator production uses, a visible vocabulary of the fields available, and
+#' an evaluation showing which items the rule catches. This supplies the first
+#' two; [rule_apply()] and [evaluate_policy()] supply the third.
 #'
 #' A construct the grammar does not have is reported by name rather than
 #' ignored, so that a rule which cannot mean what its author intended fails

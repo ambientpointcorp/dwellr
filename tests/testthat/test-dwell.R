@@ -15,7 +15,7 @@ test_that("dwell_quantile is monotone and uses the censored estimate", {
   q <- dwell_quantile(d, c(0.5, 0.75, 0.9))
   expect_true(all(diff(q) >= 0))
   # p90 should land well past the median on a heavy-tailed dwell -- the reason
-  # Section 6.7 prefers a quantile to mean-plus-sigma.
+  # a quantile is preferred to mean-plus-sigma.
   expect_gt(q[3], q[1])
 })
 

@@ -20,12 +20,11 @@ exactly zero or one does not produce an infinite logit.}
 An object of class \code{dwellr_calibration}, with a \code{predict()} method
 that applies the map to new predictions. Carries the method, the number of
 rows it was fitted on, and the reliability of the fitting set before and
-after, so that a map can be versioned with the model as §9.20 requires.
+after, so that a map can be versioned with the model.
 }
 \description{
-Fits a map from predicted probability to observed rate, which is what
-Chapter 14 needs before a score can be compared against a cost ratio
-(§9.14).
+Fits a map from predicted probability to observed rate, which is what a
+score needs before it can be compared against a cost ratio.
 }
 \details{
 \emph{Isotonic regression} fits a monotone step function. It is flexible and it
@@ -37,8 +36,8 @@ reorder anything, and is the better choice when the calibration set is
 small.
 
 Fit this on data the model did not train on and the evaluation did not use.
-A calibration fitted on the evaluation period reports a flattering figure
-for the reason §9.12 gives about any quantity estimated where it is tested.
+A calibration fitted on the evaluation period reports a flattering figure,
+as any quantity estimated where it is tested will.
 }
 \examples{
 set.seed(1)

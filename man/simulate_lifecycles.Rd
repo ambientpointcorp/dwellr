@@ -15,19 +15,18 @@ simulate_lifecycles(
 \arguments{
 \item{n}{Number of orders to generate.}
 
-\item{seed}{Optional integer seed. Supply one for a reproducible corpus;
-the book's figures do.}
+\item{seed}{Optional integer seed. Supply one for a reproducible corpus.}
 
 \item{as_of}{Observation cutoff as a \code{POSIXct}. Orders not finished by this
 instant are censored. Defaults to \code{start + horizon_days}, which leaves a
 small share of the population in flight -- a couple of percent at the
 default parameters, because most dwells are hours and the entry window is
 months. That is realistic rather than convenient: a live work queue is a
-small fraction of every order ever taken. What matters for Chapter 6 is not
-the size of the censored set but its composition, and it is composed almost
-entirely of the stuck population -- which is exactly why averaging
-completed visits only runs optimistic. Shorten \code{horizon_days}, or pass an
-earlier \code{as_of}, for a larger censored share.}
+small fraction of every order ever taken. What matters is not the size of
+the censored set but its composition, and it is composed almost entirely
+of the stuck population -- which is exactly why averaging completed visits
+only runs optimistic. Shorten \code{horizon_days}, or pass an earlier \code{as_of},
+for a larger censored share.}
 
 \item{horizon_days}{Days of order entry to generate.}
 
@@ -48,54 +47,54 @@ quantity. Each item carries its \code{item_class}, \code{vendor}, \code{unit_cos
 replenishment \code{cycle_days}, \code{stockout_days}, \code{demand_rate} and the
 \code{lead_time_mean} and \code{lead_time_sd} of its vendor.
 
-Two order-level date fields support Chapter 13. \code{requested_date} equals
-the order date on roughly 85\% of orders, reproducing a field that defaults
-to today and is occasionally overridden, which is the defect measured on a
-hand-checked sample of 59 orders where 58 equaled the order date.
-\code{promised_date} is the field that does carry a commitment: it exists only
-where a person entered the order, never equals the order date, and has a
-lead averaging five days. The contrast between the two is what
-@sec-testing-a-date-field tests for.
+Two order-level date fields support \code{\link[=deadline_derive]{deadline_derive()}}. \code{requested_date}
+equals the order date on roughly 85\% of orders, reproducing a field that
+defaults to today and is occasionally overridden, which is the defect
+measured on a hand-checked sample of 59 orders where 58 equaled the order
+date. \code{promised_date} is the field that does carry a commitment: it exists
+only where a person entered the order, never equals the order date, and
+has a lead averaging five days. The contrast between the two is what a
+test of a date field looks for.
 
 The shortfall on a line is drawn before its stock position, and the line
 is then matched to an item and instant whose position agrees with that
 outcome. The joint distribution is the same under either factorization;
-implementing this one keeps every figure in Chapters 5 to 11 unchanged.
-Roughly an eighth of lines are left deliberately inconsistent, which is
-what bounds how well a model can do: a shortfall predictor on these
-features reaches an AUC near 0.86, against 0.58 on order attributes
-alone and 0.83 for the single comparison of on-hand against the quantity
-ordered.
+implementing this one leaves every measured quantity unchanged. Roughly an
+eighth of lines are left deliberately inconsistent, which is what bounds
+how well a model can do: a shortfall predictor on these features reaches
+an AUC near 0.86, against 0.58 on order attributes alone and 0.83 for the
+single comparison of on-hand against the quantity ordered.
 
 The extended value of an order's lines sums to its \code{value}, and the three
 \verb{fill_*} columns on \code{orders} are computed from the lines rather than drawn
-separately, so that the dimensions of Chapter 11 describe one population.
-They are \code{NA} where the order has not reached a shipping stage, because an
-order that has not shipped has no fill rate yet.
+separately, so that the three dimensions describe one population. They are
+\code{NA} where the order has not reached a shipping stage, because an order
+that has not shipped has no fill rate yet.
 }
 \description{
 Generates a synthetic population of orders moving through a distribution
 lifecycle, as an event log plus one row per order. Everything else in this
-package, and every example in the book, runs against its output.
+package runs against its output.
 }
 \details{
 The generator exists so that worked examples can be published without
-exposing anyone's operational data, and so that the pathologies the book is
-about are present to be measured. It reproduces, deliberately:
+exposing anyone's operational data, and so that the pathologies these
+methods are about are present to be measured. It reproduces, deliberately:
 \itemize{
 \item \strong{Right-censoring.} Orders still in flight at \code{as_of} have not finished,
-so their current dwell is a lower bound. This is the bias of Chapter 6.
+so their current dwell is a lower bound. This is the censoring bias
+\code{\link[=dwell_survival]{dwell_survival()}} corrects for.
 \item \strong{Mixed dwell populations.} Each stage holds a fast population and a
-stuck one, so a single quantile over the mixture serves neither (§6.5).
+stuck one, so a single quantile over the mixture serves neither.
 \item \strong{Partial fills and loops.} Some orders ship in parts; a short pick sends
-an order back from \code{released} to \code{backordered} (§8.1, §8.2).
+an order back from \code{released} to \code{backordered}.
 \item \strong{Residue.} Some finished orders still carry an open pick ticket, which
-is what overstates a naive work queue (§8.3).
+is what overstates a naive work queue.
 \item \strong{Special orders.} Items bought from a vendor per order wait in
-\code{awaiting_supply} on a vendor clock, not a warehouse one (§5.7).
+\code{awaiting_supply} on a vendor clock, not a warehouse one.
 \item \strong{Covariate effects.} Dwell in \code{released} scales with the order's line
-count, and dwell in \code{received} depends on branch and channel, so that the
-regressions of §6.9 have something to recover and the recovered
+count, and dwell in \code{received} depends on branch and channel, so that
+\code{\link[=dwell_regression]{dwell_regression()}} has something to recover and the recovered
 coefficients can be checked against the values used here.
 }
 

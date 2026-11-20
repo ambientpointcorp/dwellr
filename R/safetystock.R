@@ -113,8 +113,8 @@ print.variance_contribution <- function(x, digits = 3, ...) {
 #' so a reduction achieved by losing volume does not count. And the reduction
 #' is assumed to persist, which is the assumption that fails most often: a
 #' stage improved by attention reverts when the attention moves elsewhere,
-#' which is why Chapter 21 evaluates a monitoring policy over a period rather
-#' than at a point.
+#' which is why [evaluate_policy()] evaluates a monitoring policy over a period
+#' rather than at a point.
 #'
 #' @param contrib A `variance_contribution` from
 #'   [dwell_variance_contribution()].
@@ -154,11 +154,11 @@ variance_reduction_value <- function(contrib, stage, reduction = 0.5,
 #' watching a stage stops exceeding the cost of watching it. Below that point
 #' the attention pays; above it the reviews cost more than the stock they free.
 #'
-#' The figure is a ceiling and not a recommendation. It assumes every review
-#' is equally productive, which Chapter 15 does not, and it
-#' ignores the service consequences of a stall that nobody catches, which are
-#' the larger part of the case for monitoring in most operations and are priced
-#' in Chapter 14 instead.
+#' The figure is a ceiling and not a recommendation. It assumes every review is
+#' equally productive, which [capacity_admit()] does not, and it ignores the
+#' service consequences of a stall that nobody catches, which are the larger
+#' part of the case for monitoring in most operations and are priced by
+#' [threshold_from_cost()] instead.
 #'
 #' @param annual_value Annual carrying cost released, from
 #'   [variance_reduction_value()].
@@ -204,9 +204,9 @@ monitoring_budget <- function(annual_value, cost_per_review,
 #' indicative only.
 #'
 #' The unexplained share is the figure to read first. A stage whose dwell is
-#' driven by a mixture that no order attribute predicts (§6.5) will leave
-#' almost all of its variance unexplained, and no reweighting of these drivers
-#' will change that.
+#' driven by a mixture that no order attribute predicts will leave almost all
+#' of its variance unexplained, and no reweighting of these drivers will change
+#' that.
 #'
 #' @param dwell A data frame from [stage_dwell()] with covariates joined on.
 #'   Censored visits are dropped, since the model is fitted on log dwell.
@@ -253,7 +253,7 @@ driver_variance <- function(dwell, covariates) {
 #' A policy is parameterized with a lead-time mean and standard deviation, and
 #' it then operates under whatever the lead time actually is. Where the second
 #' standard deviation exceeds the first, the policy carries less stock than its
-#' own target requires and attains a service level below it (§7.9).
+#' own target requires and attains a service level below it.
 #'
 #' Reporting the gap this way attributes it. A fill rate short of target is
 #' usually investigated as a forecast problem, and this function prices the
@@ -301,10 +301,10 @@ service_level_gap <- function(demand_mean, demand_sd,
 #'
 #' The closed form for the standard deviation of lead-time demand is a
 #' statement about its first two moments, and turning it into a safety stock
-#' multiplies it by a normal quantile. On a dwell distribution as dispersed as the ones Part II measures,
-#' the normal that matches those moments puts substantial probability on
-#' negative demand, so its shape is wrong even where its upper quantile is
-#' close.
+#' multiplies it by a normal quantile. On a dwell distribution as dispersed as
+#' the ones measured here, the normal that matches those moments puts
+#' substantial probability on negative demand, so its shape is wrong even where
+#' its upper quantile is close.
 #'
 #' This function convolves the measured lead-time distribution with demand
 #' directly, by drawing a lead time from the observed set and then drawing

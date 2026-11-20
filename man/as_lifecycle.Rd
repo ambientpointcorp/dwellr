@@ -38,10 +38,10 @@ An object of class \code{lifecycle_sim}.
 \description{
 Every analysis function in this package reads one object: a list with an
 event log, the population those events belong to, a stage specification and
-the instant the data was cut. \code{\link[=simulate_lifecycles]{simulate_lifecycles()}} produces one.
-This produces the same thing from records a real operation already keeps,
-which is what makes the methods in the book usable on anything other than
-the synthetic corpus.
+the instant the data was cut. \code{\link[=simulate_lifecycles]{simulate_lifecycles()}} produces one. This
+produces the same thing from records a real operation already keeps, which
+is what makes the methods here usable on anything other than the synthetic
+corpus.
 }
 \section{The shape this expects}{
 
@@ -68,24 +68,25 @@ from the stage when it is not.
 
 
 A population is only meaningful as of an instant. Every visit with no later
-event is open at \code{as_of} and is a right-censored observation, which is the
-whole subject of Chapter 6. Defaulting it to the last event in the log is a
-convenience with a trap in it: if the extract was cut on Tuesday and the
-last event happens to be Friday-week-before, the default silently declares
-nine days of in-flight work finished. Pass the instant the data was cut.
+event is open at \code{as_of} and is a right-censored observation, which is what
+the dwell estimators here are built around. Defaulting it to the last event
+in the log is a convenience with a trap in it: if the extract was cut on
+Tuesday and the last event happens to be Friday-week-before, the default
+silently declares nine days of in-flight work finished. Pass the instant the
+data was cut.
 }
 
 \section{Exporting from a source system}{
 
 
 This function is the contract, and it is deliberately a small one so that
-the export side can be written against a published shape rather than
-against this package's internals. An exporter needs to produce the three
-event columns, a stage specification matching the operation's own
-lifecycle, and the extract instant. Everything else is optional and
-enriches what can be asked: \code{orders} carries per-instance attributes to
-group and segment by, \code{lines} the line grain of Chapter 10, and \code{items}
-the demand and supply figures Chapter 7 converts into safety stock.
+the export side can be written against a published shape rather than against
+this package's internals. An exporter needs to produce the three event
+columns, a stage specification matching the operation's own lifecycle, and
+the extract instant. Everything else is optional and enriches what can be
+asked: \code{orders} carries per-instance attributes to group and segment by,
+\code{lines} the line grain, and \code{items} the demand and supply figures safety
+stock is computed from.
 }
 
 \examples{

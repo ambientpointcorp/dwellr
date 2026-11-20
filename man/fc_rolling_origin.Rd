@@ -21,8 +21,7 @@ A named numeric vector of \code{RMSE} and \code{MAE} over all origins.
 \description{
 Evaluates a forecasting function at many successive origins rather than on
 one train/test split, which gives a more stable estimate of accuracy and
-avoids the result depending on where the single split happened to fall
-(Section 4.3).
+avoids the result depending on where the single split happened to fall.
 }
 \examples{
 set.seed(1)

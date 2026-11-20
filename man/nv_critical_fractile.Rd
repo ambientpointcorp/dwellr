@@ -15,10 +15,10 @@ nv_critical_fractile(overage, underage)
 The critical fractile \code{u / (o + u)}.
 }
 \description{
-The service level implied by a pair of overage and underage costs (§3.1).
-Chapter 14 reuses this expression for alerting, on the complementary tail
-because the decision variable there is a waiting time rather than a
-stocking quantity; see \code{\link[=threshold_from_cost]{threshold_from_cost()}}.
+The service level implied by a pair of overage and underage costs. The same
+expression is reused for alerting, on the complementary tail because the
+decision variable there is a waiting time rather than a stocking quantity;
+see \code{\link[=threshold_from_cost]{threshold_from_cost()}}.
 }
 \examples{
 nv_critical_fractile(overage = 1, underage = 5)

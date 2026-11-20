@@ -21,7 +21,7 @@ A list with the \code{flagged} count, the \code{residue} among them, the
 A queue built by counting open work items counts two things that are not
 work: items belonging to instances that have already finished, and items
 recorded against instances that were cancelled. Both are residue, and
-neither can be acted on (§8.3).
+neither can be acted on.
 }
 \details{
 The reconciliation is a two-way comparison, because the reverse error exists

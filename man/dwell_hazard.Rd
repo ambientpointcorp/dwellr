@@ -19,7 +19,7 @@ A data frame with one row per interval: \code{from}, \code{to}, \code{at_risk},
 The survival curve answers how many instances are still waiting. The hazard
 answers the question an operator actually asks, which is whether an instance
 that has already waited this long is about to move: of those still in the
-stage at the start of an interval, what share leaves during it (§6.3).
+stage at the start of an interval, what share leaves during it.
 }
 \details{
 A hazard that falls with elapsed time is the signature of a mixed

@@ -24,7 +24,7 @@ drawn from \code{levels}.}
 
 \item{outcome}{Optional logical: whether the item turned out to need the
 attention. Where it is supplied, precision and recall are reported for
-both policies, with the caveat of §21.3 attached to any outcome collected
+both policies, with the caveat that attaches to any outcome collected
 under the current policy.}
 
 \item{levels}{The severity scale, ordered from least to most severe.}
@@ -41,7 +41,7 @@ Three lists decide whether a change is safe to publish: what the proposal
 surfaces that the current policy does not, what it stops surfacing, and
 where the urgency changes. The middle list is the one no reporting tool
 produces on its own, because an item that stops being flagged produces no
-output at all (§21.6).
+output at all.
 }
 \details{
 Both policies are evaluated on the same population, which should be the

@@ -22,7 +22,7 @@ A named numeric vector.
 }
 \description{
 The standard error measures, computed together so that a comparison is made
-on one basis (Section 4.3).
+on one basis.
 }
 \details{
 \itemize{

@@ -1,10 +1,10 @@
-# The eight results Chapter 1 prints. The chapter displays its own copy of this
-# class for teaching; these tests are what make a divergence between the two
-# visible.
+# The eight published results for this class. A copy of it maintained anywhere
+# else has to produce the same figures, and these tests are what make a
+# divergence between the two visible.
 
 N <- 20; d <- 5
 
-test_that("Chapter 1's runs reproduce", {
+test_that("the published runs reproduce", {
   w <- Warehouse$new(100)
   for (t in 0:(N - 1)) w$ship(d, t)
   expect_equal(tail(w$history()$level, 1), 0)
@@ -42,7 +42,7 @@ test_that("a primed pipeline never goes negative and never exceeds L*d", {
   expect_equal(range(h$level), c(0, L * d))
 
   # Position is constant at the same point in each cycle, while the level
-  # cycles beneath it. This is the Section 1.2 argument, in the output.
+  # cycles beneath it. This is the position identity, in the output.
   placed <- h[h$event == "order placed" & h$period %in% 5:9, ]
   expect_equal(length(unique(placed$position)), 1)
   expect_gt(length(unique(h$level[h$event == "issue"])), 1)
@@ -60,7 +60,7 @@ test_that("an unprimed pipeline sits in a stable deficit", {
   expect_equal(range(w$history()$level), c(-L * d, 0))
 })
 
-test_that("the Section 1.2 identities hold throughout a run", {
+test_that("the inventory identities hold throughout a run", {
   w <- Warehouse$new(50)
   for (t in 0:(N - 1)) { if (t == 10) w$receive(40, t); w$ship(d, t) }
   h <- w$history()

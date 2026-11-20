@@ -36,13 +36,13 @@ Most stages hold two populations rather than one: orders that move through
 at the pace the process intends, and orders that have stopped. A single
 distribution fitted to the pool describes neither of them, and a single
 quantile taken from it is too late to catch the stalls and too early to
-leave the normal work alone (§6.5).
+leave the normal work alone.
 }
 \details{
 The fit is by expectation-maximization, and it uses the censored visits
 rather than discarding them: a visit still open at \code{t} contributes each
 component's survival at \code{t} to the responsibility, in place of its density.
-Dropping those visits would reintroduce exactly the bias of §6.2 into the
+Dropping those visits would reintroduce exactly the censoring bias into the
 estimate of the component that matters most, since an open visit is
 overwhelmingly likely to belong to the stuck population.
 }

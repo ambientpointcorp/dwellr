@@ -25,11 +25,11 @@ watching a stage stops exceeding the cost of watching it. Below that point
 the attention pays; above it the reviews cost more than the stock they free.
 }
 \details{
-The figure is a ceiling and not a recommendation. It assumes every review
-is equally productive, which Chapter 15 does not, and it
-ignores the service consequences of a stall that nobody catches, which are
-the larger part of the case for monitoring in most operations and are priced
-in Chapter 14 instead.
+The figure is a ceiling and not a recommendation. It assumes every review is
+equally productive, which \code{\link[=capacity_admit]{capacity_admit()}} does not, and it ignores the
+service consequences of a stall that nobody catches, which are the larger
+part of the case for monitoring in most operations and are priced by
+\code{\link[=threshold_from_cost]{threshold_from_cost()}} instead.
 }
 \examples{
 monitoring_budget(annual_value = 186, cost_per_review = 4,

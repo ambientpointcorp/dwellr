@@ -21,8 +21,7 @@ the \code{bias} of the naive figure as a share of the restricted one.
 The average dwell computed over completed visits only is the figure an
 operational report usually carries, and it is biased low. The visits it
 omits are the ones still open, which are the longest waits in the stage, so
-the omission is not random with respect to the quantity being averaged
-(§6.2).
+the omission is not random with respect to the quantity being averaged.
 }
 \details{
 The censoring-aware figure is a \strong{restricted} mean: the area under the

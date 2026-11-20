@@ -18,8 +18,7 @@ more than once: \code{order_no}, \code{stage}, and \code{visits}.
 \description{
 A lifecycle that returns to a stage it has already left is a loop, and a
 loop is the case most reporting is not built for. Counting revisits is the
-first step, and §8.6 uses the count as a severity signal in its
-own right.
+first step, and the count is a severity signal in its own right.
 }
 \examples{
 sim <- simulate_lifecycles(n = 1000, seed = 11)

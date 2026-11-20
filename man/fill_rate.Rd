@@ -27,8 +27,7 @@ Order fill measured on units, lines and value, plus the binding dimension.
 The three disagree, and the disagreement is informative. Six of eight units
 is 0.75 by units; if the missing unit is the expensive one it is worse by
 value; a one-of-three-lines order is worse by lines. The binding dimension,
-which is the minimum of the three, is the one the customer experiences
-(Chapter 11).
+which is the minimum of the three, is the one the customer experiences.
 
 Orders that have not reached a shipping stage carry \code{NA} on all three
 dimensions, because an order that has not shipped has no fill rate yet. The

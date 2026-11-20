@@ -26,11 +26,11 @@ Reduces an event log to one row per (order, stage visit) with the time spent
 in that stage and whether the visit had ended by \code{as_of}.
 }
 \details{
-The \code{censored} column is the point. An order sitting in a stage right now has
-not finished waiting, so its dwell is a lower bound, not an observation.
+The \code{censored} column is the point. An order sitting in a stage right now
+has not finished waiting, so its dwell is a lower bound, not an observation.
 Dropping those rows -- which is what a naive average over completed visits
 does -- removes exactly the orders that are stuck, and biases the result
-optimistic by most when the operation is performing worst (§6.2).
+optimistic by most when the operation is performing worst.
 }
 \examples{
 sim <- simulate_lifecycles(n = 400, seed = 1)

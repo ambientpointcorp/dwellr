@@ -40,8 +40,8 @@ at constant service and not an improvement in service. Demand is held fixed,
 so a reduction achieved by losing volume does not count. And the reduction
 is assumed to persist, which is the assumption that fails most often: a
 stage improved by attention reverts when the attention moves elsewhere,
-which is why Chapter 21 evaluates a monitoring policy over a period rather
-than at a point.
+which is why \code{\link[=evaluate_policy]{evaluate_policy()}} evaluates a monitoring policy over a period
+rather than at a point.
 }
 \examples{
 sim <- simulate_lifecycles(n = 1000, seed = 11)

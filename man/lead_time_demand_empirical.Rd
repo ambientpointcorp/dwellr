@@ -31,10 +31,10 @@ quantile at \code{service_level}, the implied \code{safety_stock}, and the
 \description{
 The closed form for the standard deviation of lead-time demand is a
 statement about its first two moments, and turning it into a safety stock
-multiplies it by a normal quantile. On a dwell distribution as dispersed as the ones Part II measures,
-the normal that matches those moments puts substantial probability on
-negative demand, so its shape is wrong even where its upper quantile is
-close.
+multiplies it by a normal quantile. On a dwell distribution as dispersed as
+the ones measured here, the normal that matches those moments puts
+substantial probability on negative demand, so its shape is wrong even where
+its upper quantile is close.
 }
 \details{
 This function convolves the measured lead-time distribution with demand

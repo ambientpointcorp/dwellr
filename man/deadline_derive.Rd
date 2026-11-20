@@ -41,7 +41,7 @@ A commitment is rarely the moment the operation has to act, because acting
 takes time. The \emph{actionable horizon} is the commitment less the handling
 time less any external cutoff, and both offsets are measurable: the handling
 time from the stage dwells of \code{\link[=dwell_quantile]{dwell_quantile()}}, the cutoff from a
-carrier's schedule (§13.4).
+carrier's schedule.
 }
 \details{
 Keying an alert on the commitment rather than the horizon surfaces orders
@@ -49,10 +49,10 @@ that are already too late to save, which is the practical reason to derive
 this at all.
 
 The function will not invent a commitment. A row whose commitment is missing
-comes back with \code{defined = FALSE} and a missing horizon, because
-§13.8 establishes that declaring no deadline is a smaller claim than
-inventing one and the only claim the data supports. Anything downstream has
-to handle the missing case explicitly, which is the point.
+comes back with \code{defined = FALSE} and a missing horizon, because declaring
+no deadline is a smaller claim than inventing one, and the only claim the
+data supports. Anything downstream has to handle the missing case
+explicitly, which is the point.
 }
 \examples{
 promised <- as.POSIXct(c("2026-03-10 17:00", NA, "2026-03-09 12:00"),

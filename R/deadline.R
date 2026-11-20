@@ -1,6 +1,6 @@
-# Chapter 13 models. A commitment is when the customer expects something; the
-# last useful moment to act precedes it by however long the work takes. The
-# gap between those two is what an alert should be keyed on (§13.4).
+# A commitment is when the customer expects something; the last useful moment
+# to act precedes it by however long the work takes. The gap between those two
+# is what an alert should be keyed on.
 
 #' Derive the last useful moment to act from a commitment
 #'
@@ -8,17 +8,17 @@
 #' takes time. The *actionable horizon* is the commitment less the handling
 #' time less any external cutoff, and both offsets are measurable: the handling
 #' time from the stage dwells of [dwell_quantile()], the cutoff from a
-#' carrier's schedule (§13.4).
+#' carrier's schedule.
 #'
 #' Keying an alert on the commitment rather than the horizon surfaces orders
 #' that are already too late to save, which is the practical reason to derive
 #' this at all.
 #'
 #' The function will not invent a commitment. A row whose commitment is missing
-#' comes back with `defined = FALSE` and a missing horizon, because
-#' §13.8 establishes that declaring no deadline is a smaller claim than
-#' inventing one and the only claim the data supports. Anything downstream has
-#' to handle the missing case explicitly, which is the point.
+#' comes back with `defined = FALSE` and a missing horizon, because declaring
+#' no deadline is a smaller claim than inventing one, and the only claim the
+#' data supports. Anything downstream has to handle the missing case
+#' explicitly, which is the point.
 #'
 #' @param commitment Promised date or time, one per instance. `NA` where none
 #'   was given.

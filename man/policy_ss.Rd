@@ -29,12 +29,12 @@ A list with \code{s}, \code{S} and \code{cost}.
 \description{
 Searches the two parameters, evaluating each candidate exactly with
 \code{\link[=ss_cost]{ss_cost()}}. With a fixed ordering cost the optimal policy is of \verb{(s, S)}
-form, a consequence of the K-convexity of the cost-to-go (Section 3.7).
+form, a consequence of the K-convexity of the cost-to-go.
 }
 \details{
 The search is exhaustive over the supplied range rather than using the
 Zheng-Federgruen recursion, which is faster but harder to read; on the
-instances in the book the two agree.
+instances tested here the two agree.
 }
 \examples{
 d <- 0:40

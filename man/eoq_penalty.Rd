@@ -15,7 +15,7 @@ Fractional cost penalty; \code{0} at \code{ratio = 1}.
 \description{
 What a given order quantity costs above the optimum, as a fraction of the
 optimal cost. The curve is flat near the optimum, which is what makes
-rounding to a case or pallet quantity essentially free (Section 2.3).
+rounding to a case or pallet quantity essentially free.
 }
 \details{
 The ratio of the cost at \eqn{Q} to the cost at \eqn{Q^*} depends only on

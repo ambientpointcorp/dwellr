@@ -26,13 +26,13 @@ deviation as a share of the median.
 A baseline is estimated over a trailing window, and the window length trades
 responsiveness against stability. A short window tracks a change in the
 process quickly and moves on sampling noise alone; a long window is steady
-and slow to notice that the process has changed (§12.6).
+and slow to notice that the process has changed.
 }
 \details{
 Both halves of that trade-off are measurable. This reports the dispersion of
 the estimate across successive windows, which is the stability side. The
-responsiveness side requires a known change, which is why §12.6 introduces
-one deliberately rather than waiting for one to occur.
+responsiveness side requires a known change, which means introducing one
+deliberately rather than waiting for one to occur.
 }
 \examples{
 sim <- simulate_lifecycles(n = 3000, seed = 11)

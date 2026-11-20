@@ -19,10 +19,9 @@ A list with \code{ok}, the parsed \code{terms}, the \code{connective}, and
 }
 \description{
 The three controls that make a written rule safe are validation by the same
-evaluator production uses, a visible vocabulary of the fields available,
-and an evaluation showing which items the rule catches (§22.9). This
-supplies the first two; \code{\link[=rule_apply]{rule_apply()}} and \code{\link[=evaluate_policy]{evaluate_policy()}} supply the
-third.
+evaluator production uses, a visible vocabulary of the fields available, and
+an evaluation showing which items the rule catches. This supplies the first
+two; \code{\link[=rule_apply]{rule_apply()}} and \code{\link[=evaluate_policy]{evaluate_policy()}} supply the third.
 }
 \details{
 A construct the grammar does not have is reported by name rather than

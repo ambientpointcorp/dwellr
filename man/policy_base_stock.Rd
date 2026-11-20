@@ -31,7 +31,7 @@ expected cost over the horizon starting from zero stock.
 With no fixed ordering cost, the optimal policy is order-up-to: in each
 period, raise the inventory position to that period's level if it is below,
 and otherwise do nothing. This function computes those levels by backward
-recursion over a finite horizon (Section 3.5).
+recursion over a finite horizon.
 }
 \details{
 Under stationary demand the levels are constant and coincide with the

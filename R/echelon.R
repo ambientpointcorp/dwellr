@@ -1,5 +1,5 @@
-# Chapter 20 models. A serial network of stages, each holding stock and
-# supplying the one below it, under echelon base-stock control.
+# A serial network of stages, each holding stock and supplying the one below
+# it, under echelon base-stock control.
 #
 # The cost convention is stated once here because every figure depends on it:
 # installation holding `holding[j]` is charged on end-of-period on-hand stock
@@ -9,15 +9,14 @@
 
 #' Simulate a serial multi-echelon system under echelon base-stock control
 #'
-#' Stage 1 faces demand and stage `N` orders from an outside source. Each
-#' stage raises its *echelon* inventory position -- the stock at that stage and
+#' Stage 1 faces demand and stage `N` orders from an outside source. Each stage
+#' raises its *echelon* inventory position -- the stock at that stage and
 #' everything below it, in transit included, net of backorders -- to its base
-#' stock level, shipping downstream only what it has on hand (§20.1).
+#' stock level, shipping downstream only what it has on hand.
 #'
 #' Echelon positions are what make the policy work on a network: a stage
-#' ordering against its own local stock alone is the installation policy of
-#' §20.1, which is also available here and which carries more stock for the
-#' same service.
+#' ordering against its own local stock alone is the installation policy, which
+#' is also available here and which carries more stock for the same service.
 #'
 #' Two identities are returned for checking, because a simulator that gets
 #' them wrong gets everything else wrong too. Mean echelon-j stock, units in
@@ -38,11 +37,11 @@
 #'   from the averages.
 #' @param stall Optional list with `stage`, `probability` and `periods`: with
 #'   that probability a shipment into that stage is delayed by that many extra
-#'   periods. This is the administrative stall of §20.6, which is a lead time
-#'   from downstream and nothing else.
+#'   periods. This is an administrative stall, which is a lead time from
+#'   downstream and nothing else.
 #' @param review Periods between orders. One is continuous review; a larger
-#'   value is the `(R,S)` batching of §17.4, which is the administrative cause
-#'   of the amplification measured in §20.7.
+#'   value is `(R,S)` batching, which is an administrative cause of the
+#'   amplification [bullwhip()] measures.
 #' @param policy `"echelon"` or `"installation"`.
 #' @param seed Random seed. Runs compared against each other should share one,
 #'   so that a difference in cost is a difference in policy.
@@ -75,7 +74,7 @@ echelon_simulate <- function(levels, demand_mean, demand_sd, lead_times,
          call. = FALSE)
   if (any(abs(lead_times - round(lead_times)) > 1e-9))
     stop("lead times are whole periods here; a fractional mean lead time ",
-         "is expressed as a `stall` with a probability (see Section 20.6).",
+         "is expressed as a `stall` with a probability.",
          call. = FALSE)
   L <- as.integer(round(lead_times))
   extra <- if (is.null(stall)) 0L else as.integer(stall$periods)
@@ -191,10 +190,10 @@ echelon_simulate <- function(levels, demand_mean, demand_sd, lead_times,
 #' grid. Every evaluation shares a seed, so a difference in cost between two
 #' candidate levels is a difference in the policy and not in the demand drawn.
 #'
-#' The search is here because the exact decomposition of §20.2 fixes the
-#' downstream level by a critical fractile and leaves the upstream levels to
-#' numerical work, and because a simulator is the only arbiter available once
-#' lead times are stochastic or a stall is present.
+#' The search is here because the exact decomposition fixes the downstream
+#' level by a critical fractile and leaves the upstream levels to numerical
+#' work, and because a simulator is the only arbiter available once lead times
+#' are stochastic or a stall is present.
 #'
 #' @inheritParams echelon_simulate
 #' @param start Starting levels. Defaults to mean demand over each stage's
@@ -265,10 +264,10 @@ echelon_optimize <- function(demand_mean, demand_sd, lead_times, holding,
 #' Variance amplification between demand and replenishment orders
 #'
 #' The bullwhip ratio -- the variance of the orders divided by the variance of
-#' the demand that drove them -- measured on a realized pair of series. A
-#' ratio above one says the orders a supplier sees are more variable
-#' than the demand that caused them, and §20.7 measures how much of that an
-#' unwatched upstream stall contributes.
+#' the demand that drove them -- measured on a realized pair of series. A ratio
+#' above one says the orders a supplier sees are more variable than the demand
+#' that caused them, and an unwatched upstream stall is one of the things that
+#' makes it so.
 #'
 #' @param demand Per-period demand.
 #' @param orders Per-period replenishment orders placed upstream.

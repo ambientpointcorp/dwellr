@@ -1,8 +1,8 @@
-# Chapter 3 models. Demand is uncertain; the policies below trade holding cost
-# against shortage cost rather than against a fixed ordering cost.
+# Demand is uncertain; the policies below trade holding cost against shortage
+# cost rather than against a fixed ordering cost.
 #
-# Notation follows Chapters 1 and 2: h is the holding cost and b the shortage
-# cost per unit per period. The book reserves p for the selling price.
+# Notation follows the deterministic models: h is the holding cost and b the
+# shortage cost per unit per period. p is reserved for the selling price.
 
 #' Complementary first order loss function
 #'
@@ -79,8 +79,7 @@ nv_cost <- function(Q, overage, underage, mean = NULL, sd = NULL,
 
 #' Service levels attained by a stocking quantity
 #'
-#' The two targets practitioners impose in place of explicit costs
-#' (Section 3.2).
+#' The two targets practitioners impose in place of explicit costs.
 #'
 #' The **alpha** service level is the probability of no stockout in a cycle,
 #' \eqn{F(Q)}. The **beta** service level, or fill rate, is the expected
@@ -141,7 +140,7 @@ nv_quantity_for_service <- function(target, mean, sd,
 #' With no fixed ordering cost, the optimal policy is order-up-to: in each
 #' period, raise the inventory position to that period's level if it is below,
 #' and otherwise do nothing. This function computes those levels by backward
-#' recursion over a finite horizon (Section 3.5).
+#' recursion over a finite horizon.
 #'
 #' @details
 #' Under stationary demand the levels are constant and coincide with the
@@ -182,9 +181,9 @@ policy_base_stock <- function(periods, support, probs, holding_cost,
 
 #' Long-run average cost of an (s, S) policy
 #'
-#' Evaluates a given policy exactly, by solving for the stationary
-#' distribution of the inventory position on the embedded Markov chain whose
-#' states run from `s + 1` to `S`, and applying renewal reward (Section 3.7).
+#' Evaluates a given policy exactly, by solving for the stationary distribution
+#' of the inventory position on the embedded Markov chain whose states run from
+#' `s + 1` to `S`, and applying renewal reward.
 #'
 #' @param s Reorder point: order when the position falls to `s` or below.
 #' @param S Order-up-to level.
@@ -224,11 +223,11 @@ ss_cost <- function(s, S, support, probs, order_cost, holding_cost,
 #'
 #' Searches the two parameters, evaluating each candidate exactly with
 #' [ss_cost()]. With a fixed ordering cost the optimal policy is of `(s, S)`
-#' form, a consequence of the K-convexity of the cost-to-go (Section 3.7).
+#' form, a consequence of the K-convexity of the cost-to-go.
 #'
 #' The search is exhaustive over the supplied range rather than using the
 #' Zheng-Federgruen recursion, which is faster but harder to read; on the
-#' instances in the book the two agree.
+#' instances tested here the two agree.
 #'
 #' @inheritParams ss_cost
 #' @param S_range Candidate order-up-to levels.
@@ -255,9 +254,9 @@ policy_ss <- function(support, probs, order_cost, holding_cost,
 #' Long-run average cost of an (R, S) policy
 #'
 #' Periodic review: the position is inspected every `R` periods and raised to
-#' `S`. Between reviews the system is uncovered, so the quantity must span
-#' `R` periods of demand rather than one, and the cost is evaluated over the
-#' review interval (Section 3.10).
+#' `S`. Between reviews the system is uncovered, so the quantity must span `R`
+#' periods of demand rather than one, and the cost is evaluated over the review
+#' interval.
 #'
 #' @param R Review interval, in periods.
 #' @param S Order-up-to level.

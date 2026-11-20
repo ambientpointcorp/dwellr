@@ -21,7 +21,7 @@ test_that("line expansion reconciles with the order record", {
   expect_true(all(ln$shipped[ln$order_no %in% done]))
 
   # The derived flag is a superset of what the disposition code marks, since
-  # a recovered shortfall leaves no trace in a status (§10.8).
+  # a recovered shortfall leaves no trace in a status.
   expect_gt(sum(ln$shortfall), sum(ln$disposition == "cancelled_at_close"))
   expect_true(all(ln$disposition %in%
     c("shipped", "cancelled_at_close", "cancelled", "open")))
@@ -58,7 +58,7 @@ test_that("the entity test separates attachable from unattachable candidates", {
 
   # The obligation condition is separate from attachment. A flag true for
   # every instance answers the question for none of them, which is the state
-  # a durable entity is in (§10.6).
+  # a durable entity is in.
   o$owes <- !o$is_terminal
   expect_true(entity_check(e, o, "order_no", owed = "owes")$knows_owed)
   o$always <- rep(TRUE, nrow(o))

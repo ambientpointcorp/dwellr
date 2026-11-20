@@ -14,12 +14,6 @@ lifecycle, and for deciding what to do about it: classical inventory control,
 stage dwell estimation under censoring, baselines, alerting thresholds derived
 from cost ratios, reviewer capacity, routing, and policy evaluation.
 
-The book *Lifecycle Monitoring Analytics: A toolkit for continuous supply chain
-operations*, by Ariel Rodríguez Herrera (CEO, Ambient Point Corp.), first
-edition 2026, works through the methods the package implements and is the place
-to read why each one is built the way it is. The package does not depend on the
-book.
-
 > **Status: 0.0.1.9000.** Every function family is implemented and tested: the
 > generator, stage dwell estimation under right-censoring, the classical
 > inventory models, fill rate on three dimensions, cohort and modeled
@@ -110,38 +104,38 @@ remotes::install_github("ambientpointcorp/dwellr")
 
 ## Function families
 
-Named by the chapter family they belong to, which is what keeps one package
-spanning EOQ through routing navigable.
+Named by the family they belong to, which is what keeps one package spanning
+EOQ through routing navigable.
 
 | Prefix | Covers |
 |---|---|
-| `eoq_*` `dls_*` `nv_*` `policy_*` | Classical inventory control (Part I) |
-| `simulate_*` `stage_*` `dwell_*` `safety_*` | Lead time as a stage process (Part II) |
-| `fit_*` `calibrate_*` | Machine learning (Chapter 9) |
-| `fill_*` `baseline_*` `deadline_*` | Measurement method (Part III) |
-| `threshold_*` `capacity_*` `route_*` | Allocating attention (Part IV) |
-| `evaluate_*` | Evaluation (Part V) |
+| `eoq_*` `dls_*` `nv_*` `policy_*` | Classical inventory control |
+| `simulate_*` `stage_*` `dwell_*` `safety_*` | Lead time as a stage process |
+| `fit_*` `calibrate_*` | Machine learning |
+| `fill_*` `baseline_*` `deadline_*` | Measurement method |
+| `threshold_*` `capacity_*` `route_*` | Allocating attention |
+| `evaluate_*` | Policy evaluation |
 
 ## Synthetic data, not client data
 
 `simulate_lifecycles()` generates orders from a stated model with documented
-parameters. It is not a scrubbed extract, and it reproduces the pathologies the
-book is about on purpose: right-censoring, a fast and a stuck population in
-every stage, partial fills, orders closed short, `released → backordered`
-loops, vendor-sourced special orders, and residue — finished orders still
-carrying an open pick ticket, which is what overstates a naive work queue.
+parameters. It is not a scrubbed extract, and it reproduces on purpose the
+pathologies the methods here have to survive: right-censoring, a fast and a
+stuck population in every stage, partial fills, orders closed short,
+`released → backordered` loops, vendor-sourced special orders, and residue —
+finished orders still carrying an open pick ticket, which is what overstates a
+naive work queue.
 
-The built-in `orders` dataset is one call at `n = 2000`. The full corpus the
-book's figures are built from is the same function at a larger `n`, in
-`lifecycle-analytics-examples` — one generator, two scales, so they cannot
-drift apart.
+The built-in `orders` dataset is one call at `n = 2000`. A larger corpus is the
+same function at a larger `n`, in `lifecycle-analytics-examples` — one
+generator, two scales, so they cannot drift apart.
 
 ## Tests
 
-The suite reproduces worked numerical results printed in the book: the EOQ
+The suite pins the worked numerical results the documentation prints: the EOQ
 example and the flatness of its cost curve, the newsvendor critical fractile
 and its `Poisson(100)` quantity, and the censoring bias above. A change that
-breaks an example in the text fails the build.
+alters one of them fails the build.
 
 ```r
 devtools::test()
@@ -150,7 +144,7 @@ devtools::test()
 ## Stability
 
 Nothing is declared-but-unimplemented any more. Earlier versions carried stubs
-that errored with the chapter they belonged to, on the principle that an
+that errored with the method they stood for, on the principle that an
 unimplemented method returning a plausible number is worse than one that
 refuses; all of them now have implementations and tests.
 
@@ -158,6 +152,16 @@ The version stays below 1.0 because the interface is still free to change. Two
 things will be settled before it goes to 1.0: the argument names on the newest
 families, and whether the cost conventions should be carried in an object
 rather than passed to every call.
+
+## Related
+
+- *Lifecycle Monitoring Analytics: A toolkit for continuous supply chain
+  operations*, by Ariel Rodríguez Herrera (CEO, Ambient Point Corp.), first
+  edition 2026 — develops the methods this package implements, from classical
+  lot sizing through dwell estimation under censoring to policy evaluation, and
+  documents the reasoning behind each one. Its worked examples run on `dwellr`;
+  the chapter code is at
+  [lifecycle-analytics-examples](https://github.com/ambientpointcorp/lifecycle-analytics-examples).
 
 ## License
 

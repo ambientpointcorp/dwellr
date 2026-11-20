@@ -5,8 +5,7 @@
 #' The three disagree, and the disagreement is informative. Six of eight units
 #' is 0.75 by units; if the missing unit is the expensive one it is worse by
 #' value; a one-of-three-lines order is worse by lines. The binding dimension,
-#' which is the minimum of the three, is the one the customer experiences
-#' (Chapter 11).
+#' which is the minimum of the three, is the one the customer experiences.
 #'
 #' Orders that have not reached a shipping stage carry `NA` on all three
 #' dimensions, because an order that has not shipped has no fill rate yet. The
@@ -66,8 +65,7 @@ fill_rate <- function(orders, cols = NULL) {
 #' The order-level fractions say how much of an order was filled. They do not
 #' say which line was short, and a fill rate aggregated over orders weights a
 #' one-line order the same as a twelve-line one. This computes each dimension
-#' over a set of lines, which is the grain the quantities were recorded at
-#' (§11.5).
+#' over a set of lines, which is the grain the quantities were recorded at.
 #'
 #' Three denominators are available and they answer different questions. The
 #' unit rate is the share of units shipped, the line rate is the share of lines

@@ -39,8 +39,8 @@ components at the optimum.
 \description{
 A scan costs something and a condition that has arisen waits, on average,
 half the interval before the next scan finds it. Those two costs move
-oppositely in the interval, which makes the problem the one Chapter 2
-solves for order quantity.
+oppositely in the interval, which makes the problem the one \code{\link[=eoq]{eoq()}} solves
+for order quantity.
 }
 \details{
 Writing \eqn{c_s} for the cost of a scan, \eqn{c_\ell} for the cost of a
@@ -50,9 +50,9 @@ period of delay and \eqn{\lambda} for the rate at which conditions arise,
       \qquad R^{*} = \sqrt{\frac{2 c_s}{\lambda c_\ell}}.}
 
 The analogy carries the insensitivity with it. Half or double the optimal
-interval costs 25\% more, the same figure Chapter 2 measures for order
+interval costs 25\% more, the same figure \code{\link[=eoq_penalty]{eoq_penalty()}} gives for order
 quantity, which is the reason a cadence chosen to the nearest convenient
-round number is usually good enough (§23.2).
+round number is usually good enough.
 
 Where it stops holding is worth stating. The derivation prices a wait
 linearly, and a wait against a deadline is not priced linearly: it costs

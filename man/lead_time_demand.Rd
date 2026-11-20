@@ -10,7 +10,7 @@ lead_time_demand(demand_mean, demand_sd, lead_time_mean, lead_time_sd = 0)
 \item{demand_mean, demand_sd}{Per-period demand.}
 
 \item{lead_time_mean, lead_time_sd}{Lead time, in periods. A standard
-deviation of zero gives the constant-lead-time case of Chapter 2.}
+deviation of zero gives the constant-lead-time case.}
 }
 \value{
 A list with \code{mean}, \code{variance}, \code{sd}, and \code{demand_share} and
@@ -29,8 +29,8 @@ With demand and lead time independent,
 
 The second variance term is quadratic in mean demand, so for a fast-moving
 item it dominates the first even when the lead time looks reasonably
-consistent. Section 4.11 works an instance; Part II takes the term apart
-and asks where it comes from.
+consistent. \code{\link[=dwell_variance_contribution]{dwell_variance_contribution()}} takes that term apart and asks
+which stage it comes from.
 }
 \examples{
 lead_time_demand(demand_mean = 10, demand_sd = 3,

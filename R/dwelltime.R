@@ -4,10 +4,10 @@
 #' events after `as_of` are discarded, and each instance's stage is whatever it
 #' had reached by then. Instances that had not yet been created are dropped.
 #'
-#' This is what makes the censoring bias of Chapter 6 measurable rather than
-#' argued. The same corpus, observed at a sequence of cutoffs, gives a sequence
-#' of in-flight sets, and the naive average over completed visits can be
-#' compared against an estimator that uses the censored ones at each.
+#' This is what makes the censoring bias measurable rather than argued. The
+#' same corpus, observed at a sequence of cutoffs, gives a sequence of
+#' in-flight sets, and the naive average over completed visits can be compared
+#' against an estimator that uses the censored ones at each.
 #' @param sim A `lifecycle_sim` from [simulate_lifecycles()] or
 #'   [as_lifecycle()].
 #' @param as_of Observation instant, a `POSIXct` at or before `sim$as_of`.
@@ -54,8 +54,7 @@ observe_at <- function(sim, as_of, spec = NULL) {
 #' The average dwell computed over completed visits only is the figure an
 #' operational report usually carries, and it is biased low. The visits it
 #' omits are the ones still open, which are the longest waits in the stage, so
-#' the omission is not random with respect to the quantity being averaged
-#' (§6.2).
+#' the omission is not random with respect to the quantity being averaged.
 #'
 #' The censoring-aware figure is a **restricted** mean: the area under the
 #' Kaplan-Meier curve out to `restrict_to`. Restriction is not a convenience.
@@ -101,7 +100,7 @@ dwell_mean <- function(dwell, restrict_to = NULL) {
 #' The survival curve answers how many instances are still waiting. The hazard
 #' answers the question an operator actually asks, which is whether an instance
 #' that has already waited this long is about to move: of those still in the
-#' stage at the start of an interval, what share leaves during it (§6.3).
+#' stage at the start of an interval, what share leaves during it.
 #'
 #' A hazard that falls with elapsed time is the signature of a mixed
 #' population, because the fast instances leave early and what remains is
@@ -140,8 +139,7 @@ dwell_hazard <- function(dwell, breaks = c(0, 1, 2, 4, 8, 24, 48, 72, Inf)) {
 #' An instance can leave a stage by advancing, by going backwards, or by being
 #' cancelled, and those exits have different causes and different remedies.
 #' Treating them as one event confounds the hazard, because the estimator is
-#' then answering a question about a mixture of outcomes nobody asked about
-#' (§6.8).
+#' then answering a question about a mixture of outcomes nobody asked about.
 #'
 #' @param sim A `lifecycle_sim` from [simulate_lifecycles()].
 #' @param stage Stage to restrict to.
@@ -186,9 +184,9 @@ stage_exit_type <- function(sim, stage, spec = NULL) {
 #' Backlog in a stage at the instant an instance entered it
 #'
 #' A queueing dwell depends on how much other work was present on arrival,
-#' whereas a handling dwell depends on the instance itself (§5.5). The
-#' distinction is testable once the backlog is available as a covariate, which
-#' is what this function supplies.
+#' whereas a handling dwell depends on the instance itself. The distinction is
+#' testable once the backlog is available as a covariate, which is what this
+#' function supplies.
 #'
 #' The count is of instances already in the stage at that instant and not yet
 #' out of it, which is the quantity a queue discipline acts on.
@@ -212,7 +210,7 @@ stage_backlog <- function(sim, stage) {
   # instant, less those that had already left it. Counting that with a pair of
   # sorted searches rather than a comparison against every other visit keeps
   # this linear in the log of the population rather than quadratic in it: the
-  # released stage of the book's corpus holds over five thousand visits.
+  # released stage of the bundled corpus holds over five thousand visits.
   entered_by <- findInterval(entry, sort(entry))
   left_by <- findInterval(entry, sort(exit))
   d$backlog <- as.integer(entered_by - left_by - 1L)
@@ -226,7 +224,7 @@ stage_backlog <- function(sim, stage) {
 #' merit, and it stops at the last observed event, which is its limit. A
 #' parametric fit extrapolates past that point and reduces the distribution to
 #' two or three numbers that can be carried into a policy, at the price of an
-#' assumption that has to be checked rather than adopted (§6.4).
+#' assumption that has to be checked rather than adopted.
 #'
 #' The families differ in the shape of hazard they can represent, and that is
 #' the property to choose on. An exponential fit asserts a constant hazard, so
@@ -276,12 +274,12 @@ dwell_parametric <- function(dwell,
 #' at the pace the process intends, and orders that have stopped. A single
 #' distribution fitted to the pool describes neither of them, and a single
 #' quantile taken from it is too late to catch the stalls and too early to
-#' leave the normal work alone (§6.5).
+#' leave the normal work alone.
 #'
 #' The fit is by expectation-maximization, and it uses the censored visits
 #' rather than discarding them: a visit still open at `t` contributes each
 #' component's survival at `t` to the responsibility, in place of its density.
-#' Dropping those visits would reintroduce exactly the bias of §6.2 into the
+#' Dropping those visits would reintroduce exactly the censoring bias into the
 #' estimate of the component that matters most, since an open visit is
 #' overwhelmingly likely to belong to the stuck population.
 #'
@@ -404,7 +402,7 @@ dwell_mixture <- function(dwell, families = c("exp", "lnorm"),
   # open it conditions on the dwell exceeding the time so far, which is the
   # quantity an alerting rule needs. It rises with `time` whenever the slow
   # component has the heavier tail, which is the same mixed-population fact
-  # that makes the pooled hazard fall (Section 6.5).
+  # that makes the pooled hazard fall.
   posterior <- function(time, censored = FALSE) {
     time <- pmax(time, 1e-6)
     censored <- rep_len(censored, length(time))
@@ -431,7 +429,7 @@ dwell_mixture <- function(dwell, families = c("exp", "lnorm"),
 #' time has to be split by how they left. Treating every exit as the same event
 #' answers a question about a mixture of outcomes, and estimating one exit by
 #' treating the others as censored overstates it, because an order that was
-#' cancelled is not an order still waiting to advance (§6.8).
+#' cancelled is not an order still waiting to advance.
 #'
 #' The estimator is the Aalen-Johansen cumulative incidence, which keeps the
 #' competing exits in the risk set where they belong.
@@ -469,8 +467,8 @@ dwell_competing <- function(exits, times = c(4, 8, 24, 72, 168)) {
 #' Regression of dwell on order attributes
 #'
 #' Covariates turn one dwell distribution for a stage into a distribution per
-#' order, which is what Chapter 7 needs in order
-#' to attribute variance to drivers rather than only to stages (§6.9).
+#' order, which is what attributing variance to drivers rather than only to
+#' stages requires.
 #'
 #' Two model families answer the question differently and both are reported.
 #' A **Cox** model is multiplicative on the hazard and assumes that a

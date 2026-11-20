@@ -2,10 +2,10 @@
 #'
 #' A stage set is not a list of names. It is a directed graph: which stages
 #' exist, which moves between them are legitimate, which stages an instance can
-#' stop in, and what kind of wait each stage represents. Writing it down is what
-#' makes an event log checkable (§5.3).
+#' stop in, and what kind of wait each stage represents. Writing it down is
+#' what makes an event log checkable.
 #'
-#' The `class` argument carries the taxonomy of §5.5 -- whether a stage holds
+#' The `class` argument carries the stage taxonomy -- whether a stage holds
 #' physical work, a queue, a batch, an approval, or nothing at all. It is
 #' optional for the mechanics and essential for the diagnosis, because the
 #' remedy for a long approval wait has nothing in common with the remedy for a
@@ -97,7 +97,8 @@ print.stage_spec <- function(x, ...) {
 #' over.
 #'
 #' Instances still in flight are not a violation. They end in a non-terminal
-#' stage because they have not finished, which is the subject of Chapter 6.
+#' stage because they have not finished, which is what makes their dwell
+#' right-censored.
 #'
 #' @param sim A `lifecycle_sim` from [simulate_lifecycles()] or
 #'   [as_lifecycle()], or a list with an `events` data frame.
@@ -144,11 +145,11 @@ stage_validate <- function(sim, spec) {
   )
 }
 
-#' The stage set used throughout the book
+#' The stage set the bundled corpus uses
 #'
-#' The specification derived in §5.3 from the event log of
-#' [simulate_lifecycles()], supplied as a function so that every chapter
-#' validates against one definition rather than retyping it.
+#' The specification derived from the event log of [simulate_lifecycles()],
+#' supplied as a function so that every caller validates against one definition
+#' rather than retyping it.
 #'
 #' @return A [stage_spec()].
 #'
@@ -160,8 +161,8 @@ distribution_stage_spec <- function() {
     # Declared in order of PROGRESS, not in the order the stages happen to be
     # listed anywhere else. `stage_exit_type()` reads backwardness from this
     # order, so `backordered` has to sit behind `released`: a short pick is a
-    # move back, and classing it as forward would confound the hazard that
-    # §6.8 separates.
+    # move back, and classing it as forward would confound the hazards
+    # `dwell_competing()` separates.
     stages = c("received", "awaiting_supply", "credit_hold", "backordered",
                "released", "partially_shipped", "shipped", "cancelled"),
     transitions = c(
@@ -221,8 +222,8 @@ spec_of <- function(sim, spec = NULL) {
 #' Decompose lead time into stage dwells
 #'
 #' Lead time is the sum of the time an instance spends in each stage of its own
-#' lifecycle. This function performs that sum per instance and then reports what
-#' each stage contributes to the mean and to the variance of the total (§5.4).
+#' lifecycle. This function performs that sum per instance and then reports
+#' what each stage contributes to the mean and to the variance of the total.
 #'
 #' Two details of the arithmetic are worth stating, because the obvious version
 #' of each is wrong.
@@ -330,9 +331,9 @@ print.lead_time_decomposition <- function(x, digits = 2, ...) {
 #' Find stages nothing dwells in
 #'
 #' A stage that every instance leaves at the instant it arrives is not a stage.
-#' It is a flag, or a system event, or a configuration row that was never a wait
-#' in the first place, and it will never produce a measurement worth acting on
-#' (§5.6).
+#' It is a flag, or a system event, or a configuration row that was never a
+#' wait in the first place, and it will never produce a measurement worth
+#' acting on.
 #'
 #' The scan is a dwell distribution per stage with the share of visits ending
 #' within `tol_hours`, plus the stage those instantaneous visits collapse onto.

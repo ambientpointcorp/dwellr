@@ -25,10 +25,10 @@ events after \code{as_of} are discarded, and each instance's stage is whatever i
 had reached by then. Instances that had not yet been created are dropped.
 }
 \details{
-This is what makes the censoring bias of Chapter 6 measurable rather than
-argued. The same corpus, observed at a sequence of cutoffs, gives a sequence
-of in-flight sets, and the naive average over completed visits can be
-compared against an estimator that uses the censored ones at each.
+This is what makes the censoring bias measurable rather than argued. The
+same corpus, observed at a sequence of cutoffs, gives a sequence of
+in-flight sets, and the naive average over completed visits can be compared
+against an estimator that uses the censored ones at each.
 }
 \examples{
 sim <- simulate_lifecycles(n = 500, seed = 1)

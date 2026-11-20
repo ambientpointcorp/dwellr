@@ -1,21 +1,20 @@
 #' A single-SKU warehouse with an append-only ledger
 #'
 #' @description
-#' The simulation model developed in Chapter 1. It maintains two mutable
-#' numbers — the signed inventory level and the quantity on order — and appends
-#' a row to a private ledger whenever either changes. Every other quantity is
-#' derived from those two on demand.
+#' A simulation model of one stocked item. It maintains two mutable numbers —
+#' the signed inventory level and the quantity on order — and appends a row to
+#' a private ledger whenever either changes. Every other quantity is derived
+#' from those two on demand.
 #'
 #' @details
-#' The derivation is the pair of identities in Section 1.2: the signed level
-#' is what is held less what is owed, and the position is the level plus what
-#' is on order.
+#' The derivation is a pair of identities: the signed level is what is held
+#' less what is owed, and the position is the level plus what is on order.
 #'
 #' \deqn{I_t = I_t^{+} - I_t^{-}, \qquad IP_t = I_t + O_t.}
 #'
 #' Deriving state from a ledger rather than maintaining it alongside one is the
-#' approach Part II applies to real operations, where the ledger is an ERP's
-#' event stream rather than a list built in a loop.
+#' approach this package applies to real operations, where the ledger is an
+#' ERP's event stream rather than a list built in a loop.
 #'
 #' @section Timing convention:
 #' A receipt is posted at `period`; an issue is posted at `period + 1`. The

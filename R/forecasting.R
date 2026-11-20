@@ -1,17 +1,17 @@
-# Chapter 4 models. The benchmark forecasts, the accuracy metrics used to
-# compare them, rolling-origin evaluation, and the bridge from a demand
-# forecast to a safety-stock figure.
+# The benchmark forecasts, the accuracy metrics used to compare them,
+# rolling-origin evaluation, and the bridge from a demand forecast to a
+# safety-stock figure.
 #
-# ETS and ARIMA are not reimplemented here; the chapter uses the forecast
-# package for those, which is well tested and widely used. What this file adds
-# is the material the book needs and that package does not supply: a single
-# consistent accuracy table, and the lead-time demand calculation of Section
-# 4.11 that Part II then takes apart.
+# ETS and ARIMA are not reimplemented here; the forecast package is used for
+# those, which is well tested and widely used. What this file adds is the
+# material this package needs and that one does not supply: a single consistent
+# accuracy table, and the lead-time demand calculation the stage functions then
+# take apart.
 
 #' Benchmark forecasts
 #'
-#' The four methods any more sophisticated forecast must beat (Section 4.2).
-#' Each returns a numeric vector of length `h`.
+#' The four methods any more sophisticated forecast must beat. Each returns a
+#' numeric vector of length `h`.
 #'
 #' * `fc_mean` — the mean of the history, appropriate when the series has no
 #'   trend or seasonality.
@@ -60,7 +60,7 @@ fc_seasonal_naive <- function(y, h, period) {
 #' Forecast accuracy
 #'
 #' The standard error measures, computed together so that a comparison is made
-#' on one basis (Section 4.3).
+#' on one basis.
 #'
 #' * `ME` — mean error. Measures bias; a method can have near-zero ME and large
 #'   errors.
@@ -98,8 +98,7 @@ fc_accuracy <- function(forecast, actual, train, scale_lag = 1) {
 #'
 #' Evaluates a forecasting function at many successive origins rather than on
 #' one train/test split, which gives a more stable estimate of accuracy and
-#' avoids the result depending on where the single split happened to fall
-#' (Section 4.3).
+#' avoids the result depending on where the single split happened to fall.
 #'
 #' @param y The full series.
 #' @param fn A function of `(history, h)` returning `h` forecasts.
@@ -138,12 +137,12 @@ fc_rolling_origin <- function(y, fn, h = 1, n_origins = 20) {
 #'
 #' The second variance term is quadratic in mean demand, so for a fast-moving
 #' item it dominates the first even when the lead time looks reasonably
-#' consistent. Section 4.11 works an instance; Part II takes the term apart
-#' and asks where it comes from.
+#' consistent. [dwell_variance_contribution()] takes that term apart and asks
+#' which stage it comes from.
 #'
 #' @param demand_mean,demand_sd Per-period demand.
 #' @param lead_time_mean,lead_time_sd Lead time, in periods. A standard
-#'   deviation of zero gives the constant-lead-time case of Chapter 2.
+#'   deviation of zero gives the constant-lead-time case.
 #' @return A list with `mean`, `variance`, `sd`, and `demand_share` and
 #'   `lead_time_share` — the two components as fractions of the variance.
 #' @examples
@@ -167,9 +166,9 @@ lead_time_demand <- function(demand_mean, demand_sd,
 #'
 #' @description
 #' The stock held above expected lead-time demand so that a stockout occurs no
-#' more often than the target allows. Supply either `service_level` directly
-#' or a pair of costs, in which case the critical fractile of Section 3.1
-#' supplies it.
+#' more often than the target allows. Supply either `service_level` directly or
+#' a pair of costs, in which case the critical fractile of
+#' [nv_critical_fractile()] supplies it.
 #'
 #' @details
 #' For a normal lead-time demand,

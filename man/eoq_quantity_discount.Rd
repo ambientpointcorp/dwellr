@@ -30,11 +30,11 @@ omitted, which is sound only because prices fall as quantity rises.
 }
 \description{
 Restores the purchase cost to the objective, which the EOQ drops because it
-does not depend on the order quantity. Under an all-units schedule, reaching a
-breakpoint lowers the price on the whole order, so the total cost function
+does not depend on the order quantity. Under an all-units schedule, reaching
+a breakpoint lowers the price on the whole order, so the total cost function
 is discontinuous at each breakpoint and is \strong{not} convex. The optimum is
 frequently at a breakpoint rather than at any band's EOQ, so the bands are
-enumerated rather than searched by derivative (Section 2.7).
+enumerated rather than searched by derivative.
 }
 \examples{
 eoq_quantity_discount(demand_rate = 10, order_cost = 100,

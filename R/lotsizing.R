@@ -1,15 +1,15 @@
-# Part I models, promoted from the chapters as they are written.
+# The classical deterministic lot-sizing models.
 #
 # Argument order follows eoq(): demand rate first, then costs, then anything
 # specific to the model. Every function here is exercised by a test that
-# asserts the figure printed in the corresponding section of the book, so a
-# change that alters a published result fails the build.
+# asserts its documented figure, so a change that alters a published result
+# fails the build.
 
 #' Relevant cost at a given order interval
 #'
 #' The EOQ objective expressed in terms of the replenishment interval rather
-#' than the order quantity, which is the form Section 2.6 uses for
-#' powers-of-two policies.
+#' than the order quantity, which is the form powers-of-two policies are stated
+#' in.
 #'
 #' @param interval Replenishment interval \eqn{T}, in periods.
 #' @inheritParams eoq
@@ -30,7 +30,7 @@ eoq_cost_interval <- function(interval, demand_rate, order_cost,
 #' @description
 #' What a given order quantity costs above the optimum, as a fraction of the
 #' optimal cost. The curve is flat near the optimum, which is what makes
-#' rounding to a case or pallet quantity essentially free (Section 2.3).
+#' rounding to a case or pallet quantity essentially free.
 #'
 #' @details
 #' The ratio of the cost at \eqn{Q} to the cost at \eqn{Q^*} depends only on
@@ -65,7 +65,7 @@ eoq_penalty <- function(ratio) {
 #' Using \eqn{fK} in place of \eqn{K} gives \eqn{\sqrt{f}\,Q^*}, so the cost
 #' penalty is `eoq_penalty(sqrt(f))`. Because \eqn{K} and \eqn{h} enter
 #' \eqn{Q^*} symmetrically, an error of factor \eqn{f} in \eqn{h} carries the
-#' same penalty as an error of factor \eqn{1/f} in \eqn{K} (Section 2.4).
+#' same penalty as an error of factor \eqn{1/f} in \eqn{K}.
 #'
 #' @param factor The estimate as a multiple of the true value.
 #' @return Fractional cost penalty.
@@ -81,9 +81,9 @@ eoq_misestimate_penalty <- function(factor) {
 #' Reorder point under a known, constant lead time
 #'
 #' The inventory **position** at which a replenishment must be placed so that
-#' it arrives as stock reaches zero. Numerically identical to the pipeline
-#' inventory of Section 1.6: one is the stock that must be in transit, the
-#' other the position at which transit must begin.
+#' it arrives as stock reaches zero. Numerically identical to pipeline
+#' inventory: one is the stock that must be in transit, the other the position
+#' at which transit must begin.
 #'
 #' @inheritParams eoq
 #' @param lead_time Lead time \eqn{L}, in periods.
@@ -111,7 +111,7 @@ reorder_point <- function(demand_rate, lead_time) {
 #'
 #' The resulting policy is never worse than
 #' \eqn{\frac{1}{2}(\sqrt{2} + 1/\sqrt{2}) = 1.0607} times the unconstrained
-#' optimum, a bound independent of the instance (Section 2.6).
+#' optimum, a bound independent of the instance.
 #'
 #' @param optimal_interval The unconstrained optimum \eqn{T^* = Q^*/d}.
 #' @param base_interval The base period \eqn{T_b}.
@@ -141,11 +141,11 @@ pow2_bound <- function() eoq_penalty(sqrt(2))
 #' Order quantity under an all-units quantity discount
 #'
 #' Restores the purchase cost to the objective, which the EOQ drops because it
-#' does not depend on the order quantity. Under an all-units schedule, reaching a
-#' breakpoint lowers the price on the whole order, so the total cost function
+#' does not depend on the order quantity. Under an all-units schedule, reaching
+#' a breakpoint lowers the price on the whole order, so the total cost function
 #' is discontinuous at each breakpoint and is **not** convex. The optimum is
 #' frequently at a breakpoint rather than at any band's EOQ, so the bands are
-#' enumerated rather than searched by derivative (Section 2.7).
+#' enumerated rather than searched by derivative.
 #'
 #' @inheritParams eoq
 #' @param breakpoints Ascending lower bounds of each price band, starting at 0.
@@ -181,16 +181,16 @@ eoq_quantity_discount <- function(demand_rate, order_cost, holding_cost,
 #' Economic order quantity with planned backorders
 #'
 #' Treats a shortage as a cost to be traded off rather than avoided. Valid only
-#' under the backorder regime of Section 1.4, where unmet demand waits rather
-#' than departing.
+#' under a backorder regime, where unmet demand waits rather than departing.
 #'
 #' The order quantity is the ordinary EOQ inflated by \eqn{\sqrt{(h+b)/b}}, and
 #' the optimal backordered fraction depends only on the ratio of \eqn{h} to
-#' \eqn{b} (Section 2.8).
+#' \eqn{b}.
 #'
 #' @inheritParams eoq
-#' @param shortage_cost Shortage cost \eqn{b} per unit per period. The book
-#'   reserves \eqn{p} for the selling price and uses \eqn{b} throughout.
+#' @param shortage_cost Shortage cost \eqn{b} per unit per period. Throughout
+#'   the package \eqn{p} is reserved for the selling price, so the shortage
+#'   cost is \eqn{b}.
 #' @return A list with the order quantity `Q`, the planned backordered
 #'   `fraction`, and the resulting `cost` per unit time.
 #' @examples
@@ -220,7 +220,7 @@ backorder_policy <- function(demand_rate, order_cost, holding_cost,
 #'
 #' The result is the EOQ with \eqn{h} replaced by \eqn{h(1-\rho)}: finite
 #' production acts exactly as a reduction in the holding cost. As
-#' \eqn{P \to \infty} it recovers the EOQ (Section 2.9).
+#' \eqn{P \to \infty} it recovers the EOQ.
 #'
 #' @inheritParams eoq
 #' @param production_rate Production rate \eqn{P}, which must exceed
@@ -244,8 +244,7 @@ epq <- function(demand_rate, order_cost, holding_cost, production_rate) {
 #'
 #' Several items sharing one machine, restricted to schedules in which every
 #' item is produced exactly once per cycle. The exact problem is NP-hard; this
-#' restriction makes it tractable and is the standard practical response
-#' (Section 2.10).
+#' restriction makes it tractable and is the standard practical response.
 #'
 #' @param items A data frame with columns `d`, `P`, `K` and `h`: demand rate,
 #'   production rate, setup cost and holding cost for each item.
@@ -272,7 +271,7 @@ elsp_common_cycle <- function(items) {
 #' Splits the fixed cost into a major cost incurred whenever any order is
 #' placed and a minor cost per item included in it. Each item joins every
 #' `m`-th order, so items that are slow moving and cheap to hold ride along
-#' with deliveries that would have been made regardless (Section 2.11).
+#' with deliveries that would have been made regardless.
 #'
 #' Solved by alternating between the base interval and the multiples, which
 #' converges quickly. This is a heuristic, not an exact method.
@@ -314,7 +313,7 @@ jrp <- function(major_cost, minor_costs, holding_costs, demand_rates,
 #' make it tractable: it is never optimal to order while stock remains, and
 #' each order therefore covers a contiguous block of periods. The problem
 #' reduces to a shortest path on an acyclic graph and is solved by one forward
-#' pass (Section 2.12).
+#' pass.
 #'
 #' @param demand Demand in each period, in order.
 #' @inheritParams eoq

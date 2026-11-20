@@ -10,7 +10,7 @@ test_that("routing keys on the action and reports what it could not match", {
   expect_equal(r$recipient[1:2], c("warehouse", "finance"))
   expect_equal(r$matched, c(TRUE, TRUE, FALSE))
   # An unmatched item carries no recipient, which is what makes the gap
-  # visible instead of silent (§18.8).
+  # visible instead of silent.
   expect_true(is.na(r$recipient[3]))
 
   # A duplicate key is a table defect and is refused rather than resolved by

@@ -20,9 +20,9 @@ matched nothing.
 }
 \description{
 Routing-table completeness is an invariant, which means it can be tested
-rather than hoped for. In one engagement four items fell through to a default
-map carrying no action type, and the highest-value order in the queue
-escalated to no recipient at all (§18.8).
+rather than hoped for. In one engagement four items fell through to a
+default map carrying no action type, and the highest-value order in the
+queue escalated to no recipient at all.
 }
 \details{
 The test to run is this one, on the live population and not on the keys

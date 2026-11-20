@@ -20,7 +20,7 @@ A list with the two rates, the \code{utilization}, whether the queue is
 Alerts arrive and reviewers serve them, which makes an exception channel a
 queue and gives it the property every queue has: if work arrives faster than
 it is served, the backlog grows without bound and no amount of effort inside
-the channel repairs it (§15.1).
+the channel repairs it.
 }
 \details{
 The ratio of the two rates is the utilization. Below one the queue is

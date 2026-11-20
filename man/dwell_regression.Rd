@@ -21,8 +21,8 @@ hazard ratio and time ratio, and \code{ph_test}, the proportional-hazards test.
 }
 \description{
 Covariates turn one dwell distribution for a stage into a distribution per
-order, which is what Chapter 7 needs in order
-to attribute variance to drivers rather than only to stages (§6.9).
+order, which is what attributing variance to drivers rather than only to
+stages requires.
 }
 \details{
 Two model families answer the question differently and both are reported.

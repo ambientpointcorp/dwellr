@@ -1,14 +1,13 @@
-# These reproduce worked numerical results printed in the book. A change that
-# breaks one fails the build rather than going unnoticed -- which is the whole
-# reason the test suite is tied to the text.
+# These reproduce the worked numerical results the documentation prints. A
+# change that breaks one fails the build rather than going unnoticed.
 
-test_that("EOQ reproduces the book's instance (Chapter 2, Example 3)", {
-  # The instance carried through Chapter 2: K = 100, h = 1, d = 10.
+test_that("EOQ reproduces its documented instance", {
+  # The instance used throughout: K = 100, h = 1, d = 10.
   # Q* = sqrt(2 * 100 * 10 / 1) = sqrt(2000) = 44.7214.
   #
-  # An earlier version of this test cited Example 3 while using h = 2. The
-  # arithmetic was correct and the citation was not, so the suite was not in
-  # fact reproducing the figure printed in the book.
+  # An earlier version of this test cited the worked example while using
+  # h = 2. The arithmetic was correct and the citation was not, so the suite
+  # was not in fact reproducing the documented figure.
   q <- eoq(demand_rate = 10, order_cost = 100, holding_cost = 1)
   expect_equal(q, sqrt(2000), tolerance = 1e-9)
   expect_equal(round(q, 4), 44.7214)
@@ -27,7 +26,7 @@ test_that("EOQ reproduces the book's instance (Chapter 2, Example 3)", {
   expect_equal(round(100 * 10 / q, 4), 22.3607)
 })
 
-test_that("the EOQ cost curve is flat near the optimum (Section 2.3)", {
+test_that("the EOQ cost curve is flat near the optimum", {
   K <- 100; d <- 10; h <- 1
   q <- eoq(d, K, h)
 
@@ -39,7 +38,7 @@ test_that("the EOQ cost curve is flat near the optimum (Section 2.3)", {
                  penalty(r), tolerance = 1e-9)
   }
 
-  # Figures printed in Section 2.3.
+  # The documented penalty figures.
   expect_equal(round(100 * penalty(1.2), 2), 1.67)
   expect_equal(round(100 * penalty(0.8), 2), 2.50)
   expect_equal(round(100 * penalty(2.0), 2), 25.00)
@@ -48,7 +47,7 @@ test_that("the EOQ cost curve is flat near the optimum (Section 2.3)", {
   expect_lt(eoq_cost(d, K, h, 50) / eoq_cost(d, K, h, q) - 1, 0.01)
 })
 
-test_that("a misestimated K costs little (Section 2.4)", {
+test_that("a misestimated K costs little", {
   K <- 100; d <- 10; h <- 1
   q_true <- eoq(d, K, h)
 
@@ -62,7 +61,7 @@ test_that("a misestimated K costs little (Section 2.4)", {
                  mis(f), tolerance = 1e-9)
   }
 
-  # Figures printed in Section 2.4: a 40% underestimate costs 3.28%, and a
+  # The documented figures: a 40% underestimate costs 3.28%, and a
   # factor-of-two error in either direction costs 6.07%.
   expect_equal(round(100 * mis(0.6), 2), 3.28)
   expect_equal(round(100 * mis(0.5), 2), 6.07)
@@ -73,7 +72,7 @@ test_that("a misestimated K costs little (Section 2.4)", {
   expect_equal(mis(2), mis(0.5), tolerance = 1e-12)
 })
 
-test_that("the newsvendor matches the book's lambda = 100 example", {
+test_that("the newsvendor matches its documented lambda = 100 example", {
   expect_equal(nv_critical_fractile(overage = 1, underage = 5), 5 / 6)
   expect_equal(nv_quantity(1, 5, function(p) stats::qpois(p, lambda = 100)), 110)
 })

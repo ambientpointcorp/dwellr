@@ -35,10 +35,9 @@ A data frame with one row per approach carrying the implied miss
 cost and the critical fractile \code{\link[=threshold_from_cost]{threshold_from_cost()}} would use.
 }
 \description{
-The miss cost is the input the threshold of @sec-the-critical-fractile is
-most sensitive to and the one nobody measures. Three approaches are in
-common use, they rest on different assumptions, and they disagree by enough
-to move the threshold (§23.7).
+The miss cost is the input \code{\link[=threshold_from_cost]{threshold_from_cost()}} is most sensitive to and
+the one nobody measures. Three approaches are in common use, they rest on
+different assumptions, and they disagree by enough to move the threshold.
 }
 \details{
 \emph{Expediting} prices the miss at what it costs to recover: the freight

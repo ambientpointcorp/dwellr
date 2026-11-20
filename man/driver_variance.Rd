@@ -32,9 +32,9 @@ decomposition, and where it is large the shares should be read as
 indicative only.
 
 The unexplained share is the figure to read first. A stage whose dwell is
-driven by a mixture that no order attribute predicts (§6.5) will leave
-almost all of its variance unexplained, and no reweighting of these drivers
-will change that.
+driven by a mixture that no order attribute predicts will leave almost all
+of its variance unexplained, and no reweighting of these drivers will change
+that.
 }
 \examples{
 sim <- simulate_lifecycles(n = 2000, seed = 11)

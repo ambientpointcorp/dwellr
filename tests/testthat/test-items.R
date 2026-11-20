@@ -70,8 +70,9 @@ test_that("the two date fields differ in whether they carry a commitment", {
   prom <- as.integer(o$promised_date - entered_day)
   has_promise <- !is.na(o$promised_date)
 
-  # The requested date is a default with an override, which is what Chapter 13
-  # tests for: a commitment has a lead time that is positive and varies.
+  # The requested date is a default with an override, which is what a
+  # date-field test looks for: a commitment has a lead time that is positive
+  # and varies.
   expect_gt(mean(req == 0), 0.75)
   expect_true(all(req >= 0))
   expect_gt(mean(req[req > 0]), 2)

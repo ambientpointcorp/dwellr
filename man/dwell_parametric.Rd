@@ -21,7 +21,7 @@ The Kaplan-Meier estimate makes no assumption about shape, which is its
 merit, and it stops at the last observed event, which is its limit. A
 parametric fit extrapolates past that point and reduces the distribution to
 two or three numbers that can be carried into a policy, at the price of an
-assumption that has to be checked rather than adopted (§6.4).
+assumption that has to be checked rather than adopted.
 }
 \details{
 The families differ in the shape of hazard they can represent, and that is

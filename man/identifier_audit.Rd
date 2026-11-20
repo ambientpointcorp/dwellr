@@ -21,8 +21,7 @@ Two failures occur in every integration that joins systems, and they pull in
 opposite directions. A collision is one identifier standing for several
 entities, which merges distinct work and understates the population. A
 fragmentation is one entity carrying several identifiers, which splits work
-and overstates it. Both are measurable before anything is built on the join
-(§10.5).
+and overstates it. Both are measurable before anything is built on the join.
 }
 \examples{
 identifier_audit(id = c("A", "A", "B", "C", "C"),

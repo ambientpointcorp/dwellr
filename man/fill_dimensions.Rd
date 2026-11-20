@@ -24,8 +24,7 @@ them.
 The order-level fractions say how much of an order was filled. They do not
 say which line was short, and a fill rate aggregated over orders weights a
 one-line order the same as a twelve-line one. This computes each dimension
-over a set of lines, which is the grain the quantities were recorded at
-(§11.5).
+over a set of lines, which is the grain the quantities were recorded at.
 }
 \details{
 Three denominators are available and they answer different questions. The

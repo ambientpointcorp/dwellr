@@ -9,17 +9,17 @@
 #' generator at different sizes, so the two cannot drift apart. The generator
 #' is part of the package rather than a script beside it, because synthetic
 #' lifecycle data carrying the right pathologies is itself one of the things
-#' the book teaches.
+#' the package provides.
 #'
 #' @format An object of class `lifecycle_sim`: a list of six elements.
 #' \describe{
 #'   \item{orders}{A data frame with 2,000 rows, one per order, carrying the
 #'     identifier, entry and finish instants, current `stage`, whether that
 #'     stage `is_terminal`, the cohort keys `branch` and `order_source`, the
-#'     order's `value` and line count, and the flags that mark the pathologies
-#'     of Chapter 8: `special_order`, `loops`, `partially_shipped`,
+#'     order's `value` and line count, and the flags that mark the lifecycle
+#'     pathologies: `special_order`, `loops`, `partially_shipped`,
 #'     `closed_short`, `stock_shortfall`, `open_ticket_residue`, and the three
-#'     fill measures of Chapter 11.}
+#'     fill measures.}
 #'   \item{events}{The append-only event log, one row per transition, with
 #'     `order_no`, `event`, `stage` and `occurred_at`.}
 #'   \item{lines}{One row per order line, carrying `qty_ordered`,
@@ -29,7 +29,7 @@
 #'     replenishment cycle, demand rate and the vendor's lead-time mean and
 #'     standard deviation.}
 #'   \item{as_of}{The observation cutoff. Orders not finished by this instant
-#'     are right-censored, which is the subject of Chapter 6.}
+#'     are right-censored.}
 #'   \item{spec}{The [stage_spec()] the generator produced this corpus
 #'     against, carried on the object so that every function reads the stage
 #'     vocabulary rather than assuming one.}

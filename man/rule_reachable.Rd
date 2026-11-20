@@ -20,12 +20,12 @@ how many rows \code{match}.
 }
 \description{
 A rule that did not fire because nothing qualified and a rule that cannot
-fire read identically in a report: both produce no alerts (§21.9). The
-difference is worth a test, because the second kind has been seen to sit in
-production for months -- a stage list that never contained credit holds
-made every credit-hold rule unreachable from the day it was written, and a
-value field spelled differently from what the evaluator read returned null
-on every item and disabled the rule that depended on it.
+fire read identically in a report: both produce no alerts. The difference is
+worth a test, because the second kind has been seen to sit in production for
+months -- a stage list that never contained credit holds made every
+credit-hold rule unreachable from the day it was written, and a value field
+spelled differently from what the evaluator read returned null on every item
+and disabled the rule that depended on it.
 }
 \details{
 Each rule is checked in three steps: the field it reads has to exist, it

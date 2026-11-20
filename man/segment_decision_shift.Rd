@@ -31,7 +31,7 @@ not by being significant or by partitioning the population into groups that
 differ. This fits the alerting threshold of
 \code{\link[=threshold_from_dwell_quantile]{threshold_from_dwell_quantile()}} once on the pooled population and once
 within each level of the key, and reports how many visits are classified
-differently under the two (§10.7).
+differently under the two.
 }
 \details{
 The quantity to read is \code{share_changed}. A key that moves no visit across

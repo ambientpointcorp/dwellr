@@ -1,9 +1,9 @@
-# Figures printed in Chapter 3.
+# The published figures for the stochastic models.
 
 d10 <- 0:40
 p10 <- stats::dpois(d10, 10)
 
-test_that("the Newsvendor matches Section 3.1 for normal demand", {
+test_that("the Newsvendor matches its published figures for normal demand", {
   Q <- nv_quantity(1, 5, function(p) stats::qnorm(p, 10, 2))
   expect_equal(round(Q, 4), 11.9348)
   expect_equal(round(nv_cost(Q, 1, 5, mean = 10, sd = 2), 4), 2.9982)
@@ -32,7 +32,7 @@ test_that("the normal approximation and exact Poisson agree on Q, not cost", {
   expect_lt(abs(approx / exact - 1), 0.02)
 })
 
-test_that("alpha and beta are different targets (Section 3.2)", {
+test_that("alpha and beta are different targets", {
   Q <- stats::qnorm(5 / 6, 10, 2)
   sl <- nv_service_levels(Q, 10, 2)
   # The critical fractile IS the alpha attained.
@@ -49,7 +49,7 @@ test_that("alpha and beta are different targets (Section 3.2)", {
   expect_lt(q_beta, q_alpha)
 })
 
-test_that("base-stock levels match the Newsvendor solution (Section 3.5)", {
+test_that("base-stock levels match the Newsvendor solution", {
   bs <- policy_base_stock(periods = 5, support = d10, probs = p10,
                           holding_cost = 1, shortage_cost = 5)
   expect_equal(bs$S, rep(13, 5))
@@ -58,7 +58,7 @@ test_that("base-stock levels match the Newsvendor solution (Section 3.5)", {
   expect_equal(bs$S[1], stats::qpois(5 / 6, 10))
 })
 
-test_that("the optimal (s, S) policy matches Section 3.7", {
+test_that("the optimal (s, S) policy matches its published figures", {
   expect_equal(round(ss_cost(6, 40, d10, p10, 64, 1, 9), 4), 35.0216)
   best <- policy_ss(d10, p10, order_cost = 64, holding_cost = 1,
                     shortage_cost = 9, S_range = 20:50)

@@ -1,9 +1,8 @@
 #' Expand an order population to line grain
 #'
 #' The order table carries a line count and a line fill fraction. This expands
-#' it into one row per line, which is the grain Chapter 10 needs in order to
-#' ask what changes when the entity is finer than the record the events were
-#' written against.
+#' it into one row per line, which is the grain needed to ask what changes when
+#' the entity is finer than the record the events were written against.
 #'
 #' The expansion is deterministic and it is an expansion, not an independent
 #' draw. A line inherits its order's events, its branch and its channel, and
@@ -12,7 +11,7 @@
 #' those depend on how many lines an order has and on how many were satisfied.
 #' It does not support questions about lines moving independently of their
 #' order, because in this table they cannot: a line has no events of its own.
-#' Section 8.5 measures the independent case from the split records, which is
+#' The independent case has to be measured from the split records, which is
 #' where that question belongs.
 #'
 #' A line counts as shipped only when the order reached a stage in which
@@ -75,9 +74,8 @@ order_lines <- function(sim, spec = NULL, cols = NULL) {
     stringsAsFactors = FALSE)
   # The cohort keys and the value share are carried when the population has
   # them. They are descriptive rather than structural: an extract without a
-  # branch column can still be asked every question about grain that Chapter
-  # 10 poses, and refusing it for a missing label would be refusing the
-  # analysis over the annotation.
+  # branch column can still be asked every question about grain, and refusing
+  # it for a missing label would be refusing the analysis over the annotation.
   if (have("branch")) out$branch <- o[[cn[["branch"]]]][idx]
   if (have("source")) out$order_source <- o[[cn[["source"]]]][idx]
   if (have("value")) out$value_share <- o[[cn[["value"]]]][idx] / n_lines[idx]
@@ -96,7 +94,7 @@ order_lines <- function(sim, spec = NULL, cols = NULL) {
   # The source disposition is what a line-level status column in an order
   # management system would hold: shipped, cancelled at close, or open. It is
   # a statement about where the line stands and not about what happened to it,
-  # which is the distinction Section 10.8 measures.
+  # which is the distinction `segment_decision_shift()` measures.
   short_close <- if (have("closed_short")) o[[cn[["closed_short"]]]][idx]
                  else rep(FALSE, length(idx))
   out$disposition <- ifelse(
@@ -115,18 +113,18 @@ order_lines <- function(sim, spec = NULL, cols = NULL) {
 
 #' Test a candidate entity against an event log
 #'
-#' Section 8.7 states the test an entity choice has to pass: every event in the
-#' log attaches to exactly one instance of the chosen entity. This applies it
-#' and reports the two ways the test fails, since an event that attaches to no
-#' instance and an event that attaches to several are different problems with
-#' different repairs.
+#' An entity choice has one test to pass: every event in the log attaches to
+#' exactly one instance of the chosen entity. This applies it and reports the
+#' two ways the test fails, since an event that attaches to no instance and an
+#' event that attaches to several are different problems with different
+#' repairs.
 #'
 #' The second condition is separate and it is the one that disqualifies most
 #' convenient entities. An instance record has to be able to say whether
 #' somebody still owes something, because that is the question a monitoring
 #' system exists to answer. A record that is closed when its work is finished
 #' can answer it; a record that is closed when a document is printed cannot,
-#' and Section 10.2 measures what the difference costs.
+#' and the difference between the two has a measurable cost.
 #'
 #' @param events An event log with one row per transition.
 #' @param instances A candidate instance table, one row per instance.
@@ -181,8 +179,7 @@ entity_check <- function(events, instances, key, owed = NULL) {
 #' opposite directions. A collision is one identifier standing for several
 #' entities, which merges distinct work and understates the population. A
 #' fragmentation is one entity carrying several identifiers, which splits work
-#' and overstates it. Both are measurable before anything is built on the join
-#' (§10.5).
+#' and overstates it. Both are measurable before anything is built on the join.
 #'
 #' @param id Identifier values, one per record.
 #' @param entity The entity each record belongs to, same length as `id`.
@@ -224,7 +221,7 @@ identifier_audit <- function(id, entity) {
 #' differ. This fits the alerting threshold of
 #' [threshold_from_dwell_quantile()] once on the pooled population and once
 #' within each level of the key, and reports how many visits are classified
-#' differently under the two (§10.7).
+#' differently under the two.
 #'
 #' The quantity to read is `share_changed`. A key that moves no visit across
 #' the threshold adds a dimension to every report and changes nothing, whatever

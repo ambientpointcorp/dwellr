@@ -25,11 +25,11 @@ attachment is \code{unique}, and, when \code{owed} is given, the count still owi
 and whether the record \code{knows_owed}.
 }
 \description{
-Section 8.7 states the test an entity choice has to pass: every event in the
-log attaches to exactly one instance of the chosen entity. This applies it
-and reports the two ways the test fails, since an event that attaches to no
-instance and an event that attaches to several are different problems with
-different repairs.
+An entity choice has one test to pass: every event in the log attaches to
+exactly one instance of the chosen entity. This applies it and reports the
+two ways the test fails, since an event that attaches to no instance and an
+event that attaches to several are different problems with different
+repairs.
 }
 \details{
 The second condition is separate and it is the one that disqualifies most
@@ -37,7 +37,7 @@ convenient entities. An instance record has to be able to say whether
 somebody still owes something, because that is the question a monitoring
 system exists to answer. A record that is closed when its work is finished
 can answer it; a record that is closed when a document is printed cannot,
-and Section 10.2 measures what the difference costs.
+and the difference between the two has a measurable cost.
 }
 \examples{
 sim <- simulate_lifecycles(n = 500, seed = 11)

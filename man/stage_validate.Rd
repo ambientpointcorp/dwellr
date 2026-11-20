@@ -30,7 +30,8 @@ happen, and an event after a terminal state extends a lifecycle that was
 over.
 
 Instances still in flight are not a violation. They end in a non-terminal
-stage because they have not finished, which is the subject of Chapter 6.
+stage because they have not finished, which is what makes their dwell
+right-censored.
 }
 \examples{
 sim <- simulate_lifecycles(n = 300, seed = 1)

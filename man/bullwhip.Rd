@@ -18,10 +18,10 @@ which is what a batching or stalling stage leaves behind.
 }
 \description{
 The bullwhip ratio -- the variance of the orders divided by the variance of
-the demand that drove them -- measured on a realized pair of series. A
-ratio above one says the orders a supplier sees are more variable
-than the demand that caused them, and §20.7 measures how much of that an
-unwatched upstream stall contributes.
+the demand that drove them -- measured on a realized pair of series. A ratio
+above one says the orders a supplier sees are more variable than the demand
+that caused them, and an unwatched upstream stall is one of the things that
+makes it so.
 }
 \examples{
 set.seed(1)

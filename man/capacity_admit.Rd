@@ -38,16 +38,16 @@ A list with the \code{admitted} logical vector, the \code{cutoff} score, the
 }
 \description{
 A threshold answers whether an instance is worth reviewing. It does not ask
-whether anybody is free to review it, and Section 14.3 showed
-that a cost ratio with a dear miss admits almost the whole population. Where
-capacity binds, the operating question is not which instances qualify but
-which \code{capacity} of them to work first (§15.5).
+whether anybody is free to review it, and a cost ratio with a dear miss
+admits almost the whole population. Where capacity binds, the operating
+question is not which instances qualify but which \code{capacity} of them to work
+first.
 }
 \details{
 Admission by capacity turns the threshold problem into a ranking problem.
 The instances admitted are the top \code{capacity} by score, and what matters
 about the score stops being its calibration and becomes its ordering, which
-is the reverse of the emphasis in Section 14.5 and worth
+is the reverse of the emphasis a cost-ratio threshold needs, and worth
 noticing when the same model serves both.
 
 The \code{marginal} table is the part to read. Average precision over an admitted

@@ -22,7 +22,7 @@ for being off by that much.
 Using \eqn{fK} in place of \eqn{K} gives \eqn{\sqrt{f}\,Q^*}, so the cost
 penalty is \code{eoq_penalty(sqrt(f))}. Because \eqn{K} and \eqn{h} enter
 \eqn{Q^*} symmetrically, an error of factor \eqn{f} in \eqn{h} carries the
-same penalty as an error of factor \eqn{1/f} in \eqn{K} (Section 2.4).
+same penalty as an error of factor \eqn{1/f} in \eqn{K}.
 }
 \examples{
 eoq_misestimate_penalty(0.6)  # a 40\% underestimate costs 3.28\%

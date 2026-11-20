@@ -1,6 +1,6 @@
-# Chapter 9 models. A probability that ranks well and reports the wrong scale
-# is useless to a threshold, because the threshold compares against a number
-# (§9.14). These functions measure that error and repair it.
+# A probability that ranks well and reports the wrong scale is useless to a
+# threshold, because the threshold compares against a number. These functions
+# measure that error and repair it.
 
 #' Measure how far a predicted probability is from the observed rate
 #'
@@ -58,9 +58,8 @@ calibrate_reliability <- function(p, outcome, bins = 10) {
 
 #' Repair a probability scale
 #'
-#' Fits a map from predicted probability to observed rate, which is what
-#' Chapter 14 needs before a score can be compared against a cost ratio
-#' (§9.14).
+#' Fits a map from predicted probability to observed rate, which is what a
+#' score needs before it can be compared against a cost ratio.
 #'
 #' *Isotonic regression* fits a monotone step function. It is flexible and it
 #' ties predictions the raw score separated, so it can cost a little
@@ -71,8 +70,8 @@ calibrate_reliability <- function(p, outcome, bins = 10) {
 #' small.
 #'
 #' Fit this on data the model did not train on and the evaluation did not use.
-#' A calibration fitted on the evaluation period reports a flattering figure
-#' for the reason §9.12 gives about any quantity estimated where it is tested.
+#' A calibration fitted on the evaluation period reports a flattering figure,
+#' as any quantity estimated where it is tested will.
 #'
 #' @param p Predicted probabilities from the model being repaired.
 #' @param outcome Observed outcomes on the same rows, logical or 0/1.
@@ -83,7 +82,7 @@ calibrate_reliability <- function(p, outcome, bins = 10) {
 #' @return An object of class `dwellr_calibration`, with a `predict()` method
 #'   that applies the map to new predictions. Carries the method, the number of
 #'   rows it was fitted on, and the reliability of the fitting set before and
-#'   after, so that a map can be versioned with the model as §9.20 requires.
+#'   after, so that a map can be versioned with the model.
 #'
 #' @examples
 #' set.seed(1)

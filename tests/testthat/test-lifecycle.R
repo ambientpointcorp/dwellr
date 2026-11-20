@@ -12,7 +12,7 @@ test_that("stage_spec rejects a specification that is not self-consistent", {
   expect_equal(unname(spec$class[["b"]]), "unclassified")
 })
 
-test_that("the book's specification validates against the book's data", {
+test_that("the bundled specification validates against the bundled data", {
   sim <- simulate_lifecycles(n = 800, seed = 2)
   v <- stage_validate(sim, distribution_stage_spec())
   expect_equal(sum(v$violations), 0)
@@ -53,7 +53,7 @@ test_that("the mean of lead time decomposes exactly", {
   sim <- simulate_lifecycles(n = 1200, seed = 7)
   dec <- lead_time_decompose(sim, spec = distribution_stage_spec())
   total <- attr(dec, "total")
-  # Section 5.4: expectation is linear, so the column is a decomposition.
+  # Expectation is linear, so the column is a decomposition.
   expect_equal(sum(dec$mean_hours), total[["mean"]], tolerance = 1e-8)
 })
 
@@ -98,7 +98,7 @@ test_that("degenerate_stages distinguishes an empty stage from a terminal one", 
   expect_true(all(scan$verdict[scan$stage == "awaiting_supply"] == "ok"))
 
   # A print event logged one second before the release it accompanies is a
-  # second name for that release, not a stage (Section 5.6).
+  # second name for that release, not a stage.
   printed <- sim$events[sim$events$event == "pick_ticket_released", ]
   printed$event <- "pick_ticket_printed"
   printed$stage <- "printed"

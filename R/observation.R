@@ -1,19 +1,19 @@
-# Chapter 23 models. What monitoring costs, in the terms Chapter 2 uses for
-# ordering. The cost of a look and the cost of a wait trade against each other
-# the way an ordering cost trades against a holding cost, and the review
-# interval that balances them has the same square-root form.
+# What monitoring costs, in the terms the lot-sizing models use for ordering.
+# The cost of a look and the cost of a wait trade against each other the way an
+# ordering cost trades against a holding cost, and the review interval that
+# balances them has the same square-root form.
 
 #' The cost structure of a monitoring program
 #'
-#' Three components, and they scale differently (§23.1). *Instrumentation* is
-#' fixed: the extract, the event log, the deployment. *Observation* is per
-#' scan, so it scales with cadence and not with volume. *Decision* is per item
-#' decided, so it scales with volume, and when inference is metered it is the
-#' component that grows without anybody choosing to grow it.
+#' Three components, and they scale differently. *Instrumentation* is fixed:
+#' the extract, the event log, the deployment. *Observation* is per scan, so it
+#' scales with cadence and not with volume. *Decision* is per item decided, so
+#' it scales with volume, and when inference is metered it is the component
+#' that grows without anybody choosing to grow it.
 #'
 #' Reporting them separately is the point. A program whose cost is dominated by
 #' instrumentation has a volume problem it does not yet have; one dominated by
-#' per-decision cost has an allocation problem, which is §23.3.
+#' per-decision cost has an allocation problem instead.
 #'
 #' @param fixed_annual Annual instrumentation cost.
 #' @param per_observation Cost of one scan.
@@ -53,8 +53,8 @@ observation_cost <- function(fixed_annual, per_observation,
 #' @description
 #' A scan costs something and a condition that has arisen waits, on average,
 #' half the interval before the next scan finds it. Those two costs move
-#' oppositely in the interval, which makes the problem the one Chapter 2
-#' solves for order quantity.
+#' oppositely in the interval, which makes the problem the one [eoq()] solves
+#' for order quantity.
 #'
 #' @details
 #' Writing \eqn{c_s} for the cost of a scan, \eqn{c_\ell} for the cost of a
@@ -64,9 +64,9 @@ observation_cost <- function(fixed_annual, per_observation,
 #'       \qquad R^{*} = \sqrt{\frac{2 c_s}{\lambda c_\ell}}.}
 #'
 #' The analogy carries the insensitivity with it. Half or double the optimal
-#' interval costs 25% more, the same figure Chapter 2 measures for order
+#' interval costs 25% more, the same figure [eoq_penalty()] gives for order
 #' quantity, which is the reason a cadence chosen to the nearest convenient
-#' round number is usually good enough (§23.2).
+#' round number is usually good enough.
 #'
 #' Where it stops holding is worth stating. The derivation prices a wait
 #' linearly, and a wait against a deadline is not priced linearly: it costs
@@ -127,10 +127,9 @@ cadence_optimal <- function(scan_cost, arrival_rate, lag_cost,
 
 #' Three ways to price a stall that was missed
 #'
-#' The miss cost is the input the threshold of @sec-the-critical-fractile is
-#' most sensitive to and the one nobody measures. Three approaches are in
-#' common use, they rest on different assumptions, and they disagree by enough
-#' to move the threshold (§23.7).
+#' The miss cost is the input [threshold_from_cost()] is most sensitive to and
+#' the one nobody measures. Three approaches are in common use, they rest on
+#' different assumptions, and they disagree by enough to move the threshold.
 #'
 #' *Expediting* prices the miss at what it costs to recover: the freight
 #' upgrade, the overtime, the partial shipment. It is the only one of the three
