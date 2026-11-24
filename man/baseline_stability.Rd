@@ -2,7 +2,7 @@
 % Please edit documentation in R/baseline.R
 \name{baseline_stability}
 \alias{baseline_stability}
-\title{How stable is a baseline at a given window length?}
+\title{Stability of a baseline at a given window length}
 \usage{
 baseline_stability(dwell, at, widths = c(7, 14, 30, 60), p = 0.9, step = 7)
 }
@@ -29,10 +29,10 @@ process quickly and moves on sampling noise alone; a long window is steady
 and slow to notice that the process has changed.
 }
 \details{
-Both halves of that trade-off are measurable. This reports the dispersion of
-the estimate across successive windows, which is the stability side. The
-responsiveness side requires a known change, which means introducing one
-deliberately rather than waiting for one to occur.
+Both halves of that trade-off are measurable. This function reports the
+dispersion of the estimate across successive windows, which is the stability
+side. The responsiveness side requires a known change, which has to be
+introduced deliberately rather than waited for.
 }
 \examples{
 sim <- simulate_lifecycles(n = 3000, seed = 11)

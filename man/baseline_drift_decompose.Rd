@@ -18,8 +18,8 @@ A list with the \code{base} and \code{now} aggregates, the total \code{change}, 
 its decomposition into \code{process} and \code{mix} components.
 }
 \description{
-An aggregate dwell figure rises for two different reasons, and the response
-to each is different. The process may have slowed, or the mix may have
+An aggregate dwell figure rises for two different reasons, which call for
+different responses. The process may have slowed, or the mix may have
 shifted toward cohorts that were always slower. Direct standardization
 separates them by holding the mix fixed at the base period's and letting
 only the within-cohort figures move.

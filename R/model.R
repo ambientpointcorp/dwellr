@@ -1,26 +1,24 @@
-# The value here is the protocol rather than the estimator: a split that
-# respects time, metrics that match the decision, and a calibration check. The
-# estimator itself is a few lines either way, and which one to fit is the
-# caller's choice.
+# This file supplies the protocol rather than the estimator: a split that
+# respects time, metrics that match the decision, and a calibration check.
+# Which estimator to fit is the caller's choice.
 
 #' Fit a model for a stage outcome under a stated validation protocol
 #'
-#' Three choices decide whether a fitted model means anything, and this
-#' function makes all three explicitly rather than by default.
+#' Three choices affect whether a fitted model is meaningful, and this function
+#' makes all three explicit.
 #'
 #' The split respects time where a timestamp is supplied: fit on the earlier
 #' period and evaluate on the later one. A random split lets a model learn from
-#' the period it is tested on and reports a figure answering a question nobody
-#' asks.
+#' the period it is tested on, which inflates the reported figure.
 #'
 #' The metrics are the ones the decision consumes. Discrimination is reported
-#' as AUC, which is what a ranking needs, alongside precision at a stated
-#' review capacity, which is what a reviewer actually acts on, and the
-#' calibration summaries of [calibrate_reliability()], since a threshold
-#' compares a probability against a number.
+#' as AUC, which applies to a ranking, alongside precision at a stated review
+#' capacity, which is the figure a reviewer acts on, and the calibration
+#' summaries of [calibrate_reliability()], since a threshold compares a
+#' probability against a number.
 #'
-#' The estimator is `"logistic"` by default because it needs nothing beyond
-#' base R and because a model that cannot beat it is not worth operating.
+#' The estimator is `"logistic"` by default, since it needs nothing beyond base
+#' R and serves as the benchmark another estimator has to improve on.
 #' `"forest"` requires `ranger`.
 #'
 #' @param data A data frame with one row per instance.
@@ -28,7 +26,8 @@
 #'   `horizon` is supplied.
 #' @param features Names of the predictor columns.
 #' @param at Optional name of a timestamp column. Supplying it makes the split
-#'   chronological; omitting it makes it random and says so in the result.
+#'   chronological; omitting it makes the split random, which is recorded in
+#'   the result.
 #' @param horizon Threshold applied to a numeric `target` to form the outcome,
 #'   as in "breached 120 hours".
 #' @param prop Share of rows used for fitting.

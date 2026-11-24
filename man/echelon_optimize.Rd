@@ -51,8 +51,8 @@ from the averages.}
 
 \item{stall}{Optional list with \code{stage}, \code{probability} and \code{periods}: with
 that probability a shipment into that stage is delayed by that many extra
-periods. This is an administrative stall, which is a lead time from
-downstream and nothing else.}
+periods. This is an administrative stall, which appears downstream as a
+lead time.}
 
 \item{review}{Periods between orders. One is continuous review; a larger
 value is \verb{(R,S)} batching, which is an administrative cause of the
@@ -73,10 +73,10 @@ grid. Every evaluation shares a seed, so a difference in cost between two
 candidate levels is a difference in the policy and not in the demand drawn.
 }
 \details{
-The search is here because the exact decomposition fixes the downstream
-level by a critical fractile and leaves the upstream levels to numerical
-work, and because a simulator is the only arbiter available once lead times
-are stochastic or a stall is present.
+A search is used because the exact decomposition fixes the downstream level
+by a critical fractile and leaves the upstream levels to numerical work, and
+because a simulator is the only available evaluation once lead times are
+stochastic or a stall is present.
 }
 \examples{
 echelon_optimize(demand_mean = 10, demand_sd = 3, lead_times = c(1, 2),

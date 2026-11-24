@@ -1,4 +1,4 @@
-test_that("reliability reports the gap a ranking metric cannot see", {
+test_that("reliability reports the gap a ranking metric does not detect", {
   set.seed(1)
   truth <- runif(2000) < 0.25
   # a monotone transform: same ranking, wrong scale
@@ -42,7 +42,8 @@ test_that("isotonic repairs the level and ties predictions as it goes", {
   rp <- predict(cal, inflated)
 
   expect_lt(abs(mean(rp) - mean(truth)), 0.01)
-  # a step function is only weakly increasing, which is the qualification
+  # a step function is only weakly increasing, which is the qualification on
+  # preserving the ranking
   expect_lt(length(unique(rp)), length(unique(inflated)))
 })
 

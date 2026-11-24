@@ -3,15 +3,14 @@
 # safety-stock figure.
 #
 # ETS and ARIMA are not reimplemented here; the forecast package is used for
-# those, which is well tested and widely used. What this file adds is the
-# material this package needs and that one does not supply: a single consistent
-# accuracy table, and the lead-time demand calculation the stage functions then
-# take apart.
+# those. This file adds what that package does not supply for this one: a
+# single consistent accuracy table, and the lead-time demand calculation the
+# stage functions decompose.
 
 #' Benchmark forecasts
 #'
-#' The four methods any more sophisticated forecast must beat. Each returns a
-#' numeric vector of length `h`.
+#' The four benchmark methods a more sophisticated forecast is compared
+#' against. Each returns a numeric vector of length `h`.
 #'
 #' * `fc_mean` — the mean of the history, appropriate when the series has no
 #'   trend or seasonality.
@@ -137,8 +136,7 @@ fc_rolling_origin <- function(y, fn, h = 1, n_origins = 20) {
 #'
 #' The second variance term is quadratic in mean demand, so for a fast-moving
 #' item it dominates the first even when the lead time looks reasonably
-#' consistent. [dwell_variance_contribution()] takes that term apart and asks
-#' which stage it comes from.
+#' consistent. [dwell_variance_contribution()] decomposes that term by stage.
 #'
 #' @param demand_mean,demand_sd Per-period demand.
 #' @param lead_time_mean,lead_time_sd Lead time, in periods. A standard

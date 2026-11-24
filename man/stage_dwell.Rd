@@ -13,8 +13,8 @@ carries no specification, so \code{spec} must then be given.}
 
 \item{stage}{Optional stage name to restrict to.}
 
-\item{spec}{Optional \code{\link[=stage_spec]{stage_spec()}}, which decides which stages are
-endings rather than waits. Defaults to the one carried on \code{sim}; required
+\item{spec}{Optional \code{\link[=stage_spec]{stage_spec()}}, giving which stages are endings rather
+than waits. Defaults to the one carried on \code{sim}; required
 when the population carries none.}
 }
 \value{
@@ -26,11 +26,11 @@ Reduces an event log to one row per (order, stage visit) with the time spent
 in that stage and whether the visit had ended by \code{as_of}.
 }
 \details{
-The \code{censored} column is the point. An order sitting in a stage right now
-has not finished waiting, so its dwell is a lower bound, not an observation.
-Dropping those rows -- which is what a naive average over completed visits
-does -- removes exactly the orders that are stuck, and biases the result
-optimistic by most when the operation is performing worst.
+The \code{censored} column records whether the visit was still open. An order
+sitting in a stage right now has not finished waiting, so its dwell is a
+lower bound rather than an observation. A naive average over completed
+visits drops those rows, which removes the orders that are stuck and biases
+the result optimistic, most of all when the operation is performing worst.
 }
 \examples{
 sim <- simulate_lifecycles(n = 400, seed = 1)

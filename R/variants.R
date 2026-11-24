@@ -1,15 +1,13 @@
 #' Distinct paths through the lifecycle, with their frequencies
 #'
-#' A stage specification declares which paths are legitimate. It does not say
-#' which ones occur, or how often, and those are the facts that decide where
+#' A stage specification declares which paths are legitimate. It does not
+#' record which ones occur, or how often, and those facts determine where
 #' measurement effort belongs. Enumerating the paths before writing a state
-#' machine is what keeps the machine descriptive of the operation it is
-#' supposed to describe.
+#' machine keeps the machine descriptive of the operation.
 #'
 #' The enumeration is the simplest form of process mining: group the event log
 #' by instance, reduce each to its ordered sequence of stages, and count. No
-#' model is fitted and nothing is assumed, which is the point at this stage of
-#' an engagement.
+#' model is fitted and nothing is assumed.
 #'
 #' Instances still in flight produce truncated paths, and they are reported
 #' with a `censored` share so that a short path can be recognized as unfinished
@@ -71,9 +69,9 @@ lifecycle_variants <- function(sim, min_share = 0.005) {
 
 #' Count revisits to a stage
 #'
-#' A lifecycle that returns to a stage it has already left is a loop, and a
-#' loop is the case most reporting is not built for. Counting revisits is the
-#' first step, and the count is a severity signal in its own right.
+#' A lifecycle that returns to a stage it has already left is a loop, which
+#' most reporting does not account for. This function counts the revisits, and
+#' the count is itself a severity signal.
 #'
 #' @param sim A `lifecycle_sim` from [simulate_lifecycles()].
 #' @param stage Optional stage to restrict to.
@@ -98,14 +96,14 @@ revisit_count <- function(sim, stage = NULL) {
 
 #' Time in a stage, counted two ways
 #'
-#' An operational report almost always shows time since the instance entered
-#' its current stage, because that is the quantity a status field supports.
-#' Where an instance has looped, that figure restarts on re-entry and the wait
-#' already endured disappears from it.
+#' An operational report usually shows time since the instance entered its
+#' current stage, since that is the quantity a status field supports. Where an
+#' instance has looped, that figure restarts on re-entry and the wait already
+#' endured drops out of it.
 #'
-#' Both quantities are returned so the gap between them can be measured. The
-#' one to alert on is `total_hours`, since an order on its second pass has
-#' already consumed the patience the first pass was given.
+#' Both quantities are returned, so the gap between them can be measured.
+#' `total_hours` is the figure to alert on, since an order on its second pass
+#' has already used the time allowed for the first.
 #'
 #' @param sim A `lifecycle_sim` from [simulate_lifecycles()].
 #' @param stage Stage to measure.
@@ -134,16 +132,16 @@ time_in_stage <- function(sim, stage) {
   out
 }
 
-#' Reconcile a work queue against the work actually owed
+#' Reconcile a work queue against the work owed
 #'
 #' A queue built by counting open work items counts two things that are not
 #' work: items belonging to instances that have already finished, and items
 #' recorded against instances that were cancelled. Both are residue, and
 #' neither can be acted on.
 #'
-#' The reconciliation is a two-way comparison, because the reverse error exists
-#' as well. An instance can be genuinely in flight and carry no open item,
-#' which a queue built from items will miss entirely.
+#' The reconciliation is a two-way comparison, since the reverse error also
+#' occurs: an instance can be in flight and carry no open item, which a queue
+#' built from items misses.
 #'
 #' @param sim A `lifecycle_sim` from [simulate_lifecycles()].
 #' @param open_flag Name of a logical column on `sim$orders` that marks an
@@ -173,18 +171,17 @@ queue_reconcile <- function(sim, open_flag = "open_ticket_residue") {
        overstatement = flagged / max(owed, 1))
 }
 
-#' Do two stages hold distinguishable dwells?
+#' Whether two stages hold distinguishable dwells
 #'
-#' A stage earns its place in a specification only if it has a dwell
-#' distribution of its own, and that criterion is testable. Two adjacent stages
-#' whose dwells cannot be told apart carry parameters and no information, and
-#' collapsing them loses nothing.
+#' A stage is worth declaring separately only if it has a dwell distribution of
+#' its own, and that criterion is testable. Two adjacent stages whose dwells
+#' cannot be distinguished carry parameters without information, and collapsing
+#' them loses nothing.
 #'
 #' The test is a log-rank comparison, which uses the censored visits and
 #' assumes nothing about shape. Read it with the sample sizes beside it: a
-#' stage with few visits will fail to separate from its neighbor for want of
-#' power, and that is a different finding from a stage that genuinely holds the
-#' same wait.
+#' stage with few visits fails to separate from its neighbor for lack of power,
+#' which is a different finding from a stage that holds the same wait.
 #'
 #' @param sim A `lifecycle_sim` from [simulate_lifecycles()].
 #' @param spec A [stage_spec()]. Adjacent pairs are taken from its declared

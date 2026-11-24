@@ -13,8 +13,8 @@ test_that("line expansion reconciles with the order record", {
 
   # A line counts as shipped only where the order reached a shipping stage.
   # Reading fill_lines without the stage would credit an order sitting in
-  # `received` with a complete shipment, which is the error the helper exists
-  # to avoid.
+  # `received` with a complete shipment, which is the error the helper
+  # avoids.
   unshipped <- !o$stage %in% c("shipped", "partially_shipped")
   expect_false(any(ln$shipped[ln$order_no %in% o$order_no[unshipped]]))
   done <- o$order_no[o$stage == "shipped" & !o$closed_short]
@@ -58,7 +58,7 @@ test_that("the entity test separates attachable from unattachable candidates", {
 
   # The obligation condition is separate from attachment. A flag true for
   # every instance answers the question for none of them, which is the state
-  # a durable entity is in.
+  # of a durable entity.
   o$owes <- !o$is_terminal
   expect_true(entity_check(e, o, "order_no", owed = "owes")$knows_owed)
   o$always <- rep(TRUE, nrow(o))
@@ -103,7 +103,7 @@ test_that("a segmentation key is judged by reclassification", {
   expect_equal(one$per_level$hours, one$pooled)
 
   # Levels too small for a threshold of their own keep the pooled one and are
-  # reported rather than silently dropped.
+  # reported rather than dropped without notice.
   thin <- ifelse(seq_len(nrow(d)) <= 5, "rare", "common")
   t2 <- segment_decision_shift(d, thin, 40, 400, min_n = 50)
   expect_equal(t2$pooled_levels, "rare")

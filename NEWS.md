@@ -2,8 +2,8 @@
 
 First scaffold. Implemented and tested:
 
-* `simulate_lifecycles()` — the synthetic order generator. Everything else in
-  the package runs against its output.
+* `simulate_lifecycles()` — the synthetic order generator. Every other
+  function in the package runs against its output.
 * `stage_dwell()`, `dwell_survival()`, `dwell_quantile()` — stage dwell under
   right-censoring.
 * `threshold_from_cost()` — an alerting threshold on a vector of calibrated
@@ -11,77 +11,79 @@ First scaffold. Implemented and tested:
   with the expected cost of the rule beside reviewing nothing and reviewing
   everything. This is the newsvendor fractile with the costs in the other
   order, since the decision variable is when to spend attention rather than
-  how much to stock, so the threshold falls as a missed stall gets dearer and
-  rises as reviewer attention does. `threshold_from_dwell_quantile()` is the
-  fallback where no fitted probability exists, applying the same `p*` as a
-  fractile of the dwell distribution.
+  how much to stock; the threshold therefore falls as the cost of a missed
+  stall rises, and rises as the cost of reviewer attention rises.
+  `threshold_from_dwell_quantile()` is the fallback where no fitted
+  probability exists, applying the same `p*` as a fractile of the dwell
+  distribution.
 * `dwell_mixture()` now returns the index of the `slow` component and a
   `posterior(time, censored)` function giving the probability that a visit
   belongs to it, which is the input `threshold_from_cost()` expects.
 * `simulate_lifecycles()` gains two order-level date fields for deadline
-  derivation. `requested_date` equals the order date on roughly 85% of orders, reproducing
-  a field that defaults to today and is occasionally overridden; a severity
-  term keyed on it agrees with elapsed lead time exactly on 84.8% of rows and
-  correlates at 0.9827, and a capped score built from it leaves 50 of 104
-  in-flight orders sharing the maximum. `promised_date` is the field that does
-  carry a commitment: it exists only where a person entered the order, never
-  equals the order date, and has a lead averaging 5.04 days. Both are drawn
-  after every other draw, so the rest of the population is byte-identical,
-  verified for orders, events, lines and items across three seeds and two
-  sizes.
+  derivation. `requested_date` equals the order date on roughly 85% of orders,
+  reproducing a field that defaults to today and is occasionally overridden; a
+  severity term keyed on it agrees with elapsed lead time exactly on 84.8% of
+  rows and correlates at 0.9827, and a capped score built from it leaves 50 of
+  104 in-flight orders sharing the maximum. `promised_date` carries a
+  commitment: it exists only where a person entered the order, never equals
+  the order date, and has a lead averaging 5.04 days. Both are drawn after
+  every other draw, so the rest of the population is byte-identical, verified
+  for orders, events, lines and items across three seeds and two sizes.
 * `queue_stability()` and `capacity_admit()` — the attention constraint,
-  replacing the `capacity_admit` roadmap stub. An exception channel is a queue,
-  so it has a utilization: a cost-ratio threshold that flags 90.9% of orders
-  produces 37.9 alerts a day against a team serving 12, which
-  is a utilization of 3.16 and a backlog with no finite length.
+  replacing the `capacity_admit` roadmap stub. An exception channel is a queue
+  and therefore has a utilization: a cost-ratio threshold that flags 90.9% of
+  orders produces 37.9 alerts a day against a team serving 12, which is a
+  utilization of 3.16 and a backlog with no finite expectation.
   `capacity_admit()` takes the top of a ranking instead and reports the
-  `marginal` table, which is the figure a capacity decision turns on: precision
-  in the first band of twenty-five is 0.68 while the fifth band is 0.36, and
-  the cumulative figure a report shows has only moved from 0.68 to 0.52.
-  Supplying `p_star` gives the depth at which the next review stops paying,
-  which is 75 items where a look costs as much as a miss and 225 where it costs
-  a quarter.
+  `marginal` table, which carries the figures a capacity decision uses:
+  precision in the first band of twenty-five is 0.68 while the fifth band is
+  0.36, and the cumulative figure has moved only from 0.68 to 0.52. Supplying
+  `p_star` gives the depth at which the next review stops paying: 75 items
+  where a look costs as much as a miss, and 225 where it costs a quarter.
 * `baseline_cohort()`, `baseline_exceedance()`, `baseline_stability()` and
   `baseline_drift_decompose()` — the cohort baselines, replacing the
-  `baseline_cohort` roadmap stub. A cohort scheme is validated on the cohort
-  and not on the population: on the order population every granularity from one
-  key to four holds an overall exceedance within 1.7 points of its 10% target
-  while the worst cohort moves from 2.6 to 90 points off it, so
-  `baseline_exceedance()` reports the per-cohort column. `baseline_stability()`
-  measures the steadiness half of the window-length trade-off, where a
-  seven-day baseline moves 15% from week to week against 1.4% at sixty days.
-  `baseline_drift_decompose()` separates a slowing process from a shifting mix,
-  which an aggregate cannot: a mix shift and a 25% slowdown produce aggregates
-  0.7 hours apart here. It aligns its inputs by name, because matching
-  positionally pairs each weight with the wrong cohort whenever the caller
-  writes them in a different order from `tapply`, and that produced a mix
-  effect of +85 hours against a true +12 in a first draft.
+  `baseline_cohort` roadmap stub. A cohort scheme is validated per cohort
+  rather than on the population: on the order population every granularity
+  from one key to four holds an overall exceedance within 1.7 points of its
+  10% target while the worst cohort moves from 2.6 to 90 points off it, so
+  `baseline_exceedance()` reports the per-cohort column.
+  `baseline_stability()` measures the steadiness half of the window-length
+  trade-off, where a seven-day baseline moves 15% from week to week against
+  1.4% at sixty days. `baseline_drift_decompose()` separates a slowing process
+  from a shifting mix, which an aggregate figure does not distinguish: a mix
+  shift and a 25% slowdown produce aggregates 0.7 hours apart here. It aligns
+  its inputs by name, because matching positionally pairs each weight with the
+  wrong cohort whenever the caller writes them in a different order from
+  `tapply`, and that produced a mix effect of +85 hours against a true +12 in
+  a first draft.
 * `order_lines()`, `entity_check()`, `identifier_audit()` and
-  `segment_decision_shift()` — the entity decision. `entity_check()` applies the two conditions a candidate entity has to meet,
-  that every event attaches to exactly one instance and that an instance can
-  say whether work is still owed; on the order population the pick ticket
-  fails the first at an attachment rate of 0.857 and the customer fails the
-  second. `segment_decision_shift()` judges a segmentation key by how many
-  visits it reclassifies under the operating threshold rather than by whether
-  its groups differ.
-* `fill_rate()`, `fill_dimensions()` — fill on units, lines and value, with the
-  binding dimension. `simulate_lifecycles()` now returns a `lines` table
-  carrying an ordered quantity and a unit price per line, and the
-  three `fill_*` columns are computed from it rather than drawn separately, so
-  the dimensions describe one population and can disagree the way they do in
-  an order book. They are `NA` where the order has not reached a shipping
-  stage: an order that has not shipped has no fill rate, and crediting it with
-  one overstated unit fill on this population by 0.3 points while pooling every
-  line in the extract understated it by 4.6. The new line draws are vectorized
-  and happen after every other draw, so the rest of the population is
-  byte-identical, verified across three seeds and two sizes.
+  `segment_decision_shift()` — the entity decision. `entity_check()` applies
+  the two conditions a candidate entity has to meet, that every event attaches
+  to exactly one instance and that an instance can say whether work is still
+  owed; on the order population the pick ticket fails the first at an
+  attachment rate of 0.857 and the customer fails the second.
+  `segment_decision_shift()` judges a segmentation key by how many visits it
+  reclassifies under the operating threshold rather than by whether its groups
+  differ.
+* `fill_rate()`, `fill_dimensions()` — fill on units, lines and value, with
+  the binding dimension. `simulate_lifecycles()` now returns a `lines` table
+  carrying an ordered quantity and a unit price per line, and the three
+  `fill_*` columns are computed from it rather than drawn separately, so the
+  dimensions describe one population and can disagree as they do in an order
+  book. They are `NA` where the order has not reached a shipping stage, since
+  no fill rate is defined before shipment; crediting such an order with a
+  complete fill overstated unit fill on this population by 0.3 points, while
+  pooling every line in the extract understated it by 4.6. The new line draws
+  are vectorized and happen after every other draw, so the rest of the
+  population is byte-identical, verified across three seeds and two sizes.
 * `eoq()`, `eoq_cost()`, `nv_critical_fractile()`, `nv_quantity()` — the
   classical results the later families reuse. Their tests reproduce the
-  standard instance (K = 100, h = 1, d = 10), the flatness figures for the cost
-  curve, and the cost-misestimation figures.
+  standard instance (K = 100, h = 1, d = 10), the flatness figures for the
+  cost curve, and the cost-misestimation figures.
 
-Declared with a roadmap and not yet implemented: the remaining `eoq_*`/`dls_*`
-lot-sizing models, the stochastic policies, the `fit_*`/`calibrate_*` modeling
-helpers, `baseline_*`, `deadline_*`, `capacity_*`, `route_*` and `evaluate_*`.
-Each errors with the method it stands for rather than returning something
-plausible.
+No function is declared without an implementation. Earlier versions carried
+stubs for the remaining `eoq_*`/`dls_*` lot-sizing models, the stochastic
+policies, the `fit_*`/`calibrate_*` modeling helpers, `baseline_*`,
+`deadline_*`, `capacity_*`, `route_*` and `evaluate_*`, each raising an error
+naming the method it stood for rather than returning a plausible value. All of
+them now have implementations and tests.

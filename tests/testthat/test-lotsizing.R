@@ -1,5 +1,5 @@
 # Each test asserts a published figure, so a change that alters a documented
-# result fails the build rather than going unnoticed.
+# result fails the build.
 
 K <- 100; d <- 10; h <- 1    # the instance used throughout
 
@@ -43,7 +43,7 @@ test_that("planned backorders match their published figures", {
   expect_equal(round(100 * (1 - bp$cost / eoq_cost(d, K, h, eoq(d, K, h))), 1),
                8.7)
 
-  # As shortages become ruinous the policy approaches the no-shortage EOQ.
+  # As the shortage cost grows large the policy approaches the no-shortage EOQ.
   far <- backorder_policy(d, K, h, shortage_cost = 1e6)
   expect_equal(far$Q, eoq(d, K, h), tolerance = 1e-3)
 })

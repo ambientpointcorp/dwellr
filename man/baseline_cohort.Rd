@@ -24,8 +24,8 @@ cell's keys, count, threshold and whether it \code{fell_back}, and an
 \description{
 A threshold is a claim about a distribution, so it has to be estimated over
 a population that the instance being judged belongs to. One global threshold
-is simultaneously too tight for the fast cohorts and too loose for the slow
-ones, and conditioning on a segment is what repairs that.
+is too tight for the fast cohorts and too loose for the slow ones, which
+conditioning on a segment corrects.
 }
 \details{
 Granularity is a statistical choice with a cost on each side. Coarse cohorts
@@ -33,12 +33,12 @@ carry bias, since the threshold describes a population the instance is only
 partly a member of. Fine cohorts carry variance, since a quantile estimated
 from a handful of visits moves with the handful. \code{min_n} sets where that
 trade-off is resolved: a cell with fewer visits keeps the pooled threshold
-and is reported as having done so, which is preferable to publishing a
-number estimated from four observations.
+and is reported as having done so, rather than carrying a threshold
+estimated from four observations.
 
 The estimator is the Kaplan-Meier quantile of \code{\link[=dwell_quantile]{dwell_quantile()}}, so
 still-open visits contribute rather than being dropped. A baseline fitted to
-completed visits only is optimistic by exactly the censoring mechanism
+completed visits only is optimistic, by the censoring mechanism
 \code{\link[=stage_dwell]{stage_dwell()}} documents.
 }
 \examples{

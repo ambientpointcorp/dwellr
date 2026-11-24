@@ -15,8 +15,8 @@ Fractional cost penalty.
 \description{
 What it costs to order the EOQ computed from a misestimated ordering or
 holding cost. An error by some factor in either one moves the quantity by
-its square root, so the penalty is the one \code{eoq_penalty()} already charges
-for being off by that much.
+its square root, so the penalty is \code{eoq_penalty()} evaluated at that
+factor.
 }
 \details{
 Using \eqn{fK} in place of \eqn{K} gives \eqn{\sqrt{f}\,Q^*}, so the cost

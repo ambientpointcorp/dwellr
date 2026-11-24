@@ -10,8 +10,8 @@ Measures the time orders spend in each stage of their lifecycle, and
 supports deciding what to do about it.
 }
 \details{
-Functions are named by the family they belong to, which is what keeps a
-package spanning EOQ through routing navigable:
+Functions are named by the family they belong to. The package spans EOQ
+through routing, and the prefixes are:
 \itemize{
 \item \verb{eoq_*}, \verb{dls_*}, \verb{nv_*}, \verb{policy_*} — classical inventory control
 \item \verb{simulate_*}, \verb{stage_*}, \verb{dwell_*}, \verb{safety_*} — the stage process
@@ -21,7 +21,7 @@ package spanning EOQ through routing navigable:
 \item \verb{evaluate_*} — policy evaluation
 }
 
-Start with \code{\link[=simulate_lifecycles]{simulate_lifecycles()}}: everything else runs against its output,
+Every other function runs against the output of \code{\link[=simulate_lifecycles]{simulate_lifecycles()}},
 and the built-in \link{orders} dataset is one call to it.
 }
 \seealso{

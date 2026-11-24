@@ -1,12 +1,12 @@
-# Nothing in the package is declared-but-unimplemented any more. Earlier
-# versions carried stubs that errored with the method they stood for, on the
-# principle that a caller who reaches a function named in the reference should
-# be told it is not written rather than handed a plausible number.
+# No function in the package is declared without an implementation. Earlier
+# versions carried stubs that raised an error naming the method they stood for,
+# so that a caller reaching a function named in the reference was told it was
+# not written rather than handed a plausible number.
 #
-# The check is kept, inverted: the invariant now is that no stub exists. It is
-# DERIVED rather than hand-kept, on the same principle as every other derived
-# list here -- a hand-maintained list falls silently out of step with what it
-# is supposed to describe.
+# The check is kept, inverted: the invariant is now that no stub exists. The
+# list is derived rather than hand-maintained, like every other derived list
+# here, since a hand-maintained list drifts out of step with what it
+# describes.
 
 stub_names <- function() {
   Filter(function(nm) {
@@ -21,7 +21,7 @@ test_that("no exported function is a stub", {
 
 test_that("the families that were stubbed longest are callable", {
   # These were the last three to be implemented, and each is reachable with
-  # arguments rather than erroring on principle.
+  # arguments.
   # Four rows with a clean separation make glm warn about fitted
   # probabilities at zero and one, which is true of the data rather than of
   # the function.

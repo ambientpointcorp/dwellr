@@ -1,6 +1,6 @@
-# A lifecycle whose vocabulary is nothing like the bundled corpus's, which is
-# the whole point: every assertion here fails if a function reads a stage name
-# out of a literal instead of out of the specification.
+# A lifecycle whose vocabulary differs throughout from the bundled corpus's:
+# every assertion here fails if a function reads a stage name from a literal
+# instead of from the specification.
 freight_spec <- function() {
   stage_spec(
     stages      = c("open", "accumulating", "tendered", "departed", "cancelled"),
@@ -38,8 +38,9 @@ test_that("as_lifecycle refuses what it cannot measure", {
   na$occurred_at[2] <- NA
   expect_error(as_lifecycle(na, spec), "missing values")
 
-  # An undeclared stage is the failure that is otherwise silent: it is neither
-  # an ending nor a declared wait, so it measures as a wait that never ends.
+  # An undeclared stage is the failure that otherwise raises nothing: it is
+  # neither an ending nor a declared wait, so it measures as a wait that never
+  # ends.
   bad <- log
   bad$stage[3] <- "staged_loaded"
   expect_error(as_lifecycle(bad, spec), "does not declare")
@@ -60,7 +61,7 @@ test_that("as_lifecycle derives the population from the log, not from a status",
   expect_true(is.na(pop$orders$finished_at[3]))
   expect_identical(pop$spec, freight_spec())
 
-  # A stale status column loses to the log, every time.
+  # A stale status column is superseded by the log.
   claimed <- data.frame(order_no = c("L1", "L2", "L3"),
                         stage = "departed", region = c("NE", "SE", "NE"),
                         stringsAsFactors = FALSE)
@@ -120,7 +121,7 @@ test_that("lead_time_decompose infers `through` from the specification", {
   expect_equal(sum(ltd$mean_hours), 9)
 
   # A specification with no fulfilling ending cannot have one inferred, and
-  # says so rather than picking one.
+  # the function raises an error rather than picking one.
   nf <- stage_spec(c("a", "b"), "a -> b", terminal = "b")
   pop$spec <- nf
   expect_error(lead_time_decompose(pop), "cannot be inferred")
@@ -142,13 +143,13 @@ test_that("the specification resolves in a stated order of precedence", {
   t0 <- as.POSIXct("2026-01-01 00:00", tz = "UTC")
   pop <- as_lifecycle(freight_log(t0), freight_spec(), as_of = t0 + 3600 * 12)
 
-  # Explicit argument beats the one carried on the object.
+  # An explicit argument takes precedence over the one carried on the object.
   expect_equal(nrow(stage_dwell(pop, spec = distribution_stage_spec())), 8)
-  # Carried spec beats the package default.
+  # A carried spec takes precedence over the package default.
   expect_equal(nrow(stage_dwell(pop)), 7)
   # A bare list carries no specification, and there is no third branch to
-  # fall back to. Refusing is the point: the fallback that used to live here
-  # answered with the default stage set and no warning.
+  # fall back to. The function refuses: the fallback that used to live here
+  # answered with the default stage set and raised no warning.
   bare <- list(events = pop$events, as_of = pop$as_of)
   expect_error(stage_dwell(bare), "no stage specification")
   expect_equal(nrow(stage_dwell(bare, spec = freight_spec())), 7)
@@ -171,16 +172,16 @@ test_that("stage_spec separates delivery from ending", {
 
 # Every exported function that takes a population is run against a vocabulary
 # that is not the generator's. The table is the test: a new `sim`-taking export
-# with no row here fails the last expectation, so the coverage cannot quietly
-# lapse the way it did when the generator was the only way in.
+# with no row here fails the last expectation, so the coverage cannot lapse
+# unnoticed, as it did when the generator was the only way in.
 test_that("every population-taking export runs on a foreign vocabulary", {
   t0 <- as.POSIXct("2026-01-01 00:00", tz = "UTC")
   spec <- freight_spec()
   pop <- as_lifecycle(freight_log(t0), spec, as_of = t0 + 3600 * 12)
 
   # order_lines() reads quantities the log alone does not carry, so the
-  # population is given the two it requires under names that are NOT the
-  # generator's -- which exercises the column map at the same time.
+  # population is given the two it requires under names other than the
+  # generator's, which exercises the column map at the same time.
   pop$orders$truck_lines <- c(3L, 2L, 4L)
   pop$orders$line_fill <- c(1, 0, 0.5)
 
@@ -223,7 +224,7 @@ test_that("a column map is how a population names things differently", {
 
   f <- fill_rate(o, cols = c(units = "pct_units", lines = "pct_lines",
                              value = "pct_value"))
-  # The binding dimension reports the quantity, not the column, so two
+  # The binding dimension reports the quantity rather than the column, so two
   # populations with different column names stay comparable.
   expect_equal(f$fill_binding, c(1, 0.4))
   expect_equal(f$fill_binding_dimension, c("units", "value"))
@@ -245,8 +246,7 @@ test_that("the shipped dataset is what its builder produces", {
   # data-raw/make_orders.R is one seeded call to the generator. When the
   # generator changes and the dataset is not rebuilt, the two drift and the
   # package ships data no longer reproducible from the script that documents
-  # it -- which is exactly what had happened before the date fields were
-  # added.
+  # it, which had happened before the date fields were added.
   #
   # expect_equal rather than expect_identical, because this is the one
   # comparison in the suite that spans two R installations: the .rda was

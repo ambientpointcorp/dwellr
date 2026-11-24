@@ -37,23 +37,23 @@ A list with the \code{admitted} logical vector, the \code{cutoff} score, the
 \code{value_admitted} where exposure was supplied.
 }
 \description{
-A threshold answers whether an instance is worth reviewing. It does not ask
-whether anybody is free to review it, and a cost ratio with a dear miss
-admits almost the whole population. Where capacity binds, the operating
-question is not which instances qualify but which \code{capacity} of them to work
+A threshold gives whether an instance is worth reviewing. It does not
+account for whether anybody is free to review it, and a cost ratio with an
+expensive miss admits almost the whole population. Where capacity binds, the
+operating question is which \code{capacity} of the qualifying instances to work
 first.
 }
 \details{
 Admission by capacity turns the threshold problem into a ranking problem.
-The instances admitted are the top \code{capacity} by score, and what matters
-about the score stops being its calibration and becomes its ordering, which
-is the reverse of the emphasis a cost-ratio threshold needs, and worth
-noticing when the same model serves both.
+The instances admitted are the top \code{capacity} by score, so the ordering of
+the score matters and its calibration does not. A cost-ratio threshold
+requires the opposite, which is worth noting when the same model serves
+both.
 
-The \code{marginal} table is the part to read. Average precision over an admitted
-queue says what the queue was worth; precision in the last band says what
-the next reviewer hour would be worth, and that is the quantity a decision
-to add or remove capacity turns on.
+The \code{marginal} table carries the figures a capacity decision uses. Average
+precision over an admitted queue gives what the queue was worth, and
+precision in the last band gives what the next reviewer hour would be
+worth.
 }
 \examples{
 set.seed(1)

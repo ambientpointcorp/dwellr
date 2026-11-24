@@ -19,13 +19,13 @@ still waiting.
 \description{
 With more than one way to leave a stage, the share that has left by a given
 time has to be split by how they left. Treating every exit as the same event
-answers a question about a mixture of outcomes, and estimating one exit by
-treating the others as censored overstates it, because an order that was
-cancelled is not an order still waiting to advance.
+describes a mixture of outcomes, and estimating one exit type while treating
+the others as censored overstates it, because an order that was cancelled is
+not an order still waiting to advance.
 }
 \details{
 The estimator is the Aalen-Johansen cumulative incidence, which keeps the
-competing exits in the risk set where they belong.
+competing exits in the risk set.
 }
 \examples{
 sim <- simulate_lifecycles(n = 1500, seed = 1)

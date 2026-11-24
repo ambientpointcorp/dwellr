@@ -15,14 +15,14 @@ the model moved), \code{raised}, \code{lowered}, \code{without_model} and a \cod
 data frame of counts and shares.
 }
 \description{
-Two numbers decide whether a model tier is earning its place: the share of
-decisions it actually changed, and the share of decisions made without it.
-A tier that changes nothing is cost without effect, and a tier unreachable
-for a quarter of the population is not the tier that was evaluated.
+Two figures bear on whether a model tier is worth its cost: the share of
+decisions it changed, and the share of decisions made without it. A tier
+that changes nothing adds cost without effect, and a tier unreachable for a
+quarter of the population is not the tier that was evaluated.
 }
 \details{
-Reasons are reported separately rather than summed, for the reason
-\code{\link[=fallback_reasons]{fallback_reasons()}} gives.
+Reasons are reported separately rather than summed, for the reason given
+under \code{\link[=fallback_reasons]{fallback_reasons()}}.
 }
 \examples{
 p <- decision_path(rule = c("notify", "escalate", "none"),

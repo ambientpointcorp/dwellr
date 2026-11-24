@@ -35,18 +35,19 @@ A data frame with one row per approach carrying the implied miss
 cost and the critical fractile \code{\link[=threshold_from_cost]{threshold_from_cost()}} would use.
 }
 \description{
-The miss cost is the input \code{\link[=threshold_from_cost]{threshold_from_cost()}} is most sensitive to and
-the one nobody measures. Three approaches are in common use, they rest on
-different assumptions, and they disagree by enough to move the threshold.
+The miss cost is the input \code{\link[=threshold_from_cost]{threshold_from_cost()}} is most sensitive to, and
+it is rarely measured. Three approaches are in common use; they rest on
+different assumptions and disagree by enough to move the threshold.
 }
 \details{
 \emph{Expediting} prices the miss at what it costs to recover: the freight
 upgrade, the overtime, the partial shipment. It is the only one of the three
-that is observable in the ledger, and it understates, since it prices the
-recoveries that happened and not the orders nobody recovered.
+that is observable in the ledger, and it understates the cost, since it
+prices the recoveries that happened rather than the orders that were not
+recovered.
 
 \emph{Lost margin} prices the miss at the margin on an order assumed lost. It
-overstates whenever the customer waits, which most do.
+overstates the cost whenever the customer waits, which is the common case.
 
 \emph{Retention} prices the miss at its share of the lifetime value of a customer
 who leaves, which is the largest of the three and the least observable.

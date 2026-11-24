@@ -1,6 +1,6 @@
-# The eight published results for this class. A copy of it maintained anywhere
-# else has to produce the same figures, and these tests are what make a
-# divergence between the two visible.
+# The eight published results for this class. A copy maintained elsewhere has
+# to produce the same figures, and these tests make a divergence between the
+# two visible.
 
 N <- 20; d <- 5
 
@@ -42,7 +42,8 @@ test_that("a primed pipeline never goes negative and never exceeds L*d", {
   expect_equal(range(h$level), c(0, L * d))
 
   # Position is constant at the same point in each cycle, while the level
-  # cycles beneath it. This is the position identity, in the output.
+  # cycles beneath it. This is the position identity, as it appears in the
+  # output.
   placed <- h[h$event == "order placed" & h$period %in% 5:9, ]
   expect_equal(length(unique(placed$position)), 1)
   expect_gt(length(unique(h$level[h$event == "issue"])), 1)

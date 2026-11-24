@@ -21,10 +21,11 @@ A list with the pooled \code{units}, \code{lines} and \code{value} rates, the
 them.
 }
 \description{
-The order-level fractions say how much of an order was filled. They do not
-say which line was short, and a fill rate aggregated over orders weights a
-one-line order the same as a twelve-line one. This computes each dimension
-over a set of lines, which is the grain the quantities were recorded at.
+The order-level fractions give how much of an order was filled. They do not
+identify which line was short, and a fill rate aggregated over orders
+weights a one-line order the same as a twelve-line one. This function
+computes each dimension over a set of lines, the grain the quantities were
+recorded at.
 }
 \details{
 Three denominators are available and they answer different questions. The
@@ -32,9 +33,9 @@ unit rate is the share of units shipped, the line rate is the share of lines
 shipped complete, and the value rate is the share of extended value shipped.
 An order-weighted figure averages each order's own rate and so gives every
 order equal weight; a line-weighted figure pools the lines and so gives
-every line equal weight. Which is wanted depends on whether the question is
-about customers or about items, and the two are reported together here
-because quoting one under the other's name is the common error.
+every line equal weight. Which one applies depends on whether the question
+concerns customers or items. Both are reported together, since quoting one
+under the other's name is a common error.
 }
 \examples{
 sim <- simulate_lifecycles(n = 800, seed = 1)

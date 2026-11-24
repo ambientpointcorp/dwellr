@@ -32,12 +32,12 @@ event that attaches to several are different problems with different
 repairs.
 }
 \details{
-The second condition is separate and it is the one that disqualifies most
-convenient entities. An instance record has to be able to say whether
-somebody still owes something, because that is the question a monitoring
-system exists to answer. A record that is closed when its work is finished
-can answer it; a record that is closed when a document is printed cannot,
-and the difference between the two has a measurable cost.
+The second condition is separate, and it disqualifies most convenient
+entities. An instance record has to be able to report whether work is still
+owed, which is the question a monitoring system answers. A record that is
+closed when its work is finished can report it, and a record that is closed
+when a document is printed cannot; the difference between the two has a
+measurable cost.
 }
 \examples{
 sim <- simulate_lifecycles(n = 500, seed = 11)

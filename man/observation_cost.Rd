@@ -32,16 +32,16 @@ A data frame with one row per component carrying its annual cost and
 share, and a \code{total} row.
 }
 \description{
-Three components, and they scale differently. \emph{Instrumentation} is fixed:
-the extract, the event log, the deployment. \emph{Observation} is per scan, so it
-scales with cadence and not with volume. \emph{Decision} is per item decided, so
-it scales with volume, and when inference is metered it is the component
-that grows without anybody choosing to grow it.
+Three components, which scale differently. \emph{Instrumentation} is fixed: the
+extract, the event log, the deployment. \emph{Observation} is per scan, so it
+scales with cadence rather than with volume. \emph{Decision} is per item decided,
+so it scales with volume, and when inference is metered it grows with volume
+without a decision to increase it.
 }
 \details{
-Reporting them separately is the point. A program whose cost is dominated by
-instrumentation has a volume problem it does not yet have; one dominated by
-per-decision cost has an allocation problem instead.
+The components are reported separately. A program whose cost is dominated by
+instrumentation is not yet constrained by volume, while one dominated by
+per-decision cost is constrained by allocation.
 }
 \examples{
 observation_cost(fixed_annual = 40000, per_observation = 0.004,

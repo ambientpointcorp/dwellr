@@ -1,20 +1,19 @@
 # Evaluating a monitoring policy rather than the model inside it. The
-# asymmetry everything here turns on is that a false positive leaves a record
-# and a false negative leaves nothing, so anything measured from the program's
-# own output is measured on the half that is visible.
+# asymmetry these functions account for is that a false positive leaves a
+# record and a false negative leaves none, so anything measured from the
+# program's own output covers only the visible half.
 
 #' Compare a proposed monitoring policy against the one running today
 #'
-#' Three lists decide whether a change is safe to publish: what the proposal
+#' Three lists bear on whether a change is safe to publish: what the proposal
 #' surfaces that the current policy does not, what it stops surfacing, and
-#' where the urgency changes. The middle list is the one no reporting tool
-#' produces on its own, because an item that stops being flagged produces no
-#' output at all.
+#' where the urgency changes. The middle list is the one a reporting tool does
+#' not produce on its own, because an item that stops being flagged produces no
+#' output.
 #'
-#' Both policies are evaluated on the same population, which should be the
-#' live one rather than a sample. An item ceasing to surface is reported with
-#' its exposure, since the question a reviewer will ask about the list is what
-#' it is worth.
+#' Both policies are evaluated on the same population, which should be the live
+#' one rather than a sample. An item ceasing to surface is reported with its
+#' exposure, so the value of the list can be read from it.
 #'
 #' @param current,proposed Severity decided by each policy, one entry per item,
 #'   drawn from `levels`.
@@ -22,7 +21,7 @@
 #' @param value Optional exposure per item.
 #' @param outcome Optional logical: whether the item turned out to need the
 #'   attention. Where it is supplied, precision and recall are reported for
-#'   both policies, with the caveat that attaches to any outcome collected
+#'   both policies, with the caveat that applies to any outcome collected
 #'   under the current policy.
 #' @param levels The severity scale, ordered from least to most severe.
 #' @param acted Levels that count as acting on an item.
@@ -91,15 +90,15 @@ evaluate_policy <- function(current, proposed, id = NULL, value = NULL,
        quality = quality)
 }
 
-#' Can a rule fire at all?
+#' Whether a rule can fire at all
 #'
 #' A rule that did not fire because nothing qualified and a rule that cannot
-#' fire read identically in a report: both produce no alerts. The difference is
-#' worth a test, because the second kind has been seen to sit in production for
-#' months -- a stage list that never contained credit holds made every
-#' credit-hold rule unreachable from the day it was written, and a value field
-#' spelled differently from what the evaluator read returned null on every item
-#' and disabled the rule that depended on it.
+#' fire read identically in a report: both produce no alerts. The second kind
+#' can persist in production for months. In one case a stage list that never
+#' contained credit holds made every credit-hold rule unreachable from the day
+#' it was written; in another a value field spelled differently from what the
+#' evaluator read returned null on every item and disabled the rule that
+#' depended on it.
 #'
 #' Each rule is checked in three steps: the field it reads has to exist, it
 #' has to be populated on at least one row, and at least one row has to
@@ -173,12 +172,12 @@ rule_reachable <- function(rules, data) {
 #' model and adds it back, which leaves the estimate correct if either the
 #' propensities or the model are.
 #'
-#' The assumption that fails in practice is positivity, and it fails silently.
-#' A deterministic logged policy took what it took with probability one, so
-#' nothing in `propensity` looks wrong, while the items where the proposal
-#' would have acted differently carry no weight and simply drop out of the
-#' average. `evidence` reports the share of items the estimate actually rests
-#' on, and `positivity` reports the share whose target action had a nonzero
+#' The assumption that fails in practice is positivity, and it fails without
+#' raising an error. A deterministic logged policy took its action with
+#' probability one, so nothing in `propensity` appears wrong, while the items
+#' where the proposal would have acted differently carry no weight and drop out
+#' of the average. `evidence` reports the share of items the estimate rests on,
+#' and `positivity` reports the share whose target action had a nonzero
 #' chance of being logged, which needs `target_propensity` to be known.
 #'
 #' @param action Action taken under the logged policy, one per item.
@@ -186,8 +185,7 @@ rule_reachable <- function(rules, data) {
 #' @param propensity Probability the logged policy took the action it took.
 #' @param target Action the proposed policy would take.
 #' @param target_propensity Optional probability the logged policy would have
-#'   taken `target`. Supplying it is what makes a positivity failure visible
-#'   rather than inferred.
+#'   taken `target`. Supplying it makes a positivity failure visible.
 #' @param reward_model Optional matrix of predicted rewards with one column
 #'   per action, named by action, used for the doubly robust estimate.
 #'

@@ -18,18 +18,18 @@ A list with the \code{reliability} table, \code{ece}, \code{brier},
 \code{mean_predicted} and \code{observed}.
 }
 \description{
-A ranking metric cannot see a calibration error: a monotone transform of a
-score leaves AUC untouched and moves every probability. So calibration has
-to be measured separately, by binning the predictions and comparing the
-mean prediction in each bin against the rate actually observed there.
+A ranking metric does not detect a calibration error: a monotone transform
+of a score leaves AUC unchanged while moving every probability. Calibration
+is therefore measured separately, by binning the predictions and comparing
+the mean prediction in each bin against the rate observed there.
 }
 \details{
-Three summaries come out of it. The \emph{expected calibration error} is the
-bin-weighted mean absolute gap, which is the single number to watch. The
-\emph{Brier score} is the mean squared error of the probabilities, which rewards
-calibration and discrimination together. And the gap between the overall
-mean prediction and the overall rate is the crudest check, worth reading
-first because a model that fails it fails everywhere.
+Three summaries are returned. The \emph{expected calibration error} is the
+bin-weighted mean absolute gap. The \emph{Brier score} is the mean squared error
+of the probabilities, which reflects calibration and discrimination
+together. The gap between the overall mean prediction and the overall rate
+is the coarsest check, and a model that fails it is miscalibrated across the
+whole range.
 }
 \examples{
 set.seed(1)

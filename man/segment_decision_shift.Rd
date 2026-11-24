@@ -2,7 +2,7 @@
 % Please edit documentation in R/entity.R
 \name{segment_decision_shift}
 \alias{segment_decision_shift}
-\title{Does conditioning on a key change the decision?}
+\title{Whether conditioning on a key changes the decision}
 \usage{
 segment_decision_shift(dwell, segment, cost_miss, cost_look, min_n = 50)
 }
@@ -17,8 +17,8 @@ segment_decision_shift(dwell, segment, cost_miss, cost_look, min_n = 50)
 \code{c_look}.}
 
 \item{min_n}{Levels with fewer visits than this are not given their own
-threshold, since a threshold fitted to a handful of visits is noise. They
-are reported as \code{pooled_levels}.}
+threshold, since a threshold fitted to a few visits is dominated by
+sampling noise. They are reported as \code{pooled_levels}.}
 }
 \value{
 A list with the \code{pooled} threshold in hours, a data frame of
@@ -26,18 +26,19 @@ per-level thresholds and counts, the number and \code{share_changed} of visits
 whose classification differs, and the levels left pooled for want of data.
 }
 \description{
-A segmentation key earns its place by changing what the operation does, and
-not by being significant or by partitioning the population into groups that
+A segmentation key is judged here by whether it changes what the operation
+does, rather than by statistical significance or by whether its groups
 differ. This fits the alerting threshold of
 \code{\link[=threshold_from_dwell_quantile]{threshold_from_dwell_quantile()}} once on the pooled population and once
 within each level of the key, and reports how many visits are classified
-differently under the two.
+differently under the two sets of thresholds.
 }
 \details{
-The quantity to read is \code{share_changed}. A key that moves no visit across
-the threshold adds a dimension to every report and changes nothing, whatever
-its p-value. A key that moves a material share is worth conditioning on,
-and the per-level thresholds are the operating numbers it produces.
+The relevant quantity is \code{share_changed}. A key that moves no visit across
+the threshold adds a dimension to every report without changing any
+decision, whatever its p-value. A key that moves a material share is worth
+conditioning on, and the per-level thresholds are the operating numbers it
+produces.
 }
 \examples{
 sim <- simulate_lifecycles(n = 1500, seed = 11)

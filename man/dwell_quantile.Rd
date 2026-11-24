@@ -14,12 +14,13 @@ dwell_quantile(dwell, p = 0.9)
 }
 \value{
 Numeric hours, or \code{NA} if the curve does not reach \code{p} within the
-observation window -- which is itself a finding, not a failure.
+observation window, meaning that a share \code{p} of orders had not left the
+stage by the end of it.
 }
 \description{
 The dwell time by which a given share of orders has left the stage,
 estimated from the censored distribution rather than from completed visits
-only. This is the quantity a threshold should be set from.
+only. A threshold is set from this quantity.
 }
 \examples{
 sim <- simulate_lifecycles(n = 800, seed = 1)

@@ -25,8 +25,8 @@ two; \code{\link[=rule_apply]{rule_apply()}} and \code{\link[=evaluate_policy]{e
 }
 \details{
 A construct the grammar does not have is reported by name rather than
-ignored, so that a rule which cannot mean what its author intended fails
-when it is written instead of returning nothing in production.
+ignored, so a rule that cannot express its author's intent fails when it is
+written rather than returning nothing in production.
 }
 \examples{
 rule_compile("stage in credit_hold,backordered and value > 1000",

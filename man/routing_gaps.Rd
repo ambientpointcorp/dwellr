@@ -19,15 +19,14 @@ uncovered keys with their counts and exposure, and the \code{unused} rules that
 matched nothing.
 }
 \description{
-Routing-table completeness is an invariant, which means it can be tested
-rather than hoped for. In one engagement four items fell through to a
-default map carrying no action type, and the highest-value order in the
-queue escalated to no recipient at all.
+Routing-table completeness is an invariant and can therefore be tested. In
+one engagement, four items fell through to a default map carrying no action
+type, and the highest-value order in the queue escalated to no recipient.
 }
 \details{
-The test to run is this one, on the live population and not on the keys
-somebody remembered when the table was written. A key that appears once a
-quarter is exactly the key nobody thought of.
+Run the test on the live population rather than on the keys recorded when
+the table was written, since a key that appears once a quarter is the one
+most likely to have been overlooked.
 }
 \examples{
 rules <- data.frame(key = "received", action = "release",

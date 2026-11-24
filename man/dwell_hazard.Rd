@@ -16,16 +16,15 @@ A data frame with one row per interval: \code{from}, \code{to}, \code{at_risk},
 \code{left}, the \code{hazard} over the interval, and \code{per_hour}.
 }
 \description{
-The survival curve answers how many instances are still waiting. The hazard
-answers the question an operator actually asks, which is whether an instance
-that has already waited this long is about to move: of those still in the
-stage at the start of an interval, what share leaves during it.
+The survival curve gives the share of instances still waiting. The hazard
+gives, of those still in the stage at the start of an interval, the share
+that leaves during it, which bears on whether an instance that has already
+waited a given time is about to move.
 }
 \details{
-A hazard that falls with elapsed time is the signature of a mixed
-population, because the fast instances leave early and what remains is
-progressively more stuck. A hazard that rises is the signature of a deadline
-or a scheduled sweep.
+A hazard that falls with elapsed time indicates a mixed population: the fast
+instances leave early, and what remains is progressively more stuck. A
+hazard that rises indicates a deadline or a scheduled sweep.
 }
 \examples{
 sim <- simulate_lifecycles(n = 800, seed = 1)

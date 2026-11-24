@@ -3,58 +3,56 @@
 #' Every analysis function in this package reads one object: a list with an
 #' event log, the population those events belong to, a stage specification and
 #' the instant the data was cut. [simulate_lifecycles()] produces one. This
-#' produces the same thing from records a real operation already keeps, which
-#' is what makes the methods here usable on anything other than the synthetic
-#' corpus.
+#' function produces the same object from records a real operation already
+#' keeps, so the methods here apply outside the synthetic corpus.
 #'
-#' @section The shape this expects:
+#' @section Expected input:
 #'
-#' `events` is the whole requirement. One row per stage entry, in any order,
+#' `events` is the only required input: one row per stage entry, in any order,
 #' with three columns:
 #'
 #' \describe{
-#'   \item{`order_no`}{the instance identifier. Whatever the instance is --
-#'     an order, a load, a claim, a renewal -- it is the thing whose lifecycle
-#'     is being measured, and the column keeps this name because every other
-#'     function in the package reads it.}
+#'   \item{`order_no`}{the instance identifier. The instance may be an order,
+#'     a load, a claim or a renewal; it is whatever has the lifecycle being
+#'     measured. The column keeps this name because every other function in
+#'     the package reads it.}
 #'   \item{`stage`}{the stage entered, named in `spec`.}
 #'   \item{`occurred_at`}{a `POSIXct` of when the move happened, not when it
-#'     was recorded. Dwell is elapsed time in the world; a processing
-#'     timestamp measures the reporting pipeline instead.}
+#'     was recorded. Dwell is elapsed time in the operation, whereas a
+#'     processing timestamp measures the reporting pipeline.}
 #' }
 #'
-#' An `event` column naming the transition is kept when present and invented
+#' An `event` column naming the transition is kept when present and derived
 #' from the stage when it is not.
 #'
-#' @section Why `as_of` is not optional in spirit:
+#' @section The `as_of` instant:
 #'
-#' A population is only meaningful as of an instant. Every visit with no later
-#' event is open at `as_of` and is a right-censored observation, which is what
-#' the dwell estimators here are built around. Defaulting it to the last event
-#' in the log is a convenience with a trap in it: if the extract was cut on
-#' Tuesday and the last event happens to be Friday-week-before, the default
-#' silently declares nine days of in-flight work finished. Pass the instant the
-#' data was cut.
+#' A population is defined as of an instant. Every visit with no later event is
+#' open at `as_of` and is a right-censored observation, which the dwell
+#' estimators here are built around. The default, the last event in the log,
+#' carries a risk: if the extract was cut on Tuesday and the last event falls
+#' on the Friday of the week before, the default treats nine days of in-flight
+#' work as finished. Pass the instant the data was cut.
 #'
 #' @section Exporting from a source system:
 #'
-#' This function is the contract, and it is deliberately a small one so that
-#' the export side can be written against a published shape rather than against
-#' this package's internals. An exporter needs to produce the three event
-#' columns, a stage specification matching the operation's own lifecycle, and
-#' the extract instant. Everything else is optional and enriches what can be
-#' asked: `orders` carries per-instance attributes to group and segment by,
+#' This function defines the interface, and it is kept small so that the export
+#' side can be written against a published shape rather than against this
+#' package's internals. An exporter needs to produce the three event columns, a
+#' stage specification matching the operation's own lifecycle, and the extract
+#' instant. The remaining inputs are optional and widen what can be asked:
+#' `orders` carries per-instance attributes to group and segment by,
 #' `lines` the line grain, and `items` the demand and supply figures safety
 #' stock is computed from.
 #'
 #' @param events A data frame of stage entries. See the shape above.
-#' @param spec A [stage_spec()] for the operation being measured. Required:
-#'   the stages an instance can stop in, and the stages in which its work was
-#'   delivered, cannot be guessed from a log and are wrong by default.
+#' @param spec A [stage_spec()] for the operation being measured. Required,
+#'   because the stages an instance can stop in and the stages in which its
+#'   work was delivered cannot be inferred from a log.
 #' @param orders Optional data frame, one row per instance. Derived from the
 #'   log when absent, carrying `order_no`, `stage`, `is_terminal` and
 #'   `finished_at`. When supplied, those four columns are recomputed from the
-#'   log rather than trusted, since they are a function of it.
+#'   log, since they are a function of it.
 #' @param lines Optional data frame, one row per line of an instance.
 #' @param items Optional data frame, one row per item.
 #' @param as_of Observation instant. Defaults to the last event in the log,
@@ -102,10 +100,10 @@ as_lifecycle <- function(events, spec, orders = NULL, lines = NULL,
     stop("`events$occurred_at` has missing values; a visit with no start ",
          "time has no dwell", call. = FALSE)
 
-  # An undeclared stage is a configuration error and it is silent: the stage
-  # is neither an ending nor a declared wait, so it is measured as a wait that
-  # never completes. Refusing here is the same check stage_validate() reports
-  # on, applied at the door instead.
+  # An undeclared stage is a configuration error that raises no error of its
+  # own: the stage is neither an ending nor a declared wait, so it is measured
+  # as a wait that never completes. Refusing here applies the same check
+  # stage_validate() reports on, at construction time.
   undeclared <- setdiff(unique(events$stage), spec$stages)
   if (length(undeclared))
     stop("`events` names stages the specification does not declare: ",
@@ -150,9 +148,9 @@ as_lifecycle <- function(events, spec, orders = NULL, lines = NULL,
               "were dropped", call. = FALSE)
   }
 
-  # Recomputed, never trusted. A status column in a source system is a
-  # statement somebody maintained; the log is what happened, and where the two
-  # disagree the log is the one that can be checked.
+  # Recomputed rather than taken from the input. A status column in a source
+  # system is maintained by hand, whereas the log records what happened, and
+  # where the two disagree the log is the one that can be checked.
   o$stage       <- now$stage
   o$is_terminal <- o$stage %in% spec$terminal
   o$finished_at <- as.POSIXct(ifelse(o$is_terminal, now$occurred_at, NA),
@@ -167,8 +165,8 @@ as_lifecycle <- function(events, spec, orders = NULL, lines = NULL,
 #
 # `default` names the columns the generator produces; `map` overrides any of
 # them for a population that calls the same quantity something else. The
-# refusal names the quantity AND the column looked for, because "fill_lines
-# not found" is useless to somebody whose extract calls it `line_fill_pct`.
+# refusal names both the quantity and the column looked for, since "fill_lines
+# not found" does not help a caller whose extract calls it `line_fill_pct`.
 resolve_cols <- function(data, default, map = NULL, required = names(default),
                          what = "data") {
   cols <- default

@@ -3,18 +3,18 @@
 #' Reduces an event log to one row per (order, stage visit) with the time spent
 #' in that stage and whether the visit had ended by `as_of`.
 #'
-#' The `censored` column is the point. An order sitting in a stage right now
-#' has not finished waiting, so its dwell is a lower bound, not an observation.
-#' Dropping those rows -- which is what a naive average over completed visits
-#' does -- removes exactly the orders that are stuck, and biases the result
-#' optimistic by most when the operation is performing worst.
+#' The `censored` column records whether the visit was still open. An order
+#' sitting in a stage right now has not finished waiting, so its dwell is a
+#' lower bound rather than an observation. A naive average over completed
+#' visits drops those rows, which removes the orders that are stuck and biases
+#' the result optimistic, most of all when the operation is performing worst.
 #'
 #' @param sim A `lifecycle_sim` from [simulate_lifecycles()] or
 #'   [as_lifecycle()]. A bare list with `events` and `as_of` is accepted, but
 #'   carries no specification, so `spec` must then be given.
 #' @param stage Optional stage name to restrict to.
-#' @param spec Optional [stage_spec()], which decides which stages are
-#'   endings rather than waits. Defaults to the one carried on `sim`; required
+#' @param spec Optional [stage_spec()], giving which stages are endings rather
+#'   than waits. Defaults to the one carried on `sim`; required
 #'   when the population carries none.
 #'
 #' @return A data frame with `order_no`, `stage`, `entered_at`, `left_at`,
@@ -47,10 +47,10 @@ stage_dwell <- function(sim, stage = NULL, spec = NULL) {
     censored = censored,
     stringsAsFactors = FALSE
   )
-  # A terminal stage is not a wait; it is where the order stopped. Which
-  # stages those are is a property of the lifecycle being measured, not of
-  # this function -- an operation whose work ends in `departed` is measured
-  # wrongly by any list written here.
+  # A terminal stage is where the order stopped rather than a wait. Which
+  # stages those are is a property of the lifecycle being measured rather than
+  # of this function: an operation whose work ends in `departed` would be
+  # measured wrongly by any list hard-coded here.
   out <- out[!out$stage %in% spec$terminal, ]
   if (!is.null(stage)) out <- out[out$stage %in% stage, ]
   rownames(out) <- NULL
@@ -88,14 +88,15 @@ dwell_survival <- function(dwell, by = NULL) {
 #'
 #' The dwell time by which a given share of orders has left the stage,
 #' estimated from the censored distribution rather than from completed visits
-#' only. This is the quantity a threshold should be set from.
+#' only. A threshold is set from this quantity.
 #'
 #' @param dwell A data frame from [stage_dwell()].
 #' @param p Share left, between 0 and 1. `p = 0.9` returns the time by which
 #'   90% of orders have moved on.
 #'
 #' @return Numeric hours, or `NA` if the curve does not reach `p` within the
-#'   observation window -- which is itself a finding, not a failure.
+#'   observation window, meaning that a share `p` of orders had not left the
+#'   stage by the end of it.
 #'
 #' @examples
 #' sim <- simulate_lifecycles(n = 800, seed = 1)

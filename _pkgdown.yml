@@ -7,33 +7,33 @@ template:
   # `$$...$$` and leaves the rendering to the browser. Its default,
   # `math-rendering: mathml`, only reaches the equations that pandoc converts
   # on the way through -- the home page and any vignettes -- so every formula
-  # on a reference page stayed on the site as raw TeX. KaTeX is loaded on every
-  # page instead, which is the one setting that covers the reference.
+  # on a reference page was published as raw TeX. KaTeX is loaded on every page
+  # instead, which is the setting that covers the reference pages.
   math-rendering: katex
 
 # Organized by topic. pkgdown requires every documented topic to appear here
-# exactly once, so this file is what fails when a new function is added and the
-# index is not updated. Note that a topic is not always a function:
-# `fc_benchmarks` documents four forecasting methods under one name.
+# exactly once, so the build fails when a new function is added and the index
+# is not updated. Note that a topic is not always a function: `fc_benchmarks`
+# documents four forecasting methods under one name.
 #
 # The `url:` above has to agree with the one in DESCRIPTION: pkgdown refuses to
 # build without the site URL recorded there, and R CMD check --as-cran follows
-# the URLs it finds there. Both are satisfied only while the site is actually
-# deployed, which .github/workflows/pkgdown.yaml is what keeps true.
+# the URLs it finds there. Both hold only while the site is deployed, which
+# .github/workflows/pkgdown.yaml maintains.
 reference:
 - title: Lifecycle data
   desc: >
-    Start here. Every other function reads a population in this shape, whether
-    it was generated or recorded: the built-in dataset is one call to the
-    generator, and `as_lifecycle()` builds the same object from an event log an
-    operation already keeps.
+    Every other function reads a population in this shape, whether it was
+    generated or recorded: the built-in dataset is one call to the generator,
+    and `as_lifecycle()` builds the same object from an event log an operation
+    already keeps.
   contents:
   - simulate_lifecycles
   - orders
   - as_lifecycle
 
 - title: Inventory systems
-  desc: State derived from a ledger rather than maintained beside one.
+  desc: A stocked item whose state is derived from an append-only ledger.
   contents:
   - Warehouse
 
@@ -56,7 +56,7 @@ reference:
   - dls_wagner_whitin
 
 - title: Stochastic models and service levels
-  desc: The newsvendor, the standard policies, and what service costs.
+  desc: The newsvendor, the standard policies, and the cost of service.
   contents:
   - nv_critical_fractile
   - nv_quantity
@@ -71,7 +71,7 @@ reference:
   - ss_cost
 
 - title: Demand forecasting
-  desc: Benchmarks first, then accuracy, then what feeds safety stock.
+  desc: Benchmark forecasts, accuracy measures, and the inputs to safety stock.
   contents:
   - fc_benchmarks
   - fc_accuracy
@@ -80,7 +80,7 @@ reference:
   - safety_stock
 
 - title: Decomposing lead time
-  desc: Stages declared, validated, and attributed.
+  desc: Declaring and validating stages, and attributing lead time to them.
   contents:
   - stage_spec
   - stage_validate
@@ -105,7 +105,7 @@ reference:
   - stage_backlog
 
 - title: From dwell variance to safety stock
-  desc: What the variance is worth, and to which stage it belongs.
+  desc: The value of reducing dwell variance, and the stage it belongs to.
   contents:
   - dwell_variance_contribution
   - variance_reduction_value
@@ -114,7 +114,7 @@ reference:
   - lead_time_demand_empirical
   - monitoring_budget
 
-- title: Lifecycles that are not chains
+- title: Lifecycles with loops and partial completion
   desc: Loops, partial completion, residue, and path enumeration.
   contents:
   - lifecycle_variants
@@ -170,14 +170,15 @@ reference:
   - bullwhip
 
 - title: Evaluating a policy
-  desc: What a monitoring policy is worth, and whether its rules can fire at all.
+  desc: The value of a monitoring policy, and whether its rules can fire.
   contents:
   - evaluate_policy
   - rule_reachable
   - offpolicy_value
 
 - title: Records and configuration
-  desc: What a decision recorded, and the rule grammar it was taken under.
+  desc: The provenance a decision records, and the rule grammar it was taken
+    under.
   contents:
   - decision_record
   - record_conformance
@@ -187,7 +188,7 @@ reference:
   - rule_apply
 
 - title: The cost of observation
-  desc: What it costs to look, how often to look, and what a miss costs.
+  desc: The cost of a look, the interval between looks, and the cost of a miss.
   contents:
   - observation_cost
   - cadence

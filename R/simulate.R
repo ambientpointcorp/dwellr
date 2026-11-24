@@ -1,28 +1,28 @@
 #' Simulate order lifecycles
 #'
 #' Generates a synthetic population of orders moving through a distribution
-#' lifecycle, as an event log plus one row per order. Everything else in this
-#' package runs against its output.
+#' lifecycle, as an event log plus one row per order. Every other function in
+#' this package runs against its output.
 #'
-#' The generator exists so that worked examples can be published without
-#' exposing anyone's operational data, and so that the pathologies these
-#' methods are about are present to be measured. It reproduces, deliberately:
+#' The generator allows worked examples to be published without exposing
+#' operational data, and it supplies the pathologies these methods address. It
+#' reproduces the following deliberately:
 #'
 #' * **Right-censoring.** Orders still in flight at `as_of` have not finished,
 #'   so their current dwell is a lower bound. This is the censoring bias
 #'   [dwell_survival()] corrects for.
 #' * **Mixed dwell populations.** Each stage holds a fast population and a
-#'   stuck one, so a single quantile over the mixture serves neither.
+#'   stuck one, so a single quantile over the mixture describes neither.
 #' * **Partial fills and loops.** Some orders ship in parts; a short pick sends
 #'   an order back from `released` to `backordered`.
 #' * **Residue.** Some finished orders still carry an open pick ticket, which
-#'   is what overstates a naive work queue.
+#'   overstates a naive work queue.
 #' * **Special orders.** Items bought from a vendor per order wait in
 #'   `awaiting_supply` on a vendor clock, not a warehouse one.
 #' * **Covariate effects.** Dwell in `released` scales with the order's line
 #'   count, and dwell in `received` depends on branch and channel, so that
-#'   [dwell_regression()] has something to recover and the recovered
-#'   coefficients can be checked against the values used here.
+#'   [dwell_regression()] can recover them and the recovered coefficients can
+#'   be checked against the values used here.
 #'
 #' It is not a model of any real operation and its parameters are not fitted to
 #' one. Treat the numbers it produces as illustrative.
@@ -31,14 +31,13 @@
 #' @param seed Optional integer seed. Supply one for a reproducible corpus.
 #' @param as_of Observation cutoff as a `POSIXct`. Orders not finished by this
 #'   instant are censored. Defaults to `start + horizon_days`, which leaves a
-#'   small share of the population in flight -- a couple of percent at the
+#'   small share of the population in flight: a couple of percent at the
 #'   default parameters, because most dwells are hours and the entry window is
-#'   months. That is realistic rather than convenient: a live work queue is a
-#'   small fraction of every order ever taken. What matters is not the size of
-#'   the censored set but its composition, and it is composed almost entirely
-#'   of the stuck population -- which is exactly why averaging completed visits
-#'   only runs optimistic. Shorten `horizon_days`, or pass an earlier `as_of`,
-#'   for a larger censored share.
+#'   months. A live work queue is likewise a small fraction of every order ever
+#'   taken. The composition of the censored set matters more than its size, and
+#'   it consists almost entirely of the stuck population, which is why
+#'   averaging completed visits only runs optimistic. Shorten `horizon_days`,
+#'   or pass an earlier `as_of`, for a larger censored share.
 #' @param horizon_days Days of order entry to generate.
 #' @param start Entry date of the first order.
 #'
@@ -58,27 +57,27 @@
 #'
 #'   Two order-level date fields support [deadline_derive()]. `requested_date`
 #'   equals the order date on roughly 85% of orders, reproducing a field that
-#'   defaults to today and is occasionally overridden, which is the defect
-#'   measured on a hand-checked sample of 59 orders where 58 equaled the order
-#'   date. `promised_date` is the field that does carry a commitment: it exists
-#'   only where a person entered the order, never equals the order date, and
-#'   has a lead averaging five days. The contrast between the two is what a
-#'   test of a date field looks for.
+#'   defaults to today and is occasionally overridden; the same defect was
+#'   measured on a hand-checked sample of 59 orders, 58 of which equaled the
+#'   order date. `promised_date` carries a commitment: it exists only where a
+#'   person entered the order, never equals the order date, and has a lead
+#'   averaging five days. A test of a date field looks for the difference
+#'   between the two.
 #'
 #'   The shortfall on a line is drawn before its stock position, and the line
 #'   is then matched to an item and instant whose position agrees with that
 #'   outcome. The joint distribution is the same under either factorization;
 #'   implementing this one leaves every measured quantity unchanged. Roughly an
-#'   eighth of lines are left deliberately inconsistent, which is what bounds
-#'   how well a model can do: a shortfall predictor on these features reaches
+#'   eighth of lines are left deliberately inconsistent, which bounds how well
+#'   a model can do: a shortfall predictor on these features reaches
 #'   an AUC near 0.86, against 0.58 on order attributes alone and 0.83 for the
 #'   single comparison of on-hand against the quantity ordered.
 #'
 #'   The extended value of an order's lines sums to its `value`, and the three
 #'   `fill_*` columns on `orders` are computed from the lines rather than drawn
 #'   separately, so that the three dimensions describe one population. They are
-#'   `NA` where the order has not reached a shipping stage, because an order
-#'   that has not shipped has no fill rate yet.
+#'   `NA` where the order has not reached a shipping stage, since no fill rate
+#'   is defined before shipment.
 #'
 #' @examples
 #' sim <- simulate_lifecycles(n = 500, seed = 1)
@@ -112,8 +111,8 @@ simulate_lifecycles <- function(n = 5000,
   credit_hold <- stats::runif(n) < 0.03
   cancelled   <- stats::runif(n) < 0.025
 
-  # A two-component dwell: a fast population and a stuck one. The mixture is
-  # the point -- the mean of it describes neither component.
+  # A two-component dwell: a fast population and a stuck one. A single mean
+  # over the mixture describes neither component.
   mixed_dwell <- function(k, p_stuck, fast_mean, stuck_meanlog, stuck_sdlog) {
     stuck <- stats::runif(k) < p_stuck
     out <- stats::rexp(k, rate = 1 / fast_mean)
@@ -131,11 +130,11 @@ simulate_lifecycles <- function(n = 5000,
   d_partial  <- mixed_dwell(n, 0.30, 9, log(60), 1.0)
 
   # Covariate effects on dwell. Without them every dwell is independent of
-  # everything recorded about the order, a regression on this corpus correctly
-  # finds nothing, and a worked regression can demonstrate only what a null
-  # result looks like. The effects are declared here, rather than buried in the
-  # draws, so that a coefficient recovered by `dwell_regression()` or
-  # `fit_dwell_model()` can be checked against the value that produced it.
+  # everything recorded about the order, so a regression on this corpus finds
+  # nothing and can illustrate only a null result. The effects are declared
+  # here rather than inside the draws, so that a coefficient recovered by
+  # `dwell_regression()` or `fit_dwell_model()` can be checked against the
+  # value that produced it.
   #
   #   released: handling work, so dwell scales with the work content of the
   #     order, sublinearly in the number of lines -- picking a second line
@@ -144,15 +143,14 @@ simulate_lifecycles <- function(n = 5000,
   #     it rather than on the order's size. The smaller branch is slower, and
   #     an inside-sales order needs a person where an e-store order does not.
   #
-  # Nothing here makes dwell depend on the backlog present on arrival, because
-  # the generator has no queue: orders do not compete for a resource. A
-  # regression on a backlog term correctly finds nothing here, which is the
-  # result to expect from data built this way.
+  # No dwell here depends on the backlog present on arrival, because the
+  # generator has no queue: orders do not compete for a resource. A regression
+  # on a backlog term therefore finds nothing on this corpus.
   # Each factor is divided by its own mean over the population, so it changes
   # which orders wait longer without changing how long the stage holds orders
-  # on average. That matters beyond tidiness: the stage decomposition is
-  # computed from these same draws, and a factor with a mean above one would
-  # silently relabel which stage carries the most lead time.
+  # on average. This matters because the stage decomposition is computed from
+  # these same draws, and a factor with a mean above one would relabel which
+  # stage carries the most lead time.
   centered <- function(x) x / mean(x)
 
   f_lines   <- centered((lines_n / 3)^0.45)
@@ -240,7 +238,7 @@ simulate_lifecycles <- function(n = 5000,
     add(order_no[i], "pick_ticket_released", "released", t)
     stage_now[i] <- "released"
 
-    # A short pick bounces the order back. This is a lifecycle loop.
+    # A short pick sends the order back, which is a lifecycle loop.
     if (stats::runif(1) < 0.09) {
       t <- t + hrs(stats::runif(1, 0.5, 8))
       if (t > as_of) next
@@ -256,7 +254,7 @@ simulate_lifecycles <- function(n = 5000,
     if (t > as_of) next
 
     # Some orders ship in parts and then sit. The remaining lines belong to no
-    # queue in most systems, which is why they are counted here.
+    # queue in most systems, so they are counted here.
     if (lines_n[i] > 1L && stats::runif(1) < 0.14) {
       add(order_no[i], "partial_shipment", "partially_shipped", t)
       stage_now[i] <- "partially_shipped"; partial[i] <- TRUE
@@ -272,9 +270,9 @@ simulate_lifecycles <- function(n = 5000,
     stage_now[i] <- "shipped"; finished[i] <- t
 
     # An order that shipped in parts either completes or is CLOSED SHORT, the
-    # remaining lines cancelled. Resetting fill to 1 on every shipment -- the
-    # obvious thing to write -- would mean no order ever records a short fill,
-    # and the fill measures would have nothing to report.
+    # remaining lines cancelled. Resetting fill to 1 on every shipment would
+    # leave no order recording a short fill, and the fill measures would have
+    # nothing to report.
     if (partial[i] && stats::runif(1) < 0.45) {
       short_close[i] <- TRUE          # keep the partial fill as the final fill
     } else {
@@ -294,8 +292,8 @@ simulate_lifecycles <- function(n = 5000,
   # was short.
   #
   # Every draw below is vectorized and happens after the loop above, so adding
-  # this leaves the rest of the population byte-identical. That was verified
-  # across three seeds and two sizes rather than assumed.
+  # this leaves the rest of the population byte-identical. This was verified
+  # across three seeds and two sizes.
   n_lines <- sum(lines_n)
   qty_ordered <- 1L + stats::rpois(n_lines, 4)
   # A price multiplier per line, so the expensive line is not always the big
@@ -324,26 +322,26 @@ simulate_lifecycles <- function(n = 5000,
   # ---- Items, and the stock position behind a shortfall --------------------
   #
   # No model trained on order attributes can predict a shortfall, because
-  # whether an item is on the shelf on a given day is a fact about inventory
-  # and not about the order. The threshold and routing families need that fact,
+  # whether an item is on the shelf on a given day is a property of inventory
+  # rather than of the order. The threshold and routing families need that fact,
   # so the items carry it.
   #
   # Each item replenishes on its own cycle and is out of stock for a window at
   # the end of each cycle, while the replenishment is in transit. Position is
-  # therefore a function of the item and the time, which is what makes it
-  # consistent: two lines hitting the same item on the same day see the same
-  # on-hand quantity, as they must.
+  # therefore a function of the item and the time, which keeps it consistent:
+  # two lines hitting the same item on the same day see the same on-hand
+  # quantity.
   #
   # The direction of causation in this code runs from the shortfall to the
   # position, because the shortfall was already drawn in the loop above and
   # every measured quantity depends on it. Lines are therefore matched
   # to an (item, time) pair whose stock position agrees with the outcome the
   # loop settled. The joint distribution of position and shortfall is the same
-  # either way round; only the factorization differs, and stating which one is
-  # implemented is what keeps the generator honest. `stock_noise` is the share
-  # of lines left deliberately inconsistent, which is what bounds how well any
-  # model can do: with no noise a single comparison would predict shortfall
-  # perfectly and no chapter could illustrate a threshold.
+  # either way round; only the factorization differs, and this comment records
+  # which one is implemented. `stock_noise` is the share of lines left
+  # deliberately inconsistent, which bounds how well a model can do: with no
+  # noise a single comparison would predict shortfall perfectly, and no
+  # threshold could be illustrated.
   n_items <- max(50L, round(n / 4))
   item_no <- sprintf("I%05d", seq_len(n_items))
   item_class <- sample(c("A", "B", "C"), n_items, replace = TRUE,
@@ -386,7 +384,7 @@ simulate_lifecycles <- function(n = 5000,
 
   # Match each line to an item whose position agrees with its outcome, redrawing
   # the lines that do not match. A bounded number of passes leaves a residue
-  # that is inconsistent on purpose.
+  # that stays inconsistent, as intended.
   stock_noise <- 0.12
   assigned <- sample(n_items, n_lines, replace = TRUE)
   for (pass in seq_len(14)) {
@@ -421,10 +419,10 @@ simulate_lifecycles <- function(n = 5000,
 
   # Fill on units and on value are recomputed from the lines, so that the three
   # dimensions describe one population rather than three independent draws.
-  # They are NA where the order has not reached a shipping stage: an order that
-  # has not shipped has no fill rate yet, which is the same censoring problem
-  # the dwell estimators treat, and crediting it with 1 would report every open
-  # order as perfectly filled.
+  # They are NA where the order has not reached a shipping stage, since no fill
+  # rate is defined before shipment. This is the same censoring problem the
+  # dwell estimators treat, and crediting such an order with 1 would report
+  # every open order as perfectly filled.
   shipped_stage <- stage_now %in% c("shipped", "partially_shipped")
   sum_by <- function(x) as.numeric(tapply(x, line_order, sum)[order_no])
   fill_units <- ifelse(shipped_stage, sum_by(qty_shipped) / sum_by(qty_ordered), NA)
@@ -443,16 +441,16 @@ simulate_lifecycles <- function(n = 5000,
 
   # ---- Date fields -------------------------------------------------------
   #
-  # Which date fields carry a commitment? Most do not. In one field
-  # engagement the requested-date field equaled the order date on 58 of
-  # 59 sampled orders, because the entry screen defaulted it to today and
-  # nobody overrode it, so a severity rule keyed on "days past requested date"
-  # was reading elapsed time with extra steps.
+  # Most date fields carry no commitment. In one field engagement the
+  # requested-date field equaled the order date on 58 of 59 sampled orders,
+  # because the entry screen defaulted it to today and it was rarely
+  # overridden, so a severity rule keyed on "days past requested date" was
+  # reading elapsed time.
   #
   # `requested_date` reproduces that defect at a declared rate.
-  # `promised_date` is the field that does carry a commitment, and it exists
-  # only where a person entered the order. Drawing both after everything above
-  # leaves the rest of the population byte-identical.
+  # `promised_date` carries a commitment, and it exists only where a person
+  # entered the order. Drawing both after everything above leaves the rest of
+  # the population byte-identical.
   default_share <- 0.85
   entered_day <- as.Date(entered)
   requested_offset <- ifelse(stats::runif(n) < default_share, 0L,
@@ -487,10 +485,10 @@ simulate_lifecycles <- function(n = 5000,
     stringsAsFactors = FALSE
   )
 
-  # The generator knows which stage set it generated, so it says so. Every
-  # spec-aware function then resolves it from the object instead of assuming
-  # it, and the assumption that used to be spread across those functions lives
-  # in one place that is right by construction.
+  # The generator records the stage set it generated. Every spec-aware
+  # function then resolves it from the object instead of assuming one, so the
+  # assumption that used to be spread across those functions is held in one
+  # place.
   structure(list(orders = orders, events = events, lines = lines_tbl,
                  items = items, as_of = as_of,
                  spec = distribution_stage_spec()), class = "lifecycle_sim")

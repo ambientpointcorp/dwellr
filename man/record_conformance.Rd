@@ -25,15 +25,16 @@ A list with \code{ok}, and a \code{problems} data frame naming each failure.
 }
 \description{
 Everything downstream of the decision path reads its output, so the shape of
-that output is an interface and benefits from being versioned like one. A
-conformance check establishes mechanically that the columns are present,
-that the enumerated ones carry only declared values, and that the required
-ones are populated.
+that output is an interface and is worth versioning as one. A conformance
+check establishes mechanically that the columns are present, that the
+enumerated ones carry only declared values, and that the required ones are
+populated.
 }
 \details{
-What it cannot establish is that the values are correct. A record declaring
+The check does not establish that the values are correct. A record declaring
 policy version \code{v4} conforms whether or not \code{v4} is the version that ran,
-which is why \code{\link[=replay_check]{replay_check()}} replays rather than inspects.
+which is why \code{\link[=replay_check]{replay_check()}} replays the decisions rather than inspecting
+them.
 }
 \examples{
 r <- decision_record("notify", "A", Sys.time(), "v4", "rule")

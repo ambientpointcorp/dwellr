@@ -16,14 +16,14 @@ as_lifecycle(
 \arguments{
 \item{events}{A data frame of stage entries. See the shape above.}
 
-\item{spec}{A \code{\link[=stage_spec]{stage_spec()}} for the operation being measured. Required:
-the stages an instance can stop in, and the stages in which its work was
-delivered, cannot be guessed from a log and are wrong by default.}
+\item{spec}{A \code{\link[=stage_spec]{stage_spec()}} for the operation being measured. Required,
+because the stages an instance can stop in and the stages in which its
+work was delivered cannot be inferred from a log.}
 
 \item{orders}{Optional data frame, one row per instance. Derived from the
 log when absent, carrying \code{order_no}, \code{stage}, \code{is_terminal} and
 \code{finished_at}. When supplied, those four columns are recomputed from the
-log rather than trusted, since they are a function of it.}
+log, since they are a function of it.}
 
 \item{lines}{Optional data frame, one row per line of an instance.}
 
@@ -39,52 +39,50 @@ An object of class \code{lifecycle_sim}.
 Every analysis function in this package reads one object: a list with an
 event log, the population those events belong to, a stage specification and
 the instant the data was cut. \code{\link[=simulate_lifecycles]{simulate_lifecycles()}} produces one. This
-produces the same thing from records a real operation already keeps, which
-is what makes the methods here usable on anything other than the synthetic
-corpus.
+function produces the same object from records a real operation already
+keeps, so the methods here apply outside the synthetic corpus.
 }
-\section{The shape this expects}{
+\section{Expected input}{
 
 
-\code{events} is the whole requirement. One row per stage entry, in any order,
+\code{events} is the only required input: one row per stage entry, in any order,
 with three columns:
 
 \describe{
-\item{\code{order_no}}{the instance identifier. Whatever the instance is --
-an order, a load, a claim, a renewal -- it is the thing whose lifecycle
-is being measured, and the column keeps this name because every other
-function in the package reads it.}
+\item{\code{order_no}}{the instance identifier. The instance may be an order,
+a load, a claim or a renewal; it is whatever has the lifecycle being
+measured. The column keeps this name because every other function in
+the package reads it.}
 \item{\code{stage}}{the stage entered, named in \code{spec}.}
 \item{\code{occurred_at}}{a \code{POSIXct} of when the move happened, not when it
-was recorded. Dwell is elapsed time in the world; a processing
-timestamp measures the reporting pipeline instead.}
+was recorded. Dwell is elapsed time in the operation, whereas a
+processing timestamp measures the reporting pipeline.}
 }
 
-An \code{event} column naming the transition is kept when present and invented
+An \code{event} column naming the transition is kept when present and derived
 from the stage when it is not.
 }
 
-\section{Why \code{as_of} is not optional in spirit}{
+\section{The \code{as_of} instant}{
 
 
-A population is only meaningful as of an instant. Every visit with no later
-event is open at \code{as_of} and is a right-censored observation, which is what
-the dwell estimators here are built around. Defaulting it to the last event
-in the log is a convenience with a trap in it: if the extract was cut on
-Tuesday and the last event happens to be Friday-week-before, the default
-silently declares nine days of in-flight work finished. Pass the instant the
-data was cut.
+A population is defined as of an instant. Every visit with no later event is
+open at \code{as_of} and is a right-censored observation, which the dwell
+estimators here are built around. The default, the last event in the log,
+carries a risk: if the extract was cut on Tuesday and the last event falls
+on the Friday of the week before, the default treats nine days of in-flight
+work as finished. Pass the instant the data was cut.
 }
 
 \section{Exporting from a source system}{
 
 
-This function is the contract, and it is deliberately a small one so that
-the export side can be written against a published shape rather than against
-this package's internals. An exporter needs to produce the three event
-columns, a stage specification matching the operation's own lifecycle, and
-the extract instant. Everything else is optional and enriches what can be
-asked: \code{orders} carries per-instance attributes to group and segment by,
+This function defines the interface, and it is kept small so that the export
+side can be written against a published shape rather than against this
+package's internals. An exporter needs to produce the three event columns, a
+stage specification matching the operation's own lifecycle, and the extract
+instant. The remaining inputs are optional and widen what can be asked:
+\code{orders} carries per-instance attributes to group and segment by,
 \code{lines} the line grain, and \code{items} the demand and supply figures safety
 stock is computed from.
 }

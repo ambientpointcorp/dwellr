@@ -12,8 +12,8 @@ observe_at(sim, as_of, spec = NULL)
 
 \item{as_of}{Observation instant, a \code{POSIXct} at or before \code{sim$as_of}.}
 
-\item{spec}{Optional \code{\link[=stage_spec]{stage_spec()}}, which decides which stages count as
-an ending. Defaults to the one carried on \code{sim}.}
+\item{spec}{Optional \code{\link[=stage_spec]{stage_spec()}}, giving the stages that count as an
+ending. Defaults to the one carried on \code{sim}.}
 }
 \value{
 A \code{lifecycle_sim} observed at \code{as_of}, carrying the same \code{lines},
@@ -25,10 +25,10 @@ events after \code{as_of} are discarded, and each instance's stage is whatever i
 had reached by then. Instances that had not yet been created are dropped.
 }
 \details{
-This is what makes the censoring bias measurable rather than argued. The
-same corpus, observed at a sequence of cutoffs, gives a sequence of
-in-flight sets, and the naive average over completed visits can be compared
-against an estimator that uses the censored ones at each.
+This makes the censoring bias measurable. The same corpus, observed at a
+sequence of cutoffs, gives a sequence of in-flight sets, and at each one the
+naive average over completed visits can be compared against an estimator
+that uses the censored visits.
 }
 \examples{
 sim <- simulate_lifecycles(n = 500, seed = 1)

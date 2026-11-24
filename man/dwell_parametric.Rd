@@ -17,17 +17,16 @@ log-likelihood, the number of parameters, \code{AIC}, and \code{shape} where the
 family has one, with \code{hazard} naming the shape of hazard implied.
 }
 \description{
-The Kaplan-Meier estimate makes no assumption about shape, which is its
-merit, and it stops at the last observed event, which is its limit. A
-parametric fit extrapolates past that point and reduces the distribution to
-two or three numbers that can be carried into a policy, at the price of an
-assumption that has to be checked rather than adopted.
+The Kaplan-Meier estimate makes no assumption about shape, and it stops at
+the last observed event. A parametric fit extrapolates past that point and
+reduces the distribution to two or three numbers that can be carried into a
+policy, at the cost of a shape assumption, which has to be checked.
 }
 \details{
-The families differ in the shape of hazard they can represent, and that is
-the property to choose on. An exponential fit asserts a constant hazard, so
-that an order which has waited a day is no more and no less likely to move
-in the next hour than one that arrived a minute ago. A Weibull fit allows
+The families differ in the shape of hazard they can represent, which is the
+property to choose on. An exponential fit assumes a constant hazard, so an
+order that has waited a day is no more and no less likely to move in the
+next hour than one that arrived a minute ago. A Weibull fit allows
 the hazard to rise or fall monotonically, with its shape parameter below one
 meaning a falling hazard. A log-normal fit allows a hazard that rises and
 then falls.

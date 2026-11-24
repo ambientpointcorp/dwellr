@@ -23,8 +23,7 @@ offpolicy_value(
 \item{target}{Action the proposed policy would take.}
 
 \item{target_propensity}{Optional probability the logged policy would have
-taken \code{target}. Supplying it is what makes a positivity failure visible
-rather than inferred.}
+taken \code{target}. Supplying it makes a positivity failure visible.}
 
 \item{reward_model}{Optional matrix of predicted rewards with one column
 per action, named by action, used for the doubly robust estimate.}
@@ -44,12 +43,12 @@ model and adds it back, which leaves the estimate correct if either the
 propensities or the model are.
 }
 \details{
-The assumption that fails in practice is positivity, and it fails silently.
-A deterministic logged policy took what it took with probability one, so
-nothing in \code{propensity} looks wrong, while the items where the proposal
-would have acted differently carry no weight and simply drop out of the
-average. \code{evidence} reports the share of items the estimate actually rests
-on, and \code{positivity} reports the share whose target action had a nonzero
+The assumption that fails in practice is positivity, and it fails without
+raising an error. A deterministic logged policy took its action with
+probability one, so nothing in \code{propensity} appears wrong, while the items
+where the proposal would have acted differently carry no weight and drop out
+of the average. \code{evidence} reports the share of items the estimate rests on,
+and \code{positivity} reports the share whose target action had a nonzero
 chance of being logged, which needs \code{target_propensity} to be known.
 }
 \examples{

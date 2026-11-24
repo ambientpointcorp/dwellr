@@ -36,7 +36,7 @@ recursion over a finite horizon.
 \details{
 Under stationary demand the levels are constant and coincide with the
 single-period Newsvendor solution at the critical fractile
-\eqn{b/(h+b)}, which is the cheapest check on the result.
+\eqn{b/(h+b)}, which provides a check on the result.
 }
 \examples{
 d <- 0:40

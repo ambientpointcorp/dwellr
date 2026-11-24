@@ -63,8 +63,8 @@ test_that("variance is attributed by covariance with the total, so shares sum to
   expect_equal(sum(dec$var_share), 1, tolerance = 1e-8)
   expect_equal(sum(dec$cov_with_total), attr(dec, "total")[["var"]],
                tolerance = 1e-6)
-  # Summing own variances instead -- the expression that assumes independence --
-  # does not reproduce it, which is the point of using the covariance form.
+  # Summing own variances instead, which assumes independence, does not
+  # reproduce it; that is the reason for using the covariance form.
   expect_false(isTRUE(all.equal(sum(dec$own_var),
                                 attr(dec, "total")[["var"]],
                                 tolerance = 1e-6)))
@@ -98,7 +98,7 @@ test_that("degenerate_stages distinguishes an empty stage from a terminal one", 
   expect_true(all(scan$verdict[scan$stage == "awaiting_supply"] == "ok"))
 
   # A print event logged one second before the release it accompanies is a
-  # second name for that release, not a stage.
+  # second name for that release rather than a stage.
   printed <- sim$events[sim$events$event == "pick_ticket_released", ]
   printed$event <- "pick_ticket_printed"
   printed$stage <- "printed"
@@ -113,8 +113,8 @@ test_that("degenerate_stages distinguishes an empty stage from a terminal one", 
   expect_equal(row$collapses_onto, "released")
   expect_equal(row$verdict, "degenerate: remove")
 
-  # A tolerance finer than the source clock misses it, which is why the
-  # argument exists and why it should be set to the timestamp resolution.
+  # A tolerance finer than the source clock misses it, so the argument should
+  # be set to the resolution of the source timestamps.
   fine <- degenerate_stages(cfg, tol_hours = 1 / 7200)
   expect_equal(fine$verdict[fine$stage == "printed"], "ok")
 })

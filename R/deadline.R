@@ -1,6 +1,6 @@
-# A commitment is when the customer expects something; the last useful moment
-# to act precedes it by however long the work takes. The gap between those two
-# is what an alert should be keyed on.
+# A commitment is when the customer expects something, and the last useful
+# moment to act precedes it by the time the work takes. An alert is keyed on
+# the second of the two.
 
 #' Derive the last useful moment to act from a commitment
 #'
@@ -11,14 +11,12 @@
 #' carrier's schedule.
 #'
 #' Keying an alert on the commitment rather than the horizon surfaces orders
-#' that are already too late to save, which is the practical reason to derive
-#' this at all.
+#' that are already too late to act on.
 #'
-#' The function will not invent a commitment. A row whose commitment is missing
-#' comes back with `defined = FALSE` and a missing horizon, because declaring
-#' no deadline is a smaller claim than inventing one, and the only claim the
-#' data supports. Anything downstream has to handle the missing case
-#' explicitly, which is the point.
+#' The function does not impute a commitment. A row whose commitment is missing
+#' comes back with `defined = FALSE` and a missing horizon, which is the only
+#' claim the data supports. Downstream code has to handle the missing case
+#' explicitly.
 #'
 #' @param commitment Promised date or time, one per instance. `NA` where none
 #'   was given.

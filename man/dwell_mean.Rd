@@ -18,19 +18,18 @@ the \code{restricted} mean from the Kaplan-Meier curve, the \code{horizon} used,
 the \code{bias} of the naive figure as a share of the restricted one.
 }
 \description{
-The average dwell computed over completed visits only is the figure an
-operational report usually carries, and it is biased low. The visits it
-omits are the ones still open, which are the longest waits in the stage, so
-the omission is not random with respect to the quantity being averaged.
+The average dwell computed over completed visits only, which is the figure
+an operational report usually carries, is biased low. The visits it omits
+are the ones still open, and those are the longest waits in the stage, so
+the omission depends on the quantity being averaged.
 }
 \details{
 The censoring-aware figure is a \strong{restricted} mean: the area under the
-Kaplan-Meier curve out to \code{restrict_to}. Restriction is not a convenience.
-A heavy-tailed dwell observed over a finite window leaves the curve above
+Kaplan-Meier curve out to \code{restrict_to}. The restriction is necessary. A
+heavy-tailed dwell observed over a finite window leaves the curve above
 zero at the last event, so the unrestricted mean is not identified from the
-data and any single number claiming to be it has made an assumption about
-the tail. Reporting the horizon alongside the mean is what makes the figure
-checkable.
+data, and reporting it would require an assumption about the tail. The
+horizon used is returned alongside the mean.
 }
 \examples{
 sim <- simulate_lifecycles(n = 800, seed = 1)

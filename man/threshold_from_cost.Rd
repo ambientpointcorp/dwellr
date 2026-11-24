@@ -19,7 +19,7 @@ per order. From a fitted model, or from the \code{posterior} element of
 \item{hours}{Optional dwell hours for the same orders, in the same order as
 \code{prob}. When supplied, the probability threshold is translated into the
 dwell time at which it is crossed, which is the form an operating rule
-usually has to take.}
+usually takes.}
 }
 \value{
 A list with the \code{probability_threshold} \verb{p*}, the logical \code{flag}
@@ -28,16 +28,16 @@ beside reviewing nothing and everything, and, when \code{hours} is supplied,
 the \code{hours} at which the threshold is crossed.
 }
 \description{
-The point at which an order should be surfaced to a person, derived rather
-than chosen.
+The point at which an order should be surfaced to a person, derived from a
+cost ratio.
 }
 \details{
-Let \code{c_miss} be the expected cost of a stall nobody caught and \code{c_look} the
-cost of a reviewer's attention spent on an order that turned out to be fine.
-An order carrying stall probability \code{q} is worth looking at when the
-expected cost of leaving it alone exceeds the expected cost of the look,
-\code{q * c_miss > (1 - q) * c_look}, which rearranges to a threshold on the
-probability itself:
+Let \code{c_miss} be the expected cost of a stall that was not caught and
+\code{c_look} the cost of a reviewer's attention spent on an order that turned
+out to be fine. An order carrying stall probability \code{q} is worth looking at
+when the expected cost of leaving it alone exceeds the expected cost of the
+look, \code{q * c_miss > (1 - q) * c_look}, which rearranges to a threshold on
+the probability itself:
 
 \deqn{p^{*} = \frac{c_{look}}{c_{look} + c_{miss}}}
 
@@ -45,41 +45,41 @@ The rule flags every order whose probability exceeds \verb{p*}. Because the
 comparison is made order by order, the rule is the pointwise minimizer of
 expected cost, and no other assignment of the same orders to review can do
 better under the same two costs. The returned \code{expected_cost} reports the
-rule against the two policies it has to beat, reviewing nothing and
-reviewing everything.
+rule alongside the two reference policies, reviewing nothing and reviewing
+everything.
 
 The expression is the newsvendor critical fractile
 (\code{\link[=nv_critical_fractile]{nv_critical_fractile()}}) with the costs in the other order, and the
-reversal is not cosmetic. The newsvendor chooses a stocking quantity, where
-holding more is what protects against the expensive shortage, so its
-fractile rises with the underage cost. Alerting chooses when to spend
-attention, where looking sooner is what protects against the expensive miss.
-The threshold therefore falls as a missed stall gets dearer and rises as
-reviewer attention does.
+reversal has a consequence. The newsvendor chooses a stocking quantity,
+where holding more protects against the expensive shortage, so its fractile
+rises with the underage cost. Alerting chooses when to spend attention,
+where looking sooner protects against the expensive miss. The threshold
+therefore falls as the cost of a missed stall rises, and rises as the cost
+of reviewer attention rises.
 
-Two honest limits. The threshold is only as good as the two costs, and
-\code{c_miss} is the hard one, since it has to be priced through the service
-consequence and the safety-stock valuation of \code{\link[=variance_reduction_value]{variance_reduction_value()}}.
-And the probabilities have to be calibrated, not merely ranked: a model that
-orders orders correctly but reports 0.4 where the observed rate is 0.1 will
-cross \verb{p*} at the wrong place, which is why \code{\link[=calibrate_probability]{calibrate_probability()}}
-belongs before thresholding. Compare the flagged count against review
-capacity with \code{\link[=monitoring_budget]{monitoring_budget()}}.
+Two limits apply. The threshold is only as good as the two costs, and
+\code{c_miss} is the harder one to set, since it has to be priced through the
+service consequence and the safety-stock valuation of
+\code{\link[=variance_reduction_value]{variance_reduction_value()}}. The probabilities also have to be calibrated
+and not merely ranked: a model that ranks orders correctly but reports 0.4
+where the observed rate is 0.1 crosses \verb{p*} at the wrong place, so
+\code{\link[=calibrate_probability]{calibrate_probability()}} should be applied before thresholding. Compare the
+flagged count against review capacity with \code{\link[=monitoring_budget]{monitoring_budget()}}.
 
 A rule is also only as discriminating as the probabilities handed to it. A
 \verb{p*} that falls below the lowest probability in \code{prob} flags the whole
-population, and a \verb{p*} above the highest flags nothing. The rule is still
-minimizing cost in both cases, reporting that under these costs and these
+population, and a \verb{p*} above the highest flags nothing. In both cases the
+rule still minimizes cost, and it reports that under these costs and these
 probabilities a blanket policy is the cheapest available. The
 \code{expected_cost} element is the diagnostic: when the rule's cost equals the
 cost of reviewing everything, or of reviewing nothing, the threshold has
-fallen outside what the probabilities resolve, and the way forward is a
+fallen outside the range the probabilities resolve, and the remedy is a
 model that separates the population further rather than a different
 threshold.
 
 Where no fitted model is available, \code{\link[=threshold_from_dwell_quantile]{threshold_from_dwell_quantile()}} reads
-the threshold off the dwell distribution instead, under an assumption that
-section documents.
+the threshold off the dwell distribution instead, under an assumption
+documented on that page.
 }
 \examples{
 sim <- simulate_lifecycles(n = 1200, seed = 3)
@@ -90,7 +90,7 @@ q <- mix$posterior(d$dwell_hours, censored = d$censored)
 # translates the probability threshold back into hours.
 threshold_from_cost(q, cost_miss = 40, cost_look = 400,
                     hours = d$dwell_hours)[-2]
-# Reversing the ratio puts p* below what this posterior resolves, and the
-# rule reports as much by costing what reviewing everything costs.
+# Reversing the ratio puts p* below the range this posterior resolves, and
+# the rule then costs what reviewing everything costs.
 threshold_from_cost(q, cost_miss = 400, cost_look = 40)$expected_cost
 }

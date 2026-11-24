@@ -23,28 +23,27 @@ the index of the \code{slow} component, a \code{posterior(time, censored)} funct
 giving the probability that a visit belongs to it, and a \code{quantile}
 function giving quantiles of the mixture.
 
-The \code{posterior} is the input \code{\link[=threshold_from_cost]{threshold_from_cost()}} expects, with one
-qualification to carry into any rule built on it: it reports membership in
-the slow component, which is a stall only to the extent that the slow
-component is what stalling means here. How low the posterior reaches
-depends on the families fitted and on the smallest time observed, so
-compare \code{min(posterior(...))} against the intended threshold rather than
-assuming the range covers it.
+The \code{posterior} is the input \code{\link[=threshold_from_cost]{threshold_from_cost()}} expects. One
+qualification applies to any rule built on it: it reports membership in
+the slow component, which corresponds to a stall only to the extent that
+the slow component represents stalling in the stage at hand. The lowest
+value it reaches depends on the families fitted and on the smallest time
+observed, so compare \code{min(posterior(...))} against the intended threshold
+before assuming the range covers it.
 }
 \description{
-Most stages hold two populations rather than one: orders that move through
-at the pace the process intends, and orders that have stopped. A single
-distribution fitted to the pool describes neither of them, and a single
-quantile taken from it is too late to catch the stalls and too early to
-leave the normal work alone.
+Most stages hold two populations: orders that move through at the pace the
+process intends, and orders that have stopped. A single distribution fitted
+to the pool describes neither population, and a single quantile taken from
+it is too late to catch the stalls and too early to leave the normal work
+alone.
 }
 \details{
-The fit is by expectation-maximization, and it uses the censored visits
-rather than discarding them: a visit still open at \code{t} contributes each
-component's survival at \code{t} to the responsibility, in place of its density.
-Dropping those visits would reintroduce exactly the censoring bias into the
-estimate of the component that matters most, since an open visit is
-overwhelmingly likely to belong to the stuck population.
+The fit is by expectation-maximization and uses the censored visits: a visit
+still open at \code{t} contributes each component's survival at \code{t} to the
+responsibility, in place of its density. Dropping those visits would
+reintroduce the censoring bias into the estimate of the slow component,
+since an open visit is likely to belong to it.
 }
 \examples{
 sim <- simulate_lifecycles(n = 2000, seed = 1)

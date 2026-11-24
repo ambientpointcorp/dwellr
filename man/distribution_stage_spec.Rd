@@ -11,8 +11,8 @@ A \code{\link[=stage_spec]{stage_spec()}}.
 }
 \description{
 The specification derived from the event log of \code{\link[=simulate_lifecycles]{simulate_lifecycles()}},
-supplied as a function so that every caller validates against one definition
-rather than retyping it.
+supplied as a function so that every caller validates against one
+definition.
 }
 \examples{
 distribution_stage_spec()

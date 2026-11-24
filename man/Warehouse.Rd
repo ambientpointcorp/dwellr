@@ -23,8 +23,9 @@ ERP's event stream rather than a list built in a loop.
 
 A receipt is posted at \code{period}; an issue is posted at \code{period + 1}. The
 offset encodes an ordering within the period — arrivals first, demand
-afterward. This is an assumption, not a property of the data, and whether it
-holds in a given operation depends on receiving hours and pick waves.
+afterward. This is an assumption rather than a property of the data, and
+whether it holds in a given operation depends on receiving hours and pick
+waves.
 }
 
 \examples{

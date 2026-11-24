@@ -1,25 +1,25 @@
 #' Route exceptions to the action each one needs
 #'
-#' An exception is useful to the person who receives it only if they can do
-#' something about it. Routing on what is wrong sends a credit hold to a
-#' warehouse that cannot release it; routing on what needs doing sends it to
-#' whoever can clear credit.
+#' An exception is useful to the person who receives it only if they can act on
+#' it. Routing on the symptom sends a credit hold to a warehouse that cannot
+#' release it, while routing on the required action sends it to whoever can
+#' clear credit.
 #'
-#' The table is therefore keyed on the required action and not on the symptom.
-#' Several conditions often need the same action, and one condition sometimes
-#' needs several, so the mapping is many-to-many and has to be written down
-#' rather than inferred from a stage name.
+#' The table is therefore keyed on the required action rather than on the
+#' symptom. Several conditions often need the same action, and one condition
+#' sometimes needs several, so the mapping is many-to-many and has to be
+#' declared rather than inferred from a stage name.
 #'
-#' `matched` is the column to test. An item with no rule is not routed to
-#' nobody by accident: it is reported, and [routing_gaps()] measures what a
-#' silent default costs.
+#' `matched` records whether a rule applied. An item with no rule is reported
+#' rather than left unrouted without notice, and [routing_gaps()] measures the
+#' cost of a silent default.
 #'
 #' @param keys Routing key for each item, one per item.
 #' @param table A data frame of rules with columns `key`, `action`,
 #'   `recipient` and `urgency`.
 #' @param default Optional single-row data frame used for keys with no rule.
 #'   Supplying it marks those rows `matched = FALSE` even though they are
-#'   routed, so a default can never hide a gap.
+#'   routed, so a default does not hide a gap.
 #'
 #' @return A data frame with one row per item: `key`, `action`, `recipient`,
 #'   `urgency` and `matched`.
@@ -58,14 +58,13 @@ route_action <- function(keys, table, default = NULL) {
 
 #' Which routing keys the table does not cover
 #'
-#' Routing-table completeness is an invariant, which means it can be tested
-#' rather than hoped for. In one engagement four items fell through to a
-#' default map carrying no action type, and the highest-value order in the
-#' queue escalated to no recipient at all.
+#' Routing-table completeness is an invariant and can therefore be tested. In
+#' one engagement, four items fell through to a default map carrying no action
+#' type, and the highest-value order in the queue escalated to no recipient.
 #'
-#' The test to run is this one, on the live population and not on the keys
-#' somebody remembered when the table was written. A key that appears once a
-#' quarter is exactly the key nobody thought of.
+#' Run the test on the live population rather than on the keys recorded when
+#' the table was written, since a key that appears once a quarter is the one
+#' most likely to have been overlooked.
 #'
 #' @param keys Routing keys observed in the population.
 #' @param table A routing table as used by [route_action()].

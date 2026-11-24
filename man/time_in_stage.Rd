@@ -17,15 +17,15 @@ A data frame with one row per instance that visited the stage:
 \code{total_hours} across all visits, and the \code{understated} share.
 }
 \description{
-An operational report almost always shows time since the instance entered
-its current stage, because that is the quantity a status field supports.
-Where an instance has looped, that figure restarts on re-entry and the wait
-already endured disappears from it.
+An operational report usually shows time since the instance entered its
+current stage, since that is the quantity a status field supports. Where an
+instance has looped, that figure restarts on re-entry and the wait already
+endured drops out of it.
 }
 \details{
-Both quantities are returned so the gap between them can be measured. The
-one to alert on is \code{total_hours}, since an order on its second pass has
-already consumed the patience the first pass was given.
+Both quantities are returned, so the gap between them can be measured.
+\code{total_hours} is the figure to alert on, since an order on its second pass
+has already used the time allowed for the first.
 }
 \examples{
 sim <- simulate_lifecycles(n = 1000, seed = 11)

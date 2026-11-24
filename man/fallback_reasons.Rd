@@ -11,15 +11,14 @@ A character vector of accepted reasons.
 }
 \description{
 "Not configured to use a model" and "could not reach one" look identical
-from outside the decision path and mean entirely different things: the first
-is a choice and the second is an incident. A single \code{NA} in place of a model
-score collapses them, and collapsing them means an outage is
-indistinguishable from a configuration.
+from outside the decision path but mean different things: the first is a
+choice and the second is an incident. A single \code{NA} in place of a model
+score collapses the two, which leaves an outage indistinguishable from a
+configuration.
 }
 \details{
-These are the reasons \code{\link[=decision_path]{decision_path()}} accepts. \code{model_disabled} is the
-deliberate one; the rest are degradations, each with a consequence of its
-own.
+These are the reasons \code{\link[=decision_path]{decision_path()}} accepts. \code{model_disabled} is
+deliberate, and the rest are degradations, each with its own consequence.
 }
 \examples{
 fallback_reasons()

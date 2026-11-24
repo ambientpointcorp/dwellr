@@ -18,8 +18,8 @@ test_that("the naive mean is biased low, and worse the more work is in flight", 
     dwell_mean(stage_dwell(s, "awaiting_supply"), restrict_to = 400)$bias
   }, numeric(1))
 
-  # On a short window the completed-visits-only average understates badly;
-  # the bias shrinks as the window lengthens.
+  # On a short window the completed-visits-only average understates
+  # substantially; the bias shrinks as the window lengthens.
   expect_lt(bias[1], -0.2)
   expect_gt(bias[4], -0.02)
   expect_lt(bias[1], bias[3])
@@ -73,7 +73,8 @@ test_that("parametric families rank by AIC and report the hazard they imply", {
   sim <- simulate_lifecycles(n = 2000, seed = 5)
   p <- dwell_parametric(stage_dwell(sim, "released"))
   expect_equal(p$AIC, sort(p$AIC))
-  # A heavy-tailed dwell beats the constant hazard of the exponential.
+  # A heavy-tailed dwell fits better than the constant hazard of the
+  # exponential.
   expect_true(p$dist[1] != "exponential")
   expect_equal(p$hazard[p$dist == "weibull"], "falling")
   expect_lt(p$shape[p$dist == "weibull"], 1)
@@ -89,8 +90,8 @@ test_that("the mixture recovers the two populations it was generated from", {
   expect_lt(abs(fit$params[[1]][1] - 1.9), 0.6)
   expect_lt(abs(exp(fit$params[[2]][1]) - 26), 8)
 
-  # The pooled quantile sits between the two components, which is why it
-  # serves neither.
+  # The pooled quantile sits between the two components, so it describes
+  # neither.
   comp <- fit$component_quantile(0.9)
   pooled <- fit$quantile(0.9)
   expect_gt(pooled, comp[1, 1])
@@ -106,7 +107,7 @@ test_that("the mixture uses censored visits rather than discarding them", {
   with_cens <- dwell_mixture(d, families = c("lnorm", "lnorm"))
   dropped <- dwell_mixture(d[!d$censored, ], families = c("lnorm", "lnorm"))
   # Dropping the open visits removes the longest waits, so the slow component
-  # comes back shorter -- the censoring bias, inside the mixture fit.
+  # comes back shorter, which is the censoring bias inside the mixture fit.
   expect_lt(exp(dropped$params[[2]][1]), exp(with_cens$params[[2]][1]))
 })
 
@@ -140,8 +141,8 @@ test_that("a backlog effect is absent, because the generator has no queue", {
   sim <- simulate_lifecycles(n = 5000, seed = 11)
   rel <- stage_backlog(sim, "released")
   f <- dwell_regression(rel, "backlog")
-  # Stated rather than hidden: this null result is reported as a null result,
-  # and a test that silently expected an effect would be wrong.
+  # This null result is asserted as a null result; a test expecting an effect
+  # here would be wrong.
   expect_gt(f$table$cox_p[f$table$term == "backlog"], 0.05)
   expect_true(all(rel$backlog >= 0))
 })

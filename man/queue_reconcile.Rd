@@ -2,7 +2,7 @@
 % Please edit documentation in R/variants.R
 \name{queue_reconcile}
 \alias{queue_reconcile}
-\title{Reconcile a work queue against the work actually owed}
+\title{Reconcile a work queue against the work owed}
 \usage{
 queue_reconcile(sim, open_flag = "open_ticket_residue")
 }
@@ -24,9 +24,9 @@ recorded against instances that were cancelled. Both are residue, and
 neither can be acted on.
 }
 \details{
-The reconciliation is a two-way comparison, because the reverse error exists
-as well. An instance can be genuinely in flight and carry no open item,
-which a queue built from items will miss entirely.
+The reconciliation is a two-way comparison, since the reverse error also
+occurs: an instance can be in flight and carry no open item, which a queue
+built from items misses.
 }
 \examples{
 sim <- simulate_lifecycles(n = 1000, seed = 11)

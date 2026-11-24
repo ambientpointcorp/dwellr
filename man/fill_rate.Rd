@@ -24,13 +24,13 @@ The input with \code{fill_binding}, \code{fill_binding_dimension} and
 Order fill measured on units, lines and value, plus the binding dimension.
 }
 \details{
-The three disagree, and the disagreement is informative. Six of eight units
-is 0.75 by units; if the missing unit is the expensive one it is worse by
-value; a one-of-three-lines order is worse by lines. The binding dimension,
-which is the minimum of the three, is the one the customer experiences.
+The three dimensions can disagree. Six of eight units is 0.75 by units; if
+the missing unit is the expensive one, the value figure is lower; a
+one-of-three-lines order is lower by lines. The binding dimension is the
+minimum of the three, which is the one the customer experiences.
 
 Orders that have not reached a shipping stage carry \code{NA} on all three
-dimensions, because an order that has not shipped has no fill rate yet. The
+dimensions, since no fill rate is defined before shipment. The
 binding dimension is \code{NA} for those rows rather than 1, so that averaging
 over the column cannot credit an open order with a complete shipment. The
 returned \code{fill_defined} column marks the rows the three dimensions are
@@ -41,6 +41,6 @@ denominator beside it.
 sim <- simulate_lifecycles(n = 300, seed = 1)
 f <- fill_rate(sim$orders)
 table(f$fill_binding_dimension[f$fill_binding < 1])
-# The denominator a fill rate has to be quoted against.
+# The denominator a fill rate is quoted against.
 c(defined = sum(f$fill_defined), open = sum(!f$fill_defined))
 }

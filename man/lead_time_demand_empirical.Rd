@@ -39,8 +39,8 @@ its upper quantile is close.
 \details{
 This function convolves the measured lead-time distribution with demand
 directly, by drawing a lead time from the observed set and then drawing
-demand over it. It makes no assumption about the shape of the lead time and
-the normal assumption about demand over a fixed horizon only.
+demand over it. It makes no assumption about the shape of the lead time, and
+assumes normality only for demand over a fixed horizon.
 }
 \examples{
 sim <- simulate_lifecycles(n = 1000, seed = 11)

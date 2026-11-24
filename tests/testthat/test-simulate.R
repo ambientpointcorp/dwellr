@@ -32,8 +32,8 @@ test_that("censored visits are the slow ones, which is the censoring bias", {
   d <- stage_dwell(sim)
   open_med <- stats::median(d$dwell_hours[d$censored])
   done_med <- stats::median(d$dwell_hours[!d$censored])
-  # Dropping still-open visits -- what a naive average over completed ones does
-  # -- removes exactly the stuck population and runs optimistic.
+  # Dropping still-open visits, as a naive average over completed ones does,
+  # removes the stuck population and runs optimistic.
   expect_gt(open_med, done_med)
 })
 
@@ -41,9 +41,9 @@ test_that("the event log assembles the same way at every size", {
   # The assembly was rewritten from a list of one-row data frames to
   # preallocated vectors, because do.call(rbind, ...) over tens of thousands
   # of frames made the generator quadratic: n = 5000 took 27 seconds and the
-  # corpus is regenerated on every build. The draws are unchanged, so
-  # this guards the property that made the rewrite safe -- the log is still
-  # assembled in one order, sorted by instant then identifier, with no gaps.
+  # corpus is regenerated on every build. The draws are unchanged, so this
+  # guards the property that made the rewrite safe: the log is still assembled
+  # in one order, sorted by instant then identifier, with no gaps.
   sim <- simulate_lifecycles(n = 1500, seed = 11)
   ev <- sim$events
 

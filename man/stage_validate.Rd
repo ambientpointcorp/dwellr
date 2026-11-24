@@ -17,20 +17,20 @@ A data frame with one row per check: \code{check}, \code{violations}, and a
 \code{detail} string naming up to three instances.
 }
 \description{
-Three failures matter and none of them is visible by reading the log. A
-stage appears that the specification does not declare; a move is recorded
-that the specification forbids; or an event is recorded for an instance that
-had already reached a terminal state.
+The function checks three failures, none of them visible from reading the
+log: a stage appears that the specification does not declare; a move is
+recorded that the specification forbids; or an event is recorded for an
+instance that had already reached a terminal state.
 }
 \details{
-All three are configuration errors rather than operational ones, and all
-three corrupt dwell measurement silently: an undeclared stage is dropped
-from summaries, an illegal move produces a dwell for a wait that did not
-happen, and an event after a terminal state extends a lifecycle that was
+All three are configuration errors rather than operational ones, and each
+corrupts dwell measurement without raising an error: an undeclared stage is
+dropped from summaries, an illegal move produces a dwell for a wait that did
+not happen, and an event after a terminal state extends a lifecycle that was
 over.
 
-Instances still in flight are not a violation. They end in a non-terminal
-stage because they have not finished, which is what makes their dwell
+Instances still in flight are not counted as violations. They end in a
+non-terminal stage because they have not finished, which makes their dwell
 right-censored.
 }
 \examples{

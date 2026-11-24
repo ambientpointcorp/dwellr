@@ -23,21 +23,20 @@ rows it was fitted on, and the reliability of the fitting set before and
 after, so that a map can be versioned with the model.
 }
 \description{
-Fits a map from predicted probability to observed rate, which is what a
-score needs before it can be compared against a cost ratio.
+Fits a map from predicted probability to observed rate, which a score
+requires before it can be compared against a cost ratio.
 }
 \details{
-\emph{Isotonic regression} fits a monotone step function. It is flexible and it
-ties predictions the raw score separated, so it can cost a little
-discrimination: the common claim that isotonic calibration cannot change the
-ranking holds only up to those ties. \emph{Platt scaling} fits a two-parameter
-logistic on the log odds, which is strictly increasing and therefore cannot
-reorder anything, and is the better choice when the calibration set is
-small.
+\emph{Isotonic regression} fits a monotone step function. It is flexible, and it
+ties predictions that the raw score separated, so it can cost some
+discrimination; isotonic calibration preserves the ranking only up to those
+ties. \emph{Platt scaling} fits a two-parameter logistic on the log odds, which
+is strictly increasing and therefore preserves the ordering, and is the
+better choice when the calibration set is small.
 
 Fit this on data the model did not train on and the evaluation did not use.
-A calibration fitted on the evaluation period reports a flattering figure,
-as any quantity estimated where it is tested will.
+A calibration fitted on the evaluation period reports an optimistic figure,
+as any quantity estimated on the data it is tested on does.
 }
 \examples{
 set.seed(1)

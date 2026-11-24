@@ -29,14 +29,14 @@ attained alpha and beta, and the stock the measured inputs require.
 }
 \description{
 A policy is parameterized with a lead-time mean and standard deviation, and
-it then operates under whatever the lead time actually is. Where the second
+it then operates under the lead time that actually occurs. Where the second
 standard deviation exceeds the first, the policy carries less stock than its
 own target requires and attains a service level below it.
 }
 \details{
 Reporting the gap this way attributes it. A fill rate short of target is
 usually investigated as a forecast problem, and this function prices the
-alternative explanation, which is that \eqn{\sigma_L} was never measured.
+alternative explanation, that \eqn{\sigma_L} was never measured.
 }
 \examples{
 service_level_gap(demand_mean = 10, demand_sd = 3,

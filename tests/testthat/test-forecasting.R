@@ -39,8 +39,9 @@ test_that("the benchmark comparison reproduces its published figures", {
   expect_equal(round(tab[, "RMSE"], 3),
                c(mean = 16.666, naive = 14.831, drift = 17.128,
                  snaive = 21.465))
-  # Naive wins here. Seasonal naive is worst, because the seasonal amplitude
-  # is small relative to the noise; it is not universally the better method.
+  # Naive is the most accurate here. Seasonal naive is the least accurate,
+  # because the seasonal amplitude is small relative to the noise; it is not
+  # universally the better method.
   expect_equal(names(which.min(tab[, "RMSE"])), "naive")
   expect_equal(names(which.max(tab[, "RMSE"])), "snaive")
   # The mean forecast is biased low on a trending series.

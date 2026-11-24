@@ -4,15 +4,14 @@
 #' it into one row per line, which is the grain needed to ask what changes when
 #' the entity is finer than the record the events were written against.
 #'
-#' The expansion is deterministic and it is an expansion, not an independent
-#' draw. A line inherits its order's events, its branch and its channel, and
-#' the lines that shipped are taken to be the first `fill_lines * lines` of
-#' them. That supports questions about grain, aggregation and identity, since
-#' those depend on how many lines an order has and on how many were satisfied.
-#' It does not support questions about lines moving independently of their
-#' order, because in this table they cannot: a line has no events of its own.
-#' The independent case has to be measured from the split records, which is
-#' where that question belongs.
+#' The expansion is deterministic rather than an independent draw. A line
+#' inherits its order's events, its branch and its channel, and the lines that
+#' shipped are taken to be the first `fill_lines * lines` of them. This
+#' supports questions about grain, aggregation and identity, which depend on
+#' how many lines an order has and on how many were satisfied. It does not
+#' support questions about lines moving independently of their order, since a
+#' line here has no events of its own. That case has to be measured from the
+#' split records.
 #'
 #' A line counts as shipped only when the order reached a stage in which
 #' shipping has happened. The `fill_lines` fraction is 1 for every order that
@@ -22,15 +21,15 @@
 #'
 #' @param sim A `lifecycle_sim` from [simulate_lifecycles()] or
 #'   [as_lifecycle()].
-#' @param spec Optional [stage_spec()], which decides which stages count as
-#'   delivery and which as abandonment. Defaults to the one carried on `sim`.
+#' @param spec Optional [stage_spec()], giving which stages count as delivery
+#'   and which as abandonment. Defaults to the one carried on `sim`.
 #' @param cols Optional named character vector renaming the columns this
 #'   function reads on `sim$orders`, for a population that calls the same
 #'   quantities something else. The names it understands are `lines`, `fill`,
 #'   `closed_short`, `shortfall`, `value`, `branch` and `source`; the defaults
 #'   are the generator's own column names. Only `lines` and `fill` are
-#'   required -- the optional four add columns to the result when present and
-#'   are omitted from it when absent, which is stated per column in Value.
+#'   required; the optional four add columns to the result when present and are
+#'   omitted from it when absent, as stated per column under Value.
 #'
 #' @return A data frame with one row per line: `order_no`, `line_no`, the
 #'   order's `stage`, `branch`, `order_source` and `lines`, a `value_share` of
@@ -74,8 +73,8 @@ order_lines <- function(sim, spec = NULL, cols = NULL) {
     stringsAsFactors = FALSE)
   # The cohort keys and the value share are carried when the population has
   # them. They are descriptive rather than structural: an extract without a
-  # branch column can still be asked every question about grain, and refusing
-  # it for a missing label would be refusing the analysis over the annotation.
+  # branch column can still be asked every question about grain, so a missing
+  # label does not block the analysis.
   if (have("branch")) out$branch <- o[[cn[["branch"]]]][idx]
   if (have("source")) out$order_source <- o[[cn[["source"]]]][idx]
   if (have("value")) out$value_share <- o[[cn[["value"]]]][idx] / n_lines[idx]
@@ -93,8 +92,8 @@ order_lines <- function(sim, spec = NULL, cols = NULL) {
 
   # The source disposition is what a line-level status column in an order
   # management system would hold: shipped, cancelled at close, or open. It is
-  # a statement about where the line stands and not about what happened to it,
-  # which is the distinction `segment_decision_shift()` measures.
+  # records where the line stands rather than what happened to it, which is
+  # the distinction `segment_decision_shift()` measures.
   short_close <- if (have("closed_short")) o[[cn[["closed_short"]]]][idx]
                  else rep(FALSE, length(idx))
   out$disposition <- ifelse(
@@ -104,8 +103,8 @@ order_lines <- function(sim, spec = NULL, cols = NULL) {
 
   # The derived flag asks whether the line's order ever went short, which
   # includes the shortfalls that were recovered and that no status code
-  # retains. It needs a shortfall column to mean anything, so it appears only
-  # where one exists rather than reading FALSE and looking like an answer.
+  # retains. It requires a shortfall column, so it appears only where one
+  # exists rather than reading FALSE.
   if (have("shortfall"))
     out$shortfall <- o[[cn[["shortfall"]]]][idx] | short_close
   out
@@ -119,12 +118,12 @@ order_lines <- function(sim, spec = NULL, cols = NULL) {
 #' event that attaches to several are different problems with different
 #' repairs.
 #'
-#' The second condition is separate and it is the one that disqualifies most
-#' convenient entities. An instance record has to be able to say whether
-#' somebody still owes something, because that is the question a monitoring
-#' system exists to answer. A record that is closed when its work is finished
-#' can answer it; a record that is closed when a document is printed cannot,
-#' and the difference between the two has a measurable cost.
+#' The second condition is separate, and it disqualifies most convenient
+#' entities. An instance record has to be able to report whether work is still
+#' owed, which is the question a monitoring system answers. A record that is
+#' closed when its work is finished can report it, and a record that is closed
+#' when a document is printed cannot; the difference between the two has a
+#' measurable cost.
 #'
 #' @param events An event log with one row per transition.
 #' @param instances A candidate instance table, one row per instance.
@@ -165,9 +164,9 @@ entity_check <- function(events, instances, key, owed = NULL) {
   if (!is.null(owed)) {
     stopifnot(owed %in% names(instances), is.logical(instances[[owed]]))
     out$owing <- sum(instances[[owed]])
-    # A record knows whether work is owed when the flag separates instances
-    # at all. A column that is constant carries the answer for no instance,
-    # which is the state a printed-document entity is in.
+    # A record reports whether work is owed only when the flag separates
+    # instances. A constant column carries the answer for no instance, which
+    # is the state of a printed-document entity.
     out$knows_owed <- out$owing > 0 && out$owing < nrow(instances)
   }
   out
@@ -175,7 +174,7 @@ entity_check <- function(events, instances, key, owed = NULL) {
 
 #' Audit an identifier against the entity it is meant to identify
 #'
-#' Two failures occur in every integration that joins systems, and they pull in
+#' Two failures occur in integrations that join systems, and they run in
 #' opposite directions. A collision is one identifier standing for several
 #' entities, which merges distinct work and understates the population. A
 #' fragmentation is one entity carrying several identifiers, which splits work
@@ -214,26 +213,27 @@ identifier_audit <- function(id, entity) {
        missing = sum(!keep))
 }
 
-#' Does conditioning on a key change the decision?
+#' Whether conditioning on a key changes the decision
 #'
-#' A segmentation key earns its place by changing what the operation does, and
-#' not by being significant or by partitioning the population into groups that
+#' A segmentation key is judged here by whether it changes what the operation
+#' does, rather than by statistical significance or by whether its groups
 #' differ. This fits the alerting threshold of
 #' [threshold_from_dwell_quantile()] once on the pooled population and once
 #' within each level of the key, and reports how many visits are classified
-#' differently under the two.
+#' differently under the two sets of thresholds.
 #'
-#' The quantity to read is `share_changed`. A key that moves no visit across
-#' the threshold adds a dimension to every report and changes nothing, whatever
-#' its p-value. A key that moves a material share is worth conditioning on,
-#' and the per-level thresholds are the operating numbers it produces.
+#' The relevant quantity is `share_changed`. A key that moves no visit across
+#' the threshold adds a dimension to every report without changing any
+#' decision, whatever its p-value. A key that moves a material share is worth
+#' conditioning on, and the per-level thresholds are the operating numbers it
+#' produces.
 #'
 #' @param dwell A data frame from [stage_dwell()].
 #' @param segment A vector of segment labels, one per row of `dwell`.
 #' @inheritParams threshold_from_cost
 #' @param min_n Levels with fewer visits than this are not given their own
-#'   threshold, since a threshold fitted to a handful of visits is noise. They
-#'   are reported as `pooled_levels`.
+#'   threshold, since a threshold fitted to a few visits is dominated by
+#'   sampling noise. They are reported as `pooled_levels`.
 #'
 #' @return A list with the `pooled` threshold in hours, a data frame of
 #'   per-level thresholds and counts, the number and `share_changed` of visits

@@ -16,19 +16,19 @@ monitoring_budget(annual_value, cost_per_review, reviews_per_year = NULL)
 }
 \value{
 A list with the \code{break_even_reviews} the value supports, the
-\code{value_per_review} at the proposed volume, and whether the proposal
-\code{justified} itself.
+\code{value_per_review} at the proposed volume, and whether the proposal is
+\code{justified}.
 }
 \description{
 A monitoring budget is the point at which the carrying cost released by
 watching a stage stops exceeding the cost of watching it. Below that point
-the attention pays; above it the reviews cost more than the stock they free.
+the reviews cost less than the stock they free, and above it they cost more.
 }
 \details{
-The figure is a ceiling and not a recommendation. It assumes every review is
-equally productive, which \code{\link[=capacity_admit]{capacity_admit()}} does not, and it ignores the
-service consequences of a stall that nobody catches, which are the larger
-part of the case for monitoring in most operations and are priced by
+The figure is a ceiling rather than a recommendation. It assumes every review
+is equally productive, an assumption \code{\link[=capacity_admit]{capacity_admit()}} drops, and it ignores
+the service consequences of an uncaught stall, which are the larger part of
+the case for monitoring in most operations and are priced by
 \code{\link[=threshold_from_cost]{threshold_from_cost()}} instead.
 }
 \examples{

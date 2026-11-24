@@ -28,14 +28,14 @@ The threshold is \verb{dwell_quantile(dwell, p*)} with \verb{p*} the probability
 threshold of \code{\link[=threshold_from_cost]{threshold_from_cost()}}, so the comparative statics are the
 same and the flagged share is \verb{1 - p*}.
 
-What the fallback assumes is that an order's position in the dwell
-distribution is its probability of being stalled, which is what lets a
-fractile stand in for a posterior. The assumption ignores the base rate. It
-leaves no room for an order to be both slow and healthy, so when a miss is
-priced far above a look the rule will flag most of the population rather
-than the tail that a fitted model would isolate. Treat the result as a
-starting operating point to be replaced once a calibrated probability
-exists, and check it against review capacity with \code{\link[=monitoring_budget]{monitoring_budget()}}.
+The fallback assumes that an order's position in the dwell distribution is
+its probability of being stalled, which allows a fractile to stand in for a
+posterior. The assumption ignores the base rate and leaves no room
+for an order to be both slow and healthy, so when a miss is priced far above
+a look, the rule flags most of the population rather than the tail a fitted
+model would isolate. Treat the result as a starting operating point, to be
+replaced once a calibrated probability exists, and check it against review
+capacity with \code{\link[=monitoring_budget]{monitoring_budget()}}.
 }
 \examples{
 sim <- simulate_lifecycles(n = 800, seed = 1)

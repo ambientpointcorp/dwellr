@@ -2,7 +2,7 @@
 % Please edit documentation in R/capacity.R
 \name{queue_stability}
 \alias{queue_stability}
-\title{Is a review queue stable?}
+\title{Stability of a review queue}
 \usage{
 queue_stability(alerts_per_day, reviews_per_day)
 }
@@ -18,21 +18,21 @@ A list with the two rates, the \code{utilization}, whether the queue is
 }
 \description{
 Alerts arrive and reviewers serve them, which makes an exception channel a
-queue and gives it the property every queue has: if work arrives faster than
-it is served, the backlog grows without bound and no amount of effort inside
-the channel repairs it.
+queue: if work arrives faster than it is served, the backlog grows without
+bound, and effort inside the channel does not reduce it.
 }
 \details{
-The ratio of the two rates is the utilization. Below one the queue is
-stable and the backlog has a finite expectation; at or above one it is not,
-and the oldest item in the queue gets older every day.
+The ratio of the two rates is the utilization. Below one the queue is stable
+and the backlog has a finite expectation; at or above one the backlog has no
+finite expectation, and the oldest item in the queue grows older without
+bound.
 
 The queue-length figure assumes Poisson arrivals and exponential service,
 which an alert channel does not satisfy: alerts arrive in bursts when a
 vendor misses a sailing, and reviews take a fairly predictable ten minutes.
-Read it as the order of magnitude the design has to live with rather than a
-forecast, and note that both departures from the assumptions push the real
-queue the same way, which is longer.
+Read it as an order of magnitude rather than a forecast. Both departures
+from the assumptions push the real queue in the same direction, towards a
+longer one.
 }
 \examples{
 queue_stability(alerts_per_day = 3.8, reviews_per_day = 12)

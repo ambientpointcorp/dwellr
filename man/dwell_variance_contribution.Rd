@@ -23,7 +23,7 @@ dwells are in hours.}
 
 \item{hours_per_period}{Hours in one demand period. The default of 24 pairs
 an hourly dwell measurement with a daily demand rate, which is the usual
-combination and the usual place to get the units wrong.}
+combination; mismatched units here are a common source of error.}
 }
 \value{
 A data frame of class \code{variance_contribution}, one row per stage,
@@ -43,9 +43,9 @@ those of demand,
 
 \code{\link[=lead_time_decompose]{lead_time_decompose()}} splits \eqn{\sigma_L^{2}} across stages by
 covariance with the total, so each stage's share can be carried straight
-into the expression above. What cannot be carried straight through is safety
-stock, which is proportional to the standard deviation and therefore not
-additive. Two attributions are reported because they answer different
+into the expression above. Safety stock cannot be carried through the same
+way, because it is proportional to the standard deviation and is therefore
+not additive. Two attributions are reported, and they answer different
 questions.
 
 \code{marginal_units} is the safety stock that would be released if that stage's

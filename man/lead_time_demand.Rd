@@ -29,8 +29,7 @@ With demand and lead time independent,
 
 The second variance term is quadratic in mean demand, so for a fast-moving
 item it dominates the first even when the lead time looks reasonably
-consistent. \code{\link[=dwell_variance_contribution]{dwell_variance_contribution()}} takes that term apart and asks
-which stage it comes from.
+consistent. \code{\link[=dwell_variance_contribution]{dwell_variance_contribution()}} decomposes that term by stage.
 }
 \examples{
 lead_time_demand(demand_mean = 10, demand_sd = 3,

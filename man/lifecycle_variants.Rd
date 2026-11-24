@@ -18,17 +18,15 @@ A data frame with one row per variant: the \code{path}, how many
 \code{median_hours} those instances took end to end, and the \code{censored} share.
 }
 \description{
-A stage specification declares which paths are legitimate. It does not say
-which ones occur, or how often, and those are the facts that decide where
+A stage specification declares which paths are legitimate. It does not
+record which ones occur, or how often, and those facts determine where
 measurement effort belongs. Enumerating the paths before writing a state
-machine is what keeps the machine descriptive of the operation it is
-supposed to describe.
+machine keeps the machine descriptive of the operation.
 }
 \details{
 The enumeration is the simplest form of process mining: group the event log
 by instance, reduce each to its ordered sequence of stages, and count. No
-model is fitted and nothing is assumed, which is the point at this stage of
-an engagement.
+model is fitted and nothing is assumed.
 
 Instances still in flight produce truncated paths, and they are reported
 with a \code{censored} share so that a short path can be recognized as unfinished

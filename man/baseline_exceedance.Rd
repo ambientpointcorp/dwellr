@@ -2,7 +2,7 @@
 % Please edit documentation in R/baseline.R
 \name{baseline_exceedance}
 \alias{baseline_exceedance}
-\title{Does a baseline deliver the exceedance rate it claims?}
+\title{Exceedance rate a baseline delivers on holdout data}
 \usage{
 baseline_exceedance(dwell, cohort, baseline)
 }
@@ -18,16 +18,15 @@ A list with the \code{overall} exceedance rate, its \code{target}, the absolute
 \code{error}, a \code{by_cohort} data frame, and the worst cohort deviation.
 }
 \description{
-A baseline set at the 90th percentile is a claim that one visit in ten will
-exceed it. The claim is testable on data the baseline was not fitted to, and
-it is the only check that distinguishes a cohort scheme that helps from one
-that has fitted noise.
+A baseline set at the 90th percentile implies that one visit in ten exceeds
+it. That implication is testable on data the baseline was not fitted to, and
+the test distinguishes a cohort scheme that helps from one that has fitted
+noise.
 }
 \details{
-Read the per-cohort column rather than the total. A scheme can deliver 10\%
+The per-cohort column matters more than the total. A scheme can deliver 10\%
 overall while delivering 2\% in one cohort and 30\% in another, which is the
-failure a global threshold produces and the reason for conditioning in the
-first place.
+failure a global threshold produces and the reason for conditioning.
 }
 \examples{
 sim <- simulate_lifecycles(n = 3000, seed = 11)

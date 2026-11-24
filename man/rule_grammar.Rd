@@ -2,7 +2,7 @@
 % Please edit documentation in R/records.R
 \name{rule_grammar}
 \alias{rule_grammar}
-\title{The configuration grammar, as a value rather than a paragraph}
+\title{The configuration grammar}
 \usage{
 rule_grammar()
 }
@@ -11,14 +11,14 @@ A list with the permitted \code{operators}, \code{connectives}, and the
 \code{cannot_express} constructs, each with the usual workaround named.
 }
 \description{
-An admission rule is the one setting that resists being reduced to a form,
-so it gets written. A deliberately small grammar is what keeps a written
-rule checkable: a short list of operators, two connectives, no negation, no
-arithmetic and no function calls.
+An admission rule is the one setting that does not reduce to a form, so it
+is written as text. A small grammar keeps a written rule checkable: a short
+list of operators, two connectives, no negation, no arithmetic and no
+function calls.
 }
 \details{
-The limits are returned alongside the vocabulary, because a limit nobody
-wrote down becomes a workaround nobody remembers.
+The limits are returned alongside the vocabulary, so that each is documented
+with its usual workaround.
 }
 \examples{
 rule_grammar()$cannot_express

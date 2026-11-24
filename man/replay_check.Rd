@@ -19,11 +19,11 @@ A list with the \code{agreement} share, the \code{diverged} rows, and
 \description{
 A replay is faithful when it returns what the record says happened. Running
 the current configuration over historical data is a different exercise and
-answers a different question, so the two are worth keeping apart.
+answers a different question; the two are kept apart here.
 }
 \details{
-Divergence is reported per item rather than as a count, because the useful
-question about a replay that failed is which decisions moved.
+Divergence is reported per item rather than as a count, since what matters
+about a failed replay is which decisions moved.
 }
 \examples{
 r <- decision_record(c("notify", "none"), c("A", "B"), Sys.time(),

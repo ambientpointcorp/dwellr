@@ -19,22 +19,22 @@ from cost ratios, reviewer capacity, routing, and policy evaluation.
 > inventory models, fill rate on three dimensions, cohort and modeled
 > baselines, thresholds from cost ratios, reviewer capacity and admission,
 > routing, the decision path, policy evaluation, records, the serial echelon
-> simulator and the observation-cost family. 104 exported functions, 747
-> passing assertions. The interface is not yet stable, which is what the
-> fourth version component marks.
+> simulator and the observation-cost family. 104 exported functions, 748
+> passing assertions. The interface is not yet stable, which the fourth
+> version component marks.
 
 ## What it does
 
 Classical inventory models size safety stock from lead-time variance. This
-package measures where that variance actually comes from: the time an order
-spends in each stage of its own lifecycle, much of it administrative rather
-than physical.
+package measures where that variance comes from: the time an order spends in
+each stage of its own lifecycle, much of it administrative rather than
+physical.
 
-Nothing here is specific to the synthetic corpus. `as_lifecycle()` builds the
-same population object from an event log an operation already keeps, and every
-function reads the stage vocabulary out of the `stage_spec()` it is given --
-so an operation whose work ends in `departed` is measured as correctly as one
-whose work ends in `shipped`.
+None of the methods are specific to the synthetic corpus. `as_lifecycle()`
+builds the same population object from an event log an operation already
+keeps, and every function reads the stage vocabulary from the `stage_spec()`
+it is given, so an operation whose work ends in `departed` is measured the
+same way as one whose work ends in `shipped`.
 
 ```r
 library(dwellr)
@@ -48,19 +48,19 @@ orders
 # Stage dwell, with still-open visits flagged rather than dropped.
 d <- stage_dwell(orders, stage = "released")
 
-# The operating quantiles a threshold should come from.
+# The operating quantiles a threshold is set from.
 dwell_quantile(d, c(0.5, 0.9))
 #> [1]  1.78 13.08
 
-# A threshold wants a stall probability per order, which the two-component
+# A threshold requires a stall probability per order, which the two-component
 # mixture supplies: the chance a visit still open at t belongs to the slow
-# population rather than the one moving at the intended pace.
+# population rather than to the one moving at the intended pace.
 mix <- dwell_mixture(d)
 q <- mix$posterior(d$dwell_hours, censored = d$censored)
 
-# The threshold itself is then derived from a cost ratio rather than chosen.
-# Reviewer attention priced at 10x a missed stall flags 9% of the population,
-# and the crossing translates back to an operating rule in hours.
+# The threshold is then derived from a cost ratio. Reviewer attention priced
+# at 10x a missed stall flags 9% of the population, and the crossing
+# translates back to an operating rule in hours.
 r <- threshold_from_cost(q, cost_miss = 40, cost_look = 400,
                          hours = d$dwell_hours)
 r$probability_threshold
@@ -69,22 +69,22 @@ c(flagged = r$flagged_n, hours = round(r$hours, 2))
 #> flagged   hours
 #>  187.00   17.51
 
-# And the rule is checked against the two policies it has to beat.
+# The rule is reported beside the two reference policies.
 round(r$expected_cost)
 #>   rule   none    all
 #>   2833  10015 742647
 
 # With no fitted probability available, the fallback reads the same cost ratio
-# off the dwell distribution instead, under the assumption its help documents.
+# off the dwell distribution, under the assumption its help page documents.
 threshold_from_dwell_quantile(d, cost_miss = 40, cost_look = 400)$hours
 #> [1] 16.57
 ```
 
-### Why censoring is the first thing in the package
+### Censoring
 
-An order sitting in a stage right now has not finished waiting. Its dwell is a
-lower bound, not an observation. Averaging completed visits only — the obvious
-thing to do — removes exactly the orders that are stuck:
+An order sitting in a stage right now has not finished waiting, so its dwell
+is a lower bound rather than an observation. Averaging completed visits only
+removes the orders that are stuck:
 
 ```r
 d <- stage_dwell(orders)
@@ -92,7 +92,7 @@ median(d$dwell_hours[d$censored])    # still open:  28.7 h
 median(d$dwell_hours[!d$censored])   # completed:    3.0 h
 ```
 
-A tenfold optimistic bias, and it is largest when the operation is performing
+The bias is tenfold, and it is largest when the operation is performing
 worst. `dwell_survival()` and `dwell_quantile()` use the censored estimate.
 
 ## Installation
@@ -104,8 +104,8 @@ remotes::install_github("ambientpointcorp/dwellr")
 
 ## Function families
 
-Named by the family they belong to, which is what keeps one package spanning
-EOQ through routing navigable.
+Functions are named by the family they belong to. The package spans EOQ
+through routing, and the prefixes are:
 
 | Prefix | Covers |
 |---|---|
@@ -116,19 +116,19 @@ EOQ through routing navigable.
 | `threshold_*` `capacity_*` `route_*` | Allocating attention |
 | `evaluate_*` | Policy evaluation |
 
-## Synthetic data, not client data
+## Synthetic data
 
 `simulate_lifecycles()` generates orders from a stated model with documented
-parameters. It is not a scrubbed extract, and it reproduces on purpose the
-pathologies the methods here have to survive: right-censoring, a fast and a
+parameters. It is not a scrubbed extract, and it reproduces deliberately the
+pathologies the methods here have to handle: right-censoring, a fast and a
 stuck population in every stage, partial fills, orders closed short,
 `released → backordered` loops, vendor-sourced special orders, and residue —
-finished orders still carrying an open pick ticket, which is what overstates a
-naive work queue.
+finished orders still carrying an open pick ticket, which overstates a naive
+work queue.
 
 The built-in `orders` dataset is one call at `n = 2000`. A larger corpus is the
-same function at a larger `n`, in `lifecycle-analytics-examples` — one
-generator, two scales, so they cannot drift apart.
+same function at a larger `n`, in `lifecycle-analytics-examples`: one
+generator at two scales.
 
 ## Tests
 
@@ -143,13 +143,12 @@ devtools::test()
 
 ## Stability
 
-Nothing is declared-but-unimplemented any more. Earlier versions carried stubs
-that errored with the method they stood for, on the principle that an
-unimplemented method returning a plausible number is worse than one that
-refuses; all of them now have implementations and tests.
+No function is declared without an implementation. Earlier versions carried
+stubs that raised an error naming the method they stood for rather than
+returning a plausible number; all of them now have implementations and tests.
 
 The version stays below 1.0 because the interface is still free to change. Two
-things will be settled before it goes to 1.0: the argument names on the newest
+questions will be settled before 1.0: the argument names on the newest
 families, and whether the cost conventions should be carried in an object
 rather than passed to every call.
 

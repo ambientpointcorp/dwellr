@@ -18,7 +18,7 @@ test_that("the protocol reports the metrics the decision consumes", {
   expect_true(all(c("auc", "precision_at_capacity", "ece", "brier") %in%
                   names(m$metrics)))
   expect_gt(m$metrics$auc, 0.5)
-  # the point of precision at capacity: better than the base rate
+  # precision at capacity, which should exceed the base rate
   expect_gt(m$metrics$precision_at_capacity, m$metrics$base_rate)
 })
 

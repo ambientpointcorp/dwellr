@@ -19,9 +19,9 @@ eoq_cost(demand_rate, order_cost, holding_cost, Q)
 Total relevant cost per unit time.
 }
 \description{
-Evaluates the EOQ objective at any \code{Q}, which is what shows how flat the
-cost curve is near the optimum -- and therefore how much rounding to a case
-quantity actually costs.
+Evaluates the EOQ objective at any \code{Q}. The value shows how flat the cost
+curve is near the optimum, and therefore how much rounding to a case
+quantity costs.
 }
 \examples{
 q <- eoq(10, 100, 2)

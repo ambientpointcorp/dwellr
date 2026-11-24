@@ -2,7 +2,7 @@
 % Please edit documentation in R/variants.R
 \name{stage_separation}
 \alias{stage_separation}
-\title{Do two stages hold distinguishable dwells?}
+\title{Whether two stages hold distinguishable dwells}
 \usage{
 stage_separation(sim, spec)
 }
@@ -17,17 +17,16 @@ A data frame with one row per adjacent pair: the two stages, their
 visit counts and median dwells, the log-rank \code{p}, and a \code{verdict}.
 }
 \description{
-A stage earns its place in a specification only if it has a dwell
-distribution of its own, and that criterion is testable. Two adjacent stages
-whose dwells cannot be told apart carry parameters and no information, and
-collapsing them loses nothing.
+A stage is worth declaring separately only if it has a dwell distribution of
+its own, and that criterion is testable. Two adjacent stages whose dwells
+cannot be distinguished carry parameters without information, and collapsing
+them loses nothing.
 }
 \details{
 The test is a log-rank comparison, which uses the censored visits and
 assumes nothing about shape. Read it with the sample sizes beside it: a
-stage with few visits will fail to separate from its neighbor for want of
-power, and that is a different finding from a stage that genuinely holds the
-same wait.
+stage with few visits fails to separate from its neighbor for lack of power,
+which is a different finding from a stage that holds the same wait.
 }
 \examples{
 sim <- simulate_lifecycles(n = 1000, seed = 11)

@@ -9,8 +9,7 @@ test_that("routing keys on the action and reports what it could not match", {
   r <- route_action(c("received", "credit_hold", "backordered"), rules)
   expect_equal(r$recipient[1:2], c("warehouse", "finance"))
   expect_equal(r$matched, c(TRUE, TRUE, FALSE))
-  # An unmatched item carries no recipient, which is what makes the gap
-  # visible instead of silent.
+  # An unmatched item carries no recipient, so the gap is visible.
   expect_true(is.na(r$recipient[3]))
 
   # A duplicate key is a table defect and is refused rather than resolved by
@@ -24,7 +23,7 @@ test_that("a default routes the unmatched without concealing them", {
                   urgency = "notify", stringsAsFactors = FALSE)
   r <- route_action(c("received", "backordered"), rules, default = d)
   expect_equal(r$recipient, c("warehouse", "supervisor"))
-  # Still FALSE: the row was routed, and it was routed because nothing matched.
+  # Still FALSE: the row was routed by the default, because nothing matched.
   expect_equal(r$matched, c(TRUE, FALSE))
 })
 
@@ -35,11 +34,11 @@ test_that("completeness is tested against the live population", {
 
   expect_equal(g$covered, 0.5)
   expect_equal(nrow(g$gaps), 2)
-  # Ordered by exposure, so the costly gap is the first thing read.
+  # Ordered by exposure, so the costliest gap is reported first.
   expect_equal(g$gaps$key[1], "backordered")
   expect_equal(g$gaps$exposure[1], 9000)
   expect_equal(g$gaps$max_exposure[1], 9000)
-  # A rule nobody's population exercises is also worth knowing about.
+  # A rule that no population exercises is also reported.
   expect_setequal(g$unused, c("credit_hold", "awaiting_supply"))
 })
 

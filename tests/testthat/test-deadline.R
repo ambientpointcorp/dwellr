@@ -20,7 +20,7 @@ test_that("handling time may differ per instance", {
   expect_true(all(diff(as.numeric(d$horizon)) < 0))
 })
 
-test_that("the two breach flags differ, which is the point of deriving one", {
+test_that("the two breach flags differ, which is why the horizon is derived", {
   p <- as.POSIXct("2026-03-09 12:00", tz = "UTC")
   d <- deadline_derive(p, handling_hours = 15.5, cutoff_hours = 4,
                        as_of = as.POSIXct("2026-03-09 08:00", tz = "UTC"))

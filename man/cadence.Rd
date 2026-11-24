@@ -38,9 +38,9 @@ components at the optimum.
 }
 \description{
 A scan costs something and a condition that has arisen waits, on average,
-half the interval before the next scan finds it. Those two costs move
-oppositely in the interval, which makes the problem the one \code{\link[=eoq]{eoq()}} solves
-for order quantity.
+half the interval before the next scan finds it. The two costs move in
+opposite directions in the interval, which makes this the problem \code{\link[=eoq]{eoq()}}
+solves for order quantity.
 }
 \details{
 Writing \eqn{c_s} for the cost of a scan, \eqn{c_\ell} for the cost of a
@@ -51,14 +51,13 @@ period of delay and \eqn{\lambda} for the rate at which conditions arise,
 
 The analogy carries the insensitivity with it. Half or double the optimal
 interval costs 25\% more, the same figure \code{\link[=eoq_penalty]{eoq_penalty()}} gives for order
-quantity, which is the reason a cadence chosen to the nearest convenient
-round number is usually good enough.
+quantity, so a cadence rounded to a convenient number is usually close
+enough.
 
-Where it stops holding is worth stating. The derivation prices a wait
-linearly, and a wait against a deadline is not priced linearly: it costs
-nothing until the slack is gone and everything afterward. Pass
-\code{lag_cost_fn} to price the wait any other way and the optimum is found
-numerically instead.
+The derivation has a limit. It prices a wait linearly, whereas a wait
+against a deadline is not linear: it costs nothing until the slack is gone
+and a great deal afterward. Pass \code{lag_cost_fn} to price the wait
+differently, in which case the optimum is found numerically.
 }
 \examples{
 cadence_optimal(scan_cost = 12, arrival_rate = 5, lag_cost = 0.8)

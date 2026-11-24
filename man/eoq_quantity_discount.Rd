@@ -26,7 +26,7 @@ eoq_quantity_discount(
 \value{
 A data frame of the candidate per band, with the chosen row
 identifiable by the minimum \code{cost}. Bands whose EOQ lies above them are
-omitted, which is sound only because prices fall as quantity rises.
+omitted, which is valid because prices fall as quantity rises.
 }
 \description{
 Restores the purchase cost to the objective, which the EOQ drops because it

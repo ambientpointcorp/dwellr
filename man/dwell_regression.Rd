@@ -21,22 +21,21 @@ hazard ratio and time ratio, and \code{ph_test}, the proportional-hazards test.
 }
 \description{
 Covariates turn one dwell distribution for a stage into a distribution per
-order, which is what attributing variance to drivers rather than only to
-stages requires.
+order, which is required to attribute variance to drivers as well as to
+stages.
 }
 \details{
-Two model families answer the question differently and both are reported.
-A \strong{Cox} model is multiplicative on the hazard and assumes that a
-covariate's effect on it does not change with elapsed time, which is the
-proportional-hazards assumption and is testable. An \strong{accelerated failure
-time} model is multiplicative on the dwell itself, so its coefficients read
-directly as "this group waits x times as long", and it does not require
-proportional hazards.
+Two model families are reported. A \strong{Cox} model is multiplicative on the
+hazard and assumes that a covariate's effect on it does not change with
+elapsed time; that is the proportional-hazards assumption, and it is
+testable. An \strong{accelerated failure time} model is multiplicative on the
+dwell itself, so its coefficients read as "this group waits x times as
+long", and it does not require proportional hazards.
 
-The proportional-hazards test is reported alongside the Cox fit rather than
-left to the reader to remember. Where it fails, the usual remedies are to
-stratify on the offending covariate, to let its effect vary with time, or to
-use the accelerated failure time fit instead.
+The proportional-hazards test is reported alongside the Cox fit. Where it
+fails, the usual remedies are to stratify on the offending covariate, to let
+its effect vary with time, or to use the accelerated failure time fit
+instead.
 }
 \examples{
 sim <- simulate_lifecycles(n = 1500, seed = 1)

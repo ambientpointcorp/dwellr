@@ -19,14 +19,13 @@ simulate_lifecycles(
 
 \item{as_of}{Observation cutoff as a \code{POSIXct}. Orders not finished by this
 instant are censored. Defaults to \code{start + horizon_days}, which leaves a
-small share of the population in flight -- a couple of percent at the
+small share of the population in flight: a couple of percent at the
 default parameters, because most dwells are hours and the entry window is
-months. That is realistic rather than convenient: a live work queue is a
-small fraction of every order ever taken. What matters is not the size of
-the censored set but its composition, and it is composed almost entirely
-of the stuck population -- which is exactly why averaging completed visits
-only runs optimistic. Shorten \code{horizon_days}, or pass an earlier \code{as_of},
-for a larger censored share.}
+months. A live work queue is likewise a small fraction of every order ever
+taken. The composition of the censored set matters more than its size, and
+it consists almost entirely of the stuck population, which is why
+averaging completed visits only runs optimistic. Shorten \code{horizon_days},
+or pass an earlier \code{as_of}, for a larger censored share.}
 
 \item{horizon_days}{Days of order entry to generate.}
 
@@ -49,53 +48,53 @@ replenishment \code{cycle_days}, \code{stockout_days}, \code{demand_rate} and th
 
 Two order-level date fields support \code{\link[=deadline_derive]{deadline_derive()}}. \code{requested_date}
 equals the order date on roughly 85\% of orders, reproducing a field that
-defaults to today and is occasionally overridden, which is the defect
-measured on a hand-checked sample of 59 orders where 58 equaled the order
-date. \code{promised_date} is the field that does carry a commitment: it exists
-only where a person entered the order, never equals the order date, and
-has a lead averaging five days. The contrast between the two is what a
-test of a date field looks for.
+defaults to today and is occasionally overridden; the same defect was
+measured on a hand-checked sample of 59 orders, 58 of which equaled the
+order date. \code{promised_date} carries a commitment: it exists only where a
+person entered the order, never equals the order date, and has a lead
+averaging five days. A test of a date field looks for the difference
+between the two.
 
 The shortfall on a line is drawn before its stock position, and the line
 is then matched to an item and instant whose position agrees with that
 outcome. The joint distribution is the same under either factorization;
 implementing this one leaves every measured quantity unchanged. Roughly an
-eighth of lines are left deliberately inconsistent, which is what bounds
-how well a model can do: a shortfall predictor on these features reaches
+eighth of lines are left deliberately inconsistent, which bounds how well
+a model can do: a shortfall predictor on these features reaches
 an AUC near 0.86, against 0.58 on order attributes alone and 0.83 for the
 single comparison of on-hand against the quantity ordered.
 
 The extended value of an order's lines sums to its \code{value}, and the three
 \verb{fill_*} columns on \code{orders} are computed from the lines rather than drawn
 separately, so that the three dimensions describe one population. They are
-\code{NA} where the order has not reached a shipping stage, because an order
-that has not shipped has no fill rate yet.
+\code{NA} where the order has not reached a shipping stage, since no fill rate
+is defined before shipment.
 }
 \description{
 Generates a synthetic population of orders moving through a distribution
-lifecycle, as an event log plus one row per order. Everything else in this
-package runs against its output.
+lifecycle, as an event log plus one row per order. Every other function in
+this package runs against its output.
 }
 \details{
-The generator exists so that worked examples can be published without
-exposing anyone's operational data, and so that the pathologies these
-methods are about are present to be measured. It reproduces, deliberately:
+The generator allows worked examples to be published without exposing
+operational data, and it supplies the pathologies these methods address. It
+reproduces the following deliberately:
 \itemize{
 \item \strong{Right-censoring.} Orders still in flight at \code{as_of} have not finished,
 so their current dwell is a lower bound. This is the censoring bias
 \code{\link[=dwell_survival]{dwell_survival()}} corrects for.
 \item \strong{Mixed dwell populations.} Each stage holds a fast population and a
-stuck one, so a single quantile over the mixture serves neither.
+stuck one, so a single quantile over the mixture describes neither.
 \item \strong{Partial fills and loops.} Some orders ship in parts; a short pick sends
 an order back from \code{released} to \code{backordered}.
 \item \strong{Residue.} Some finished orders still carry an open pick ticket, which
-is what overstates a naive work queue.
+overstates a naive work queue.
 \item \strong{Special orders.} Items bought from a vendor per order wait in
 \code{awaiting_supply} on a vendor clock, not a warehouse one.
 \item \strong{Covariate effects.} Dwell in \code{released} scales with the order's line
 count, and dwell in \code{received} depends on branch and channel, so that
-\code{\link[=dwell_regression]{dwell_regression()}} has something to recover and the recovered
-coefficients can be checked against the values used here.
+\code{\link[=dwell_regression]{dwell_regression()}} can recover them and the recovered coefficients can
+be checked against the values used here.
 }
 
 It is not a model of any real operation and its parameters are not fitted to

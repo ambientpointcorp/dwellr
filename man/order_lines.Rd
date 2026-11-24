@@ -10,16 +10,16 @@ order_lines(sim, spec = NULL, cols = NULL)
 \item{sim}{A \code{lifecycle_sim} from \code{\link[=simulate_lifecycles]{simulate_lifecycles()}} or
 \code{\link[=as_lifecycle]{as_lifecycle()}}.}
 
-\item{spec}{Optional \code{\link[=stage_spec]{stage_spec()}}, which decides which stages count as
-delivery and which as abandonment. Defaults to the one carried on \code{sim}.}
+\item{spec}{Optional \code{\link[=stage_spec]{stage_spec()}}, giving which stages count as delivery
+and which as abandonment. Defaults to the one carried on \code{sim}.}
 
 \item{cols}{Optional named character vector renaming the columns this
 function reads on \code{sim$orders}, for a population that calls the same
 quantities something else. The names it understands are \code{lines}, \code{fill},
 \code{closed_short}, \code{shortfall}, \code{value}, \code{branch} and \code{source}; the defaults
 are the generator's own column names. Only \code{lines} and \code{fill} are
-required -- the optional four add columns to the result when present and
-are omitted from it when absent, which is stated per column in Value.}
+required; the optional four add columns to the result when present and are
+omitted from it when absent, as stated per column under Value.}
 }
 \value{
 A data frame with one row per line: \code{order_no}, \code{line_no}, the
@@ -33,15 +33,14 @@ it into one row per line, which is the grain needed to ask what changes when
 the entity is finer than the record the events were written against.
 }
 \details{
-The expansion is deterministic and it is an expansion, not an independent
-draw. A line inherits its order's events, its branch and its channel, and
-the lines that shipped are taken to be the first \code{fill_lines * lines} of
-them. That supports questions about grain, aggregation and identity, since
-those depend on how many lines an order has and on how many were satisfied.
-It does not support questions about lines moving independently of their
-order, because in this table they cannot: a line has no events of its own.
-The independent case has to be measured from the split records, which is
-where that question belongs.
+The expansion is deterministic rather than an independent draw. A line
+inherits its order's events, its branch and its channel, and the lines that
+shipped are taken to be the first \code{fill_lines * lines} of them. This
+supports questions about grain, aggregation and identity, which depend on
+how many lines an order has and on how many were satisfied. It does not
+support questions about lines moving independently of their order, since a
+line here has no events of its own. That case has to be measured from the
+split records.
 
 A line counts as shipped only when the order reached a stage in which
 shipping has happened. The \code{fill_lines} fraction is 1 for every order that

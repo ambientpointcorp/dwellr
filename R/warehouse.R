@@ -19,8 +19,9 @@
 #' @section Timing convention:
 #' A receipt is posted at `period`; an issue is posted at `period + 1`. The
 #' offset encodes an ordering within the period — arrivals first, demand
-#' afterward. This is an assumption, not a property of the data, and whether it
-#' holds in a given operation depends on receiving hours and pick waves.
+#' afterward. This is an assumption rather than a property of the data, and
+#' whether it holds in a given operation depends on receiving hours and pick
+#' waves.
 #'
 #' @examples
 #' w <- Warehouse$new(100)
@@ -32,7 +33,7 @@
 # installed rather than inside any function body. R CMD check scans function
 # bodies for `::` usage, so the qualification alone leaves R6 looking unused and
 # raises "Namespace in Imports field not imported from". The explicit importFrom
-# is what settles it.
+# resolves it.
 Warehouse <- R6::R6Class("Warehouse",
   public = list(
     #' @field stock Signed inventory level: held, less owed.

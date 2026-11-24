@@ -24,7 +24,7 @@ drawn from \code{levels}.}
 
 \item{outcome}{Optional logical: whether the item turned out to need the
 attention. Where it is supplied, precision and recall are reported for
-both policies, with the caveat that attaches to any outcome collected
+both policies, with the caveat that applies to any outcome collected
 under the current policy.}
 
 \item{levels}{The severity scale, ordered from least to most severe.}
@@ -37,17 +37,16 @@ A list with the \code{transition} table, \code{volume} under each policy, the
 exposure, and, when \code{outcome} is given, a \code{quality} data frame.
 }
 \description{
-Three lists decide whether a change is safe to publish: what the proposal
+Three lists bear on whether a change is safe to publish: what the proposal
 surfaces that the current policy does not, what it stops surfacing, and
-where the urgency changes. The middle list is the one no reporting tool
-produces on its own, because an item that stops being flagged produces no
-output at all.
+where the urgency changes. The middle list is the one a reporting tool does
+not produce on its own, because an item that stops being flagged produces no
+output.
 }
 \details{
-Both policies are evaluated on the same population, which should be the
-live one rather than a sample. An item ceasing to surface is reported with
-its exposure, since the question a reviewer will ask about the list is what
-it is worth.
+Both policies are evaluated on the same population, which should be the live
+one rather than a sample. An item ceasing to surface is reported with its
+exposure, so the value of the list can be read from it.
 }
 \examples{
 evaluate_policy(current  = c("none", "notify", "escalate", "notify"),

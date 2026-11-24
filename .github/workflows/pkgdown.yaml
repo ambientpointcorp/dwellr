@@ -1,8 +1,8 @@
 # Builds the reference site and publishes it to GitHub Pages.
 #
 # The reference index is _pkgdown.yml. pkgdown fails the build when a
-# documented topic is missing from it, which is what catches a function added
-# without being filed anywhere.
+# documented topic is missing from it, so a function added without being filed
+# in the index is caught here.
 #
 # Tracks main: the site is rebuilt and republished on every push, so the
 # published reference describes the code at the head of the branch rather than
@@ -10,9 +10,9 @@
 # under that rule, since a release is cut from a commit that has already landed
 # on main and already rebuilt the site.
 #
-# A pull request builds the site and stops. That is worth the minutes: the
-# build is the only thing that checks _pkgdown.yml against the package, and
-# without it the first notice of a broken index is main already carrying it.
+# A pull request builds the site and stops. The build is the only check of
+# _pkgdown.yml against the package, so without it a broken index would first be
+# noticed once it had already landed on main.
 name: pkgdown
 
 on:
@@ -24,30 +24,30 @@ on:
 
 # Publishing goes through the Pages artifact rather than a gh-pages branch, so
 # nothing here needs to write to the repository and this is `contents: read`
-# rather than the `contents: write` a branch deploy requires. The rights to
-# publish are granted to the deploy job alone.
+# rather than the `contents: write` a branch deploy requires. Publish rights
+# are granted to the deploy job alone.
 permissions:
   contents: read
 
 # Pages allows one deployment at a time. An in-progress run is left to finish
-# rather than cancelled, which is what GitHub asks of a production deployment.
+# rather than cancelled, as GitHub recommends for a production deployment.
 # Queueing a newer run cancels whatever was still pending in the group, so a
-# burst of commits leaves one build running and one queued, not five builds of
-# a site only the last of which anybody sees.
+# burst of commits leaves one build running and one queued rather than five
+# builds of which only the last is published.
 concurrency:
   group: pages
   cancel-in-progress: false
 
 jobs:
-  # Build and publish are separate jobs because publishing is what a pull
-  # request must not do. Guarding a deploy step inside a single job would still
-  # attach every pull-request run to the github-pages environment and leave a
-  # deployment recorded against it; a job that never starts cannot.
+  # Build and publish are separate jobs because a pull request must not
+  # publish. Guarding a deploy step inside a single job would still attach
+  # every pull-request run to the github-pages environment and record a
+  # deployment against it, whereas a job that never starts does not.
   build:
     runs-on: ubuntu-latest
     env:
       # Dependency resolution reads the GitHub API, which is rate-limited for
-      # anonymous callers and generous for authenticated ones.
+      # anonymous callers and has a higher limit for authenticated ones.
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@v5

@@ -17,7 +17,7 @@ A list with the record, identifier and entity counts, the number of
 as a share of records.
 }
 \description{
-Two failures occur in every integration that joins systems, and they pull in
+Two failures occur in integrations that join systems, and they run in
 opposite directions. A collision is one identifier standing for several
 entities, which merges distinct work and understates the population. A
 fragmentation is one entity carrying several identifiers, which splits work

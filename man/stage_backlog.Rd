@@ -17,9 +17,8 @@ column.
 }
 \description{
 A queueing dwell depends on how much other work was present on arrival,
-whereas a handling dwell depends on the instance itself. The distinction is
-testable once the backlog is available as a covariate, which is what this
-function supplies.
+while a handling dwell depends on the instance itself. This function
+supplies the backlog as a covariate, which makes the distinction testable.
 }
 \details{
 The count is of instances already in the stage at that instant and not yet

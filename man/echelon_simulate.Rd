@@ -38,8 +38,8 @@ from the averages.}
 
 \item{stall}{Optional list with \code{stage}, \code{probability} and \code{periods}: with
 that probability a shipment into that stage is delayed by that many extra
-periods. This is an administrative stall, which is a lead time from
-downstream and nothing else.}
+periods. This is an administrative stall, which appears downstream as a
+lead time.}
 
 \item{review}{Periods between orders. One is continuous review; a larger
 value is \verb{(R,S)} batching, which is an administrative cause of the
@@ -64,16 +64,17 @@ everything below it, in transit included, net of backorders -- to its base
 stock level, shipping downstream only what it has on hand.
 }
 \details{
-Echelon positions are what make the policy work on a network: a stage
-ordering against its own local stock alone is the installation policy, which
-is also available here and which carries more stock for the same service.
+Echelon positions are what the policy operates on across a network: a stage
+ordering against its own local stock alone follows the installation policy,
+which is also available here and which carries more stock for the same
+service.
 
-Two identities are returned for checking, because a simulator that gets
-them wrong gets everything else wrong too. Mean echelon-j stock, units in
-transit included, equals \code{levels[j]} less one period of mean demand; mean
-net inventory at stage 1 equals \code{levels[1]} less mean demand over
-\code{lead_times[1] + 1} periods. Both hold exactly while no stage is starved by
-the one above it, and the gap measures the starvation when one is.
+Two identities are returned as checks on the simulation. Mean echelon-j
+stock, units in transit included, equals \code{levels[j]} less one period of mean
+demand; mean net inventory at stage 1 equals \code{levels[1]} less mean demand
+over \code{lead_times[1] + 1} periods. Both hold exactly while no stage is
+starved by the one above it, and the gap measures the starvation where one
+is.
 }
 \examples{
 echelon_simulate(c(27, 59), demand_mean = 10, demand_sd = 3,

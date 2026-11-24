@@ -100,9 +100,9 @@ test_that("the doubly robust estimate is no worse when the model is right", {
 })
 
 test_that("a deterministic log reports the positivity failure it hides", {
-  # The logged policy took what it took with certainty, so nothing in
-  # `propensity` looks wrong. The items where the proposal differs carry no
-  # weight, and `evidence` is what says so.
+  # The logged policy took its action with certainty, so nothing in
+  # `propensity` appears wrong. The items where the proposal differs carry no
+  # weight, which `evidence` reports.
   logged <- c("look", "look", "pass", "pass")
   target <- c("look", "pass", "pass", "look")
   v <- offpolicy_value(logged, c(1, 1, 0, 0), propensity = rep(1, 4),

@@ -35,13 +35,13 @@ test_that("the normal approximation and exact Poisson agree on Q, not cost", {
 test_that("alpha and beta are different targets", {
   Q <- stats::qnorm(5 / 6, 10, 2)
   sl <- nv_service_levels(Q, 10, 2)
-  # The critical fractile IS the alpha attained.
+  # The critical fractile equals the alpha attained.
   expect_equal(sl$alpha, 5 / 6, tolerance = 1e-9)
   # Beta is far higher at the same quantity.
   expect_equal(round(sl$beta, 4), 0.9823)
   expect_gt(sl$beta, sl$alpha)
 
-  # And a beta target needs much less stock than the same alpha target.
+  # A beta target needs much less stock than the same alpha target.
   q_beta  <- nv_quantity_for_service(0.95, 10, 2, "beta")
   q_alpha <- nv_quantity_for_service(0.95, 10, 2, "alpha")
   expect_equal(round(q_beta, 4), 10.6897)
@@ -64,7 +64,8 @@ test_that("the optimal (s, S) policy matches its published figures", {
                     shortage_cost = 9, S_range = 20:50)
   expect_equal(c(best$s, best$S), c(6, 40))
   expect_equal(round(best$cost, 2), 35.02)
-  # Any neighbouring policy is worse, which is what "optimal" means here.
+  # Any neighbouring policy is worse, which is the sense of optimality
+  # asserted here.
   expect_gt(ss_cost(5, 40, d10, p10, 64, 1, 9), best$cost)
   expect_gt(ss_cost(7, 40, d10, p10, 64, 1, 9), best$cost)
   expect_gt(ss_cost(6, 39, d10, p10, 64, 1, 9), best$cost)

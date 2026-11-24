@@ -2,20 +2,20 @@
 #'
 #' A threshold is a claim about a distribution, so it has to be estimated over
 #' a population that the instance being judged belongs to. One global threshold
-#' is simultaneously too tight for the fast cohorts and too loose for the slow
-#' ones, and conditioning on a segment is what repairs that.
+#' is too tight for the fast cohorts and too loose for the slow ones, which
+#' conditioning on a segment corrects.
 #'
 #' Granularity is a statistical choice with a cost on each side. Coarse cohorts
 #' carry bias, since the threshold describes a population the instance is only
 #' partly a member of. Fine cohorts carry variance, since a quantile estimated
 #' from a handful of visits moves with the handful. `min_n` sets where that
 #' trade-off is resolved: a cell with fewer visits keeps the pooled threshold
-#' and is reported as having done so, which is preferable to publishing a
-#' number estimated from four observations.
+#' and is reported as having done so, rather than carrying a threshold
+#' estimated from four observations.
 #'
 #' The estimator is the Kaplan-Meier quantile of [dwell_quantile()], so
 #' still-open visits contribute rather than being dropped. A baseline fitted to
-#' completed visits only is optimistic by exactly the censoring mechanism
+#' completed visits only is optimistic, by the censoring mechanism
 #' [stage_dwell()] documents.
 #'
 #' @param dwell A data frame from [stage_dwell()].
@@ -72,17 +72,16 @@ baseline_cohort <- function(dwell, cohort, p = 0.9, min_n = 50) {
        keys = names(cohort), assign = assign_fn)
 }
 
-#' Does a baseline deliver the exceedance rate it claims?
+#' Exceedance rate a baseline delivers on holdout data
 #'
-#' A baseline set at the 90th percentile is a claim that one visit in ten will
-#' exceed it. The claim is testable on data the baseline was not fitted to, and
-#' it is the only check that distinguishes a cohort scheme that helps from one
-#' that has fitted noise.
+#' A baseline set at the 90th percentile implies that one visit in ten exceeds
+#' it. That implication is testable on data the baseline was not fitted to, and
+#' the test distinguishes a cohort scheme that helps from one that has fitted
+#' noise.
 #'
-#' Read the per-cohort column rather than the total. A scheme can deliver 10%
+#' The per-cohort column matters more than the total. A scheme can deliver 10%
 #' overall while delivering 2% in one cohort and 30% in another, which is the
-#' failure a global threshold produces and the reason for conditioning in the
-#' first place.
+#' failure a global threshold produces and the reason for conditioning.
 #'
 #' @param dwell A holdout data frame from [stage_dwell()], not used to fit.
 #' @param cohort Cohort keys for those rows.
@@ -134,17 +133,17 @@ baseline_exceedance <- function(dwell, cohort, baseline) {
        worst_cohort_error = max(by_cohort$error, na.rm = TRUE))
 }
 
-#' How stable is a baseline at a given window length?
+#' Stability of a baseline at a given window length
 #'
 #' A baseline is estimated over a trailing window, and the window length trades
 #' responsiveness against stability. A short window tracks a change in the
 #' process quickly and moves on sampling noise alone; a long window is steady
 #' and slow to notice that the process has changed.
 #'
-#' Both halves of that trade-off are measurable. This reports the dispersion of
-#' the estimate across successive windows, which is the stability side. The
-#' responsiveness side requires a known change, which means introducing one
-#' deliberately rather than waiting for one to occur.
+#' Both halves of that trade-off are measurable. This function reports the
+#' dispersion of the estimate across successive windows, which is the stability
+#' side. The responsiveness side requires a known change, which has to be
+#' introduced deliberately rather than waited for.
 #'
 #' @param dwell A data frame from [stage_dwell()].
 #' @param at Observation time of each row, as a `POSIXct` vector.
@@ -187,8 +186,8 @@ baseline_stability <- function(dwell, at, widths = c(7, 14, 30, 60), p = 0.9,
 
 #' Separate a changing population from a changing process
 #'
-#' An aggregate dwell figure rises for two different reasons, and the response
-#' to each is different. The process may have slowed, or the mix may have
+#' An aggregate dwell figure rises for two different reasons, which call for
+#' different responses. The process may have slowed, or the mix may have
 #' shifted toward cohorts that were always slower. Direct standardization
 #' separates them by holding the mix fixed at the base period's and letting
 #' only the within-cohort figures move.
@@ -220,10 +219,9 @@ baseline_drift_decompose <- function(value_base, value_now,
 
   # Align by name wherever names are present. Matching positionally is the
   # defect this guards against: `tapply` returns its groups in sorted order,
-  # so a caller who writes the weights out in the order the cohorts occur to
-  # them silently pairs each weight with the wrong cohort. An early draft of
-  # this function reported a mix effect of +85 hours that way, against a true
-  # +12.
+  # so a caller who writes the weights in a different order pairs each weight
+  # with the wrong cohort, and no error is raised. An early draft of this
+  # function reported a mix effect of +85 hours that way, against a true +12.
   nm <- names(value_base)
   if (!is.null(nm)) {
     pick <- function(x, what) {

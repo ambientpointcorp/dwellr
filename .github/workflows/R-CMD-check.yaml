@@ -1,6 +1,6 @@
 # Standard R CMD check, plus the test suite that reproduces the book's printed
 # numerical results. A change that breaks a worked example in the text fails
-# here rather than being found by a reader.
+# here.
 name: R-CMD-check
 
 on:
@@ -11,15 +11,15 @@ on:
   workflow_dispatch:
 
 # Read-only. None of these jobs writes to the repository: results leave as an
-# artifact or as the job's own status, both of which the runtime handles
-# without a repository scope. `read-all` would also work and is what most of
-# these carried; this is the narrower claim that is actually true.
+# artifact or as the job's own status, and the runtime handles both without a
+# repository scope. `read-all` would also work; `contents: read` is the
+# narrower scope that matches what these jobs do.
 permissions:
   contents: read
 
-# One run per branch. A second push supersedes the first, and finishing a check
-# of code nobody will look at again costs minutes and publishes a status for a
-# commit that is no longer the tip.
+# One run per branch. A second push supersedes the first, and completing a
+# check of superseded code costs minutes and publishes a status for a commit
+# that is no longer the tip.
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -57,7 +57,7 @@ jobs:
         with:
           upload-snapshots: true
           # NOTE as error from the start. CRAN submission is planned but not
-          # scheduled, and the cheapest time to keep a package submission-clean
-          # is continuously rather than in the week before it is submitted.
+          # scheduled; keeping the package submission-clean continuously costs
+          # less than clearing the notes in the week before submission.
           args: 'c("--no-manual", "--as-cran")'
           error-on: '"note"'

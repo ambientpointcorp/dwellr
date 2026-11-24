@@ -21,12 +21,11 @@ A list with \code{affordable} calls, the \code{exhausted_after} call at which
 the cap binds, \code{cost}, \code{share_metered}, and \code{essential_covered}.
 }
 \description{
-Inference that is paid for per call is a resource like any other, and the
-cap belongs in the design rather than in the invoice. The question the cap
-raises is not whether it will be reached but what reaching it costs: a path
-that drops items when the budget runs out has made coverage depend on spend,
-while a path that drops the drafted explanation and keeps the deterministic
-decision has not.
+Inference that is paid for per call is a limited resource, and the cap
+belongs in the design rather than in the invoice. What matters is the
+consequence of reaching the cap: a path that drops items when the budget
+runs out makes coverage depend on spend, while a path that drops the drafted
+explanation and keeps the deterministic decision does not.
 }
 \examples{
 inference_budget(calls = 400, cost_per_call = 0.02, cap = 5,

@@ -85,12 +85,12 @@ test_that("a split that holds the same wait is told to collapse", {
     terminal = "shipped")
   s <- stage_separation(split_sim, spec)
   # Splitting one stage at random produces two stages holding one wait, and
-  # the verdict says so instead of accepting the split.
+  # the verdict reports that rather than accepting the split.
   #
-  # The assertion is on the verdict and not on p > 0.05 deliberately. With
-  # thousands of visits on each side a log-rank test has the power to reject a
-  # random split now and then -- this split lands at p = 0.019 -- which is why
-  # stage_separation() calls it at 0.01 and why the test is read with the
+  # The assertion is on the verdict rather than on p > 0.05. With thousands of
+  # visits on each side, a log-rank test has the power to reject a random
+  # split occasionally; this split lands at p = 0.019, which is why
+  # stage_separation() calls it at 0.01 and why the result is read with the
   # effect size beside it.
   expect_equal(s$verdict[1], "collapse")
   expect_gt(s$p[1], 0.01)

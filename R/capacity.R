@@ -1,20 +1,20 @@
-#' Is a review queue stable?
+#' Stability of a review queue
 #'
 #' Alerts arrive and reviewers serve them, which makes an exception channel a
-#' queue and gives it the property every queue has: if work arrives faster than
-#' it is served, the backlog grows without bound and no amount of effort inside
-#' the channel repairs it.
+#' queue: if work arrives faster than it is served, the backlog grows without
+#' bound, and effort inside the channel does not reduce it.
 #'
-#' The ratio of the two rates is the utilization. Below one the queue is
-#' stable and the backlog has a finite expectation; at or above one it is not,
-#' and the oldest item in the queue gets older every day.
+#' The ratio of the two rates is the utilization. Below one the queue is stable
+#' and the backlog has a finite expectation; at or above one the backlog has no
+#' finite expectation, and the oldest item in the queue grows older without
+#' bound.
 #'
 #' The queue-length figure assumes Poisson arrivals and exponential service,
 #' which an alert channel does not satisfy: alerts arrive in bursts when a
 #' vendor misses a sailing, and reviews take a fairly predictable ten minutes.
-#' Read it as the order of magnitude the design has to live with rather than a
-#' forecast, and note that both departures from the assumptions push the real
-#' queue the same way, which is longer.
+#' Read it as an order of magnitude rather than a forecast. Both departures
+#' from the assumptions push the real queue in the same direction, towards a
+#' longer one.
 #'
 #' @param alerts_per_day Arrival rate of exceptions.
 #' @param reviews_per_day Service rate the team can sustain.
@@ -41,22 +41,22 @@ queue_stability <- function(alerts_per_day, reviews_per_day) {
 
 #' Admit a queue against a review capacity
 #'
-#' A threshold answers whether an instance is worth reviewing. It does not ask
-#' whether anybody is free to review it, and a cost ratio with a dear miss
-#' admits almost the whole population. Where capacity binds, the operating
-#' question is not which instances qualify but which `capacity` of them to work
+#' A threshold gives whether an instance is worth reviewing. It does not
+#' account for whether anybody is free to review it, and a cost ratio with an
+#' expensive miss admits almost the whole population. Where capacity binds, the
+#' operating question is which `capacity` of the qualifying instances to work
 #' first.
 #'
 #' Admission by capacity turns the threshold problem into a ranking problem.
-#' The instances admitted are the top `capacity` by score, and what matters
-#' about the score stops being its calibration and becomes its ordering, which
-#' is the reverse of the emphasis a cost-ratio threshold needs, and worth
-#' noticing when the same model serves both.
+#' The instances admitted are the top `capacity` by score, so the ordering of
+#' the score matters and its calibration does not. A cost-ratio threshold
+#' requires the opposite, which is worth noting when the same model serves
+#' both.
 #'
-#' The `marginal` table is the part to read. Average precision over an admitted
-#' queue says what the queue was worth; precision in the last band says what
-#' the next reviewer hour would be worth, and that is the quantity a decision
-#' to add or remove capacity turns on.
+#' The `marginal` table carries the figures a capacity decision uses. Average
+#' precision over an admitted queue gives what the queue was worth, and
+#' precision in the last band gives what the next reviewer hour would be
+#' worth.
 #'
 #' @param score Ranking score, one per instance. Higher is more urgent.
 #' @param capacity Number of instances that can be reviewed in the cycle.
@@ -97,8 +97,8 @@ capacity_admit <- function(score, capacity, outcome = NULL, value = NULL,
     out$precision <- mean(outcome[take])
     out$recall <- sum(outcome[take]) / max(sum(outcome), 1)
 
-    # Precision inside each trailing band, which is what the next block of
-    # reviewer time would be spent on.
+    # Precision inside each trailing band, which is where the next block of
+    # reviewer time would be spent.
     ends <- seq(band, length(ord), by = band)
     out$marginal <- data.frame(
       up_to = ends,

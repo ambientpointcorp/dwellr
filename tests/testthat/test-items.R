@@ -14,9 +14,8 @@ test_that("items reconcile with the lines that use them", {
 
 test_that("stock position is a function of the item and the instant", {
   # Two lines hitting one item at one instant must show the same on-hand
-  # quantity. Drawing the position per line would break that, and a reader
-  # comparing two orders for the same item on the same morning would see two
-  # different warehouses.
+  # quantity. Drawing the position per line would break that, and two orders
+  # for the same item on the same morning would show inconsistent stock.
   sim <- simulate_lifecycles(n = 2000, seed = 7)
   L <- sim$lines
   entered <- sim$orders$entered_at[match(L$order_no, sim$orders$order_no)]
@@ -42,9 +41,9 @@ test_that("the recorded position is informative about the shortfall", {
             3 * mean(term$on_hand_at_entry[!short] == 0))
   expect_lt(median(term$cover_ratio[short]), median(term$cover_ratio[!short]))
 
-  # And informative without being a lookup: the share left inconsistent means
-  # the obvious comparison cannot be perfect, which is what lets later
-  # chapters illustrate a threshold rather than a rule.
+  # Informative without being a lookup: the share left inconsistent means the
+  # direct comparison cannot be perfect, which allows later chapters to
+  # illustrate a threshold rather than a rule.
   rule <- term$on_hand_at_entry < term$qty_ordered
   expect_gt(mean(rule == short), 0.8)
   expect_lt(mean(rule == short), 0.99)
@@ -70,9 +69,9 @@ test_that("the two date fields differ in whether they carry a commitment", {
   prom <- as.integer(o$promised_date - entered_day)
   has_promise <- !is.na(o$promised_date)
 
-  # The requested date is a default with an override, which is what a
-  # date-field test looks for: a commitment has a lead time that is positive
-  # and varies.
+  # The requested date is a default with an override. A date-field test
+  # compares that against a commitment, whose lead time is positive and
+  # varies.
   expect_gt(mean(req == 0), 0.75)
   expect_true(all(req >= 0))
   expect_gt(mean(req[req > 0]), 2)

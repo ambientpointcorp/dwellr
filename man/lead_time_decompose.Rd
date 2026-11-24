@@ -10,9 +10,9 @@ lead_time_decompose(sim, through = NULL, spec = NULL)
 \item{sim}{A \code{lifecycle_sim} from \code{\link[=simulate_lifecycles]{simulate_lifecycles()}}.}
 
 \item{through}{Stage an instance must have reached to be counted. Defaults
-to the stages the specification declares both \code{terminal} and \code{fulfilling}
--- the endings in which the work was actually delivered, which is what a
-lead time is the length of.}
+to the stages the specification declares both \code{terminal} and \code{fulfilling},
+the endings in which the work was delivered, which is the interval a lead
+time covers.}
 
 \item{spec}{Optional \code{\link[=stage_spec]{stage_spec()}}. Used to label each stage with its class
 and to supply \code{through}. Defaults to the one carried on \code{sim}.}
@@ -28,24 +28,23 @@ lifecycle. This function performs that sum per instance and then reports
 what each stage contributes to the mean and to the variance of the total.
 }
 \details{
-Two details of the arithmetic are worth stating, because the obvious version
-of each is wrong.
+Two details of the arithmetic are worth stating.
 
 Only instances that reached \code{through} are included. A lifecycle still in
 flight has an incomplete total, and averaging incomplete totals with complete
 ones understates lead time by an amount that grows as the operation degrades.
 
-Variance is attributed by covariance with the total, not by a stage's own
-variance. Stage dwells are not independent -- an order held for credit is
-also an order that waited to be released -- so \eqn{\sum_k
+Variance is attributed by covariance with the total rather than by a stage's
+own variance. Stage dwells are not independent, since an order held for
+credit is also an order that waited to be released, so \eqn{\sum_k
 \mathrm{Var}(D_k)} does not equal \eqn{\mathrm{Var}(L)}. The identity that
 does hold is
 
 \deqn{\mathrm{Var}(L) = \sum_k \mathrm{Cov}(D_k, L),}
 
-which is exact whatever the dependence, and whose terms therefore sum to one
-when expressed as shares. The \code{own_var} column is reported alongside so the
-difference between the two is visible rather than assumed away.
+which is exact under any dependence, and whose terms therefore sum to one
+when expressed as shares. The \code{own_var} column is reported alongside, so the
+difference between the two is visible.
 
 A stage not visited by an instance contributes a dwell of zero to that
 instance, so \code{mean_hours} is an unconditional contribution to

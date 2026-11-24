@@ -1,20 +1,20 @@
-# A probability that ranks well and reports the wrong scale is useless to a
-# threshold, because the threshold compares against a number. These functions
-# measure that error and repair it.
+# A probability that ranks well but reports the wrong scale cannot be used with
+# a threshold, since the threshold compares it against a number. These
+# functions measure that error and repair it.
 
 #' Measure how far a predicted probability is from the observed rate
 #'
-#' A ranking metric cannot see a calibration error: a monotone transform of a
-#' score leaves AUC untouched and moves every probability. So calibration has
-#' to be measured separately, by binning the predictions and comparing the
-#' mean prediction in each bin against the rate actually observed there.
+#' A ranking metric does not detect a calibration error: a monotone transform
+#' of a score leaves AUC unchanged while moving every probability. Calibration
+#' is therefore measured separately, by binning the predictions and comparing
+#' the mean prediction in each bin against the rate observed there.
 #'
-#' Three summaries come out of it. The *expected calibration error* is the
-#' bin-weighted mean absolute gap, which is the single number to watch. The
-#' *Brier score* is the mean squared error of the probabilities, which rewards
-#' calibration and discrimination together. And the gap between the overall
-#' mean prediction and the overall rate is the crudest check, worth reading
-#' first because a model that fails it fails everywhere.
+#' Three summaries are returned. The *expected calibration error* is the
+#' bin-weighted mean absolute gap. The *Brier score* is the mean squared error
+#' of the probabilities, which reflects calibration and discrimination
+#' together. The gap between the overall mean prediction and the overall rate
+#' is the coarsest check, and a model that fails it is miscalibrated across the
+#' whole range.
 #'
 #' @param p Predicted probabilities.
 #' @param outcome Observed outcomes, logical or 0/1.
@@ -58,20 +58,19 @@ calibrate_reliability <- function(p, outcome, bins = 10) {
 
 #' Repair a probability scale
 #'
-#' Fits a map from predicted probability to observed rate, which is what a
-#' score needs before it can be compared against a cost ratio.
+#' Fits a map from predicted probability to observed rate, which a score
+#' requires before it can be compared against a cost ratio.
 #'
-#' *Isotonic regression* fits a monotone step function. It is flexible and it
-#' ties predictions the raw score separated, so it can cost a little
-#' discrimination: the common claim that isotonic calibration cannot change the
-#' ranking holds only up to those ties. *Platt scaling* fits a two-parameter
-#' logistic on the log odds, which is strictly increasing and therefore cannot
-#' reorder anything, and is the better choice when the calibration set is
-#' small.
+#' *Isotonic regression* fits a monotone step function. It is flexible, and it
+#' ties predictions that the raw score separated, so it can cost some
+#' discrimination; isotonic calibration preserves the ranking only up to those
+#' ties. *Platt scaling* fits a two-parameter logistic on the log odds, which
+#' is strictly increasing and therefore preserves the ordering, and is the
+#' better choice when the calibration set is small.
 #'
 #' Fit this on data the model did not train on and the evaluation did not use.
-#' A calibration fitted on the evaluation period reports a flattering figure,
-#' as any quantity estimated where it is tested will.
+#' A calibration fitted on the evaluation period reports an optimistic figure,
+#' as any quantity estimated on the data it is tested on does.
 #'
 #' @param p Predicted probabilities from the model being repaired.
 #' @param outcome Observed outcomes on the same rows, logical or 0/1.

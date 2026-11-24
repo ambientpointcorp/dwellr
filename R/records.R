@@ -1,21 +1,20 @@
 # A decision record that supports review, and the narrow configuration grammar
 # that keeps a written rule checkable.
 #
-# The requirement throughout is that a decision resolve to the thing that
-# decided it. A record saying what happened, without saying what the policy
-# was at the time, cannot answer whether the decision was right.
+# The requirement throughout is that a decision resolve to what decided it. A
+# record of what happened, with no record of the policy in force at the time,
+# does not establish whether the decision was right.
 
 #' Stamp a set of decisions with the provenance review needs
 #'
-#' A record of what the system did is not enough to review it. The question a
-#' reviewer asks is whether the decision was right given what was known and
-#' what the policy was, and answering it needs the policy version, the model
-#' version where one applied, and the basis the decision rested on.
+#' A record of what the system did is not sufficient to review it. A reviewer
+#' asks whether the decision was right given what was known and what the policy
+#' was, which requires the policy version, the model version where one applied,
+#' and the basis the decision rested on.
 #'
-#' Every field is required rather than optional, and a missing one is an error.
-#' A provenance field that is sometimes absent is one nobody can rely on, and
-#' the absence always turns out to be concentrated in the decisions somebody
-#' later wants to examine.
+#' Every field is required rather than optional, and a missing one raises an
+#' error. A provenance field that is sometimes absent cannot be relied on, and
+#' the absences tend to be concentrated in the decisions later examined.
 #'
 #' @param decided Severity or action decided, one entry per item.
 #' @param id Item identifier.
@@ -87,14 +86,15 @@ decision_record <- function(decided, id, at, policy_version, source,
 #' The contract a decision record has to satisfy
 #'
 #' Everything downstream of the decision path reads its output, so the shape of
-#' that output is an interface and benefits from being versioned like one. A
-#' conformance check establishes mechanically that the columns are present,
-#' that the enumerated ones carry only declared values, and that the required
-#' ones are populated.
+#' that output is an interface and is worth versioning as one. A conformance
+#' check establishes mechanically that the columns are present, that the
+#' enumerated ones carry only declared values, and that the required ones are
+#' populated.
 #'
-#' What it cannot establish is that the values are correct. A record declaring
+#' The check does not establish that the values are correct. A record declaring
 #' policy version `v4` conforms whether or not `v4` is the version that ran,
-#' which is why [replay_check()] replays rather than inspects.
+#' which is why [replay_check()] replays the decisions rather than inspecting
+#' them.
 #'
 #' @param record A data frame as returned by [decision_record()].
 #' @param levels Permitted values of `decided`.
@@ -153,10 +153,10 @@ record_conformance <- function(record,
 #'
 #' A replay is faithful when it returns what the record says happened. Running
 #' the current configuration over historical data is a different exercise and
-#' answers a different question, so the two are worth keeping apart.
+#' answers a different question; the two are kept apart here.
 #'
-#' Divergence is reported per item rather than as a count, because the useful
-#' question about a replay that failed is which decisions moved.
+#' Divergence is reported per item rather than as a count, since what matters
+#' about a failed replay is which decisions moved.
 #'
 #' @param record A record from [decision_record()].
 #' @param replayed Decisions produced by re-execution, in the same order, or a
@@ -192,15 +192,15 @@ replay_check <- function(record, replayed) {
        missing = record$id[is.na(i) | is.na(got)])
 }
 
-#' The configuration grammar, as a value rather than a paragraph
+#' The configuration grammar
 #'
-#' An admission rule is the one setting that resists being reduced to a form,
-#' so it gets written. A deliberately small grammar is what keeps a written
-#' rule checkable: a short list of operators, two connectives, no negation, no
-#' arithmetic and no function calls.
+#' An admission rule is the one setting that does not reduce to a form, so it
+#' is written as text. A small grammar keeps a written rule checkable: a short
+#' list of operators, two connectives, no negation, no arithmetic and no
+#' function calls.
 #'
-#' The limits are returned alongside the vocabulary, because a limit nobody
-#' wrote down becomes a workaround nobody remembers.
+#' The limits are returned alongside the vocabulary, so that each is documented
+#' with its usual workaround.
 #'
 #' @return A list with the permitted `operators`, `connectives`, and the
 #'   `cannot_express` constructs, each with the usual workaround named.
@@ -235,8 +235,8 @@ rule_grammar <- function() {
 #' two; [rule_apply()] and [evaluate_policy()] supply the third.
 #'
 #' A construct the grammar does not have is reported by name rather than
-#' ignored, so that a rule which cannot mean what its author intended fails
-#' when it is written instead of returning nothing in production.
+#' ignored, so a rule that cannot express its author's intent fails when it is
+#' written rather than returning nothing in production.
 #'
 #' @param text The rule, as `field op value` terms joined by `and` or `or`.
 #' @param fields Named character vector or list mapping each available field to
@@ -304,8 +304,9 @@ rule_compile <- function(text, fields) {
 #'
 #' Evaluates the terms a [rule_compile()] call parsed against the columns of a
 #' data frame and combines them with the rule's connective. A rule that failed
-#' to compile is an error here rather than a silent vector of `FALSE`, so a
-#' typo in the rule text cannot be mistaken for a population nothing matches.
+#' to compile raises an error here rather than returning a vector of `FALSE`,
+#' so a typo in the rule text is not mistaken for a population nothing
+#' matches.
 #'
 #' @param compiled A rule from [rule_compile()].
 #' @param data The population.

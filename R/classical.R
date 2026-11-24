@@ -19,9 +19,9 @@ eoq <- function(demand_rate, order_cost, holding_cost) {
 
 #' Total relevant cost of an order quantity
 #'
-#' Evaluates the EOQ objective at any `Q`, which is what shows how flat the
-#' cost curve is near the optimum -- and therefore how much rounding to a case
-#' quantity actually costs.
+#' Evaluates the EOQ objective at any `Q`. The value shows how flat the cost
+#' curve is near the optimum, and therefore how much rounding to a case
+#' quantity costs.
 #'
 #' @inheritParams eoq
 #' @param Q Order quantity to evaluate.

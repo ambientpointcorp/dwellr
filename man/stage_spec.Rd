@@ -21,13 +21,13 @@ stage_spec(
 \item{terminal}{Stages an instance may stop in.}
 
 \item{fulfilling}{Stages in which the instance's work has been delivered,
-whole or in part. This is not the same property as \code{terminal} and neither
-implies the other: a partial shipment has delivered something and the
-instance is still running, while a cancellation is an ending in which
-nothing was delivered. Functions that ask whether an instance was
-satisfied read this; functions that ask whether it stopped read
-\code{terminal}. Stages that are terminal and not fulfilling are reported as
-\code{abandoned}.}
+whole or in part. This is a different property from \code{terminal}, and
+neither implies the other: a partial shipment has delivered something
+while the instance is still running, and a cancellation is an ending in
+which nothing was delivered. Functions concerned with whether an instance
+was satisfied read this argument; functions concerned with whether it
+stopped read \code{terminal}. Stages that are terminal and not fulfilling are
+reported as \code{abandoned}.}
 
 \item{class}{Optional named character vector mapping stage to dwell class.
 Unnamed stages are classed \code{"unclassified"}.}
@@ -38,17 +38,16 @@ An object of class \code{stage_spec}, carrying the declared \code{stages},
 \code{abandoned} set.
 }
 \description{
-A stage set is not a list of names. It is a directed graph: which stages
+A stage set is a directed graph rather than a list of names: which stages
 exist, which moves between them are legitimate, which stages an instance can
-stop in, and what kind of wait each stage represents. Writing it down is
-what makes an event log checkable.
+stop in, and what kind of wait each stage represents. Declaring it makes an
+event log checkable.
 }
 \details{
-The \code{class} argument carries the stage taxonomy -- whether a stage holds
+The \code{class} argument carries the stage taxonomy: whether a stage holds
 physical work, a queue, a batch, an approval, or nothing at all. It is
-optional for the mechanics and essential for the diagnosis, because the
-remedy for a long approval wait has nothing in common with the remedy for a
-long transport leg.
+optional for the computations and used in diagnosis, because the remedy for
+a long approval wait differs from the remedy for a long transport leg.
 }
 \examples{
 spec <- stage_spec(

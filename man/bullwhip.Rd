@@ -14,14 +14,13 @@ bullwhip(demand, orders)
 \value{
 A list with the variance \code{ratio}, the standard-deviation ratio, the
 two coefficients of variation, and the lag-1 autocorrelation of orders,
-which is what a batching or stalling stage leaves behind.
+which a batching or stalling stage produces.
 }
 \description{
 The bullwhip ratio -- the variance of the orders divided by the variance of
 the demand that drove them -- measured on a realized pair of series. A ratio
-above one says the orders a supplier sees are more variable than the demand
-that caused them, and an unwatched upstream stall is one of the things that
-makes it so.
+above one means the orders a supplier sees are more variable than the demand
+that caused them; an unwatched upstream stall is one cause.
 }
 \examples{
 set.seed(1)

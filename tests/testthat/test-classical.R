@@ -1,5 +1,5 @@
 # These reproduce the worked numerical results the documentation prints. A
-# change that breaks one fails the build rather than going unnoticed.
+# change that breaks one fails the build.
 
 test_that("EOQ reproduces its documented instance", {
   # The instance used throughout: K = 100, h = 1, d = 10.
@@ -7,7 +7,7 @@ test_that("EOQ reproduces its documented instance", {
   #
   # An earlier version of this test cited the worked example while using
   # h = 2. The arithmetic was correct and the citation was not, so the suite
-  # was not in fact reproducing the documented figure.
+  # was not reproducing the documented figure.
   q <- eoq(demand_rate = 10, order_cost = 100, holding_cost = 1)
   expect_equal(q, sqrt(2000), tolerance = 1e-9)
   expect_equal(round(q, 4), 44.7214)
@@ -21,7 +21,7 @@ test_that("EOQ reproduces its documented instance", {
   expect_equal(round(q / 10, 4), 4.4721)
 
   # At the optimum, ordering and holding cost are equal. This is the property
-  # the derivation turns on, and it is the cheapest check on an implementation.
+  # the derivation turns on, and it is a direct check on an implementation.
   expect_equal(100 * 10 / q, 1 * q / 2, tolerance = 1e-9)
   expect_equal(round(100 * 10 / q, 4), 22.3607)
 })
@@ -43,7 +43,7 @@ test_that("the EOQ cost curve is flat near the optimum", {
   expect_equal(round(100 * penalty(0.8), 2), 2.50)
   expect_equal(round(100 * penalty(2.0), 2), 25.00)
 
-  # The result that licenses rounding to a case or pallet quantity.
+  # The result behind rounding to a case or pallet quantity.
   expect_lt(eoq_cost(d, K, h, 50) / eoq_cost(d, K, h, q) - 1, 0.01)
 })
 

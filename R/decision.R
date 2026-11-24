@@ -1,14 +1,13 @@
 #' Reasons a decision was made without the model tier
 #'
 #' "Not configured to use a model" and "could not reach one" look identical
-#' from outside the decision path and mean entirely different things: the first
-#' is a choice and the second is an incident. A single `NA` in place of a model
-#' score collapses them, and collapsing them means an outage is
-#' indistinguishable from a configuration.
+#' from outside the decision path but mean different things: the first is a
+#' choice and the second is an incident. A single `NA` in place of a model
+#' score collapses the two, which leaves an outage indistinguishable from a
+#' configuration.
 #'
-#' These are the reasons [decision_path()] accepts. `model_disabled` is the
-#' deliberate one; the rest are degradations, each with a consequence of its
-#' own.
+#' These are the reasons [decision_path()] accepts. `model_disabled` is
+#' deliberate, and the rest are degradations, each with its own consequence.
 #'
 #' @return A character vector of accepted reasons.
 #' @examples
@@ -27,29 +26,29 @@ fallback_reasons <- function() {
 
 #' Compose a rule tier and a model tier into one decision
 #'
-#' The deterministic tier decides every item, costs nothing per decision and
-#' runs whatever else is unavailable. A model tier, where one is reachable,
-#' proposes a severity of its own. What the path does with the two proposals is
-#' a policy, and the policy is the part worth constraining: `raise_only` lets
-#' the model escalate an item the rule would have left alone but never
-#' de-escalate one the rule flagged, which puts a floor under the worst case
-#' that no property of the model itself can provide.
+#' The deterministic tier decides every item, costs nothing per decision, and
+#' runs whether or not anything else is available. A model tier, where one is
+#' reachable, proposes a severity of its own. The `policy` argument governs
+#' what the path does with the two proposals: `raise_only` lets the model
+#' escalate an item the rule would have left alone but not de-escalate one the
+#' rule flagged, which puts a floor under the worst case independently of the
+#' model's own behaviour.
 #'
-#' Both proposals are returned, not just the outcome. A review that can see
-#' only what was decided cannot tell a model that agreed from a model that was
-#' overruled, and the difference is the whole of the evidence for promoting or
-#' demoting the tier.
+#' Both proposals are returned alongside the outcome. A review that sees only
+#' what was decided cannot distinguish a model that agreed from one that was
+#' overruled, and that difference is the evidence for promoting or demoting the
+#' tier.
 #'
 #' An item whose model proposal is `NA` must carry a reason from
-#' [fallback_reasons()]. Supplying none is an error rather than a default,
-#' because the state that needs naming is exactly the one nobody names.
+#' [fallback_reasons()]. Supplying none raises an error rather than falling
+#' back to a default, so the state is always named.
 #'
 #' @param rule Severity proposed by the deterministic tier, one per item.
 #' @param model Optional severity proposed by the model tier. `NA` marks an
 #'   item the model did not decide.
 #' @param policy `"raise_only"` takes the higher of the two proposals,
 #'   `"replace"` takes the model's where it has one, and `"advise"` records
-#'   the model's proposal without ever acting on it.
+#'   the model's proposal without acting on it.
 #' @param levels The severity scale, ordered from least to most severe.
 #' @param reason Fallback reason for items with no model proposal, recycled
 #'   from length one. Required whenever `model` contains `NA`.
@@ -115,13 +114,13 @@ decision_path <- function(rule, model = NULL,
 
 #' What the decision path did, and how often it ran without the model
 #'
-#' Two numbers decide whether a model tier is earning its place: the share of
-#' decisions it actually changed, and the share of decisions made without it.
-#' A tier that changes nothing is cost without effect, and a tier unreachable
-#' for a quarter of the population is not the tier that was evaluated.
+#' Two figures bear on whether a model tier is worth its cost: the share of
+#' decisions it changed, and the share of decisions made without it. A tier
+#' that changes nothing adds cost without effect, and a tier unreachable for a
+#' quarter of the population is not the tier that was evaluated.
 #'
-#' Reasons are reported separately rather than summed, for the reason
-#' [fallback_reasons()] gives.
+#' Reasons are reported separately rather than summed, for the reason given
+#' under [fallback_reasons()].
 #'
 #' @param path A data frame returned by [decision_path()].
 #'
@@ -162,12 +161,11 @@ decision_audit <- function(path) {
 
 #' Meter metered inference against a daily cap
 #'
-#' Inference that is paid for per call is a resource like any other, and the
-#' cap belongs in the design rather than in the invoice. The question the cap
-#' raises is not whether it will be reached but what reaching it costs: a path
-#' that drops items when the budget runs out has made coverage depend on spend,
-#' while a path that drops the drafted explanation and keeps the deterministic
-#' decision has not.
+#' Inference that is paid for per call is a limited resource, and the cap
+#' belongs in the design rather than in the invoice. What matters is the
+#' consequence of reaching the cap: a path that drops items when the budget
+#' runs out makes coverage depend on spend, while a path that drops the drafted
+#' explanation and keeps the deterministic decision does not.
 #'
 #' @param calls Calls the path would make in the period.
 #' @param cost_per_call Metered cost of one call.

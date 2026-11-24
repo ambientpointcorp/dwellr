@@ -33,7 +33,7 @@ form, a consequence of the K-convexity of the cost-to-go.
 }
 \details{
 The search is exhaustive over the supplied range rather than using the
-Zheng-Federgruen recursion, which is faster but harder to read; on the
+Zheng-Federgruen recursion, which is faster but less transparent. On the
 instances tested here the two agree.
 }
 \examples{

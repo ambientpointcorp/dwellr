@@ -20,7 +20,7 @@ item the model did not decide.}
 
 \item{policy}{\code{"raise_only"} takes the higher of the two proposals,
 \code{"replace"} takes the model's where it has one, and \code{"advise"} records
-the model's proposal without ever acting on it.}
+the model's proposal without acting on it.}
 
 \item{levels}{The severity scale, ordered from least to most severe.}
 
@@ -33,23 +33,23 @@ A data frame with one row per item: \code{rule}, \code{model}, \code{decided},
 \code{reason}.
 }
 \description{
-The deterministic tier decides every item, costs nothing per decision and
-runs whatever else is unavailable. A model tier, where one is reachable,
-proposes a severity of its own. What the path does with the two proposals is
-a policy, and the policy is the part worth constraining: \code{raise_only} lets
-the model escalate an item the rule would have left alone but never
-de-escalate one the rule flagged, which puts a floor under the worst case
-that no property of the model itself can provide.
+The deterministic tier decides every item, costs nothing per decision, and
+runs whether or not anything else is available. A model tier, where one is
+reachable, proposes a severity of its own. The \code{policy} argument governs
+what the path does with the two proposals: \code{raise_only} lets the model
+escalate an item the rule would have left alone but not de-escalate one the
+rule flagged, which puts a floor under the worst case independently of the
+model's own behaviour.
 }
 \details{
-Both proposals are returned, not just the outcome. A review that can see
-only what was decided cannot tell a model that agreed from a model that was
-overruled, and the difference is the whole of the evidence for promoting or
-demoting the tier.
+Both proposals are returned alongside the outcome. A review that sees only
+what was decided cannot distinguish a model that agreed from one that was
+overruled, and that difference is the evidence for promoting or demoting the
+tier.
 
 An item whose model proposal is \code{NA} must carry a reason from
-\code{\link[=fallback_reasons]{fallback_reasons()}}. Supplying none is an error rather than a default,
-because the state that needs naming is exactly the one nobody names.
+\code{\link[=fallback_reasons]{fallback_reasons()}}. Supplying none raises an error rather than falling
+back to a default, so the state is always named.
 }
 \examples{
 decision_path(rule = c("notify", "escalate", "none"),

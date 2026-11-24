@@ -23,9 +23,9 @@ The \strong{alpha} service level is the probability of no stockout in a cycle,
 fraction of demand served from stock,
 \eqn{1 - E[\omega - Q]^{+}/E[\omega]}.
 
-The two are not interchangeable. Beta is typically far higher than alpha at
+The two are not interchangeable: beta is typically much higher than alpha at
 the same quantity, because a stockout that leaves one unit unserved counts
-fully against alpha and barely against beta.
+fully against alpha and only slightly against beta.
 }
 \examples{
 nv_service_levels(11.93, mean = 10, sd = 2)

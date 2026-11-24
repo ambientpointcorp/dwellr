@@ -86,9 +86,9 @@ nv_cost <- function(Q, overage, underage, mean = NULL, sd = NULL,
 #' fraction of demand served from stock,
 #' \eqn{1 - E[\omega - Q]^{+}/E[\omega]}.
 #'
-#' The two are not interchangeable. Beta is typically far higher than alpha at
+#' The two are not interchangeable: beta is typically much higher than alpha at
 #' the same quantity, because a stockout that leaves one unit unserved counts
-#' fully against alpha and barely against beta.
+#' fully against alpha and only slightly against beta.
 #'
 #' @inheritParams nv_leftover
 #' @return A list with `alpha` and `beta`.
@@ -145,7 +145,7 @@ nv_quantity_for_service <- function(target, mean, sd,
 #' @details
 #' Under stationary demand the levels are constant and coincide with the
 #' single-period Newsvendor solution at the critical fractile
-#' \eqn{b/(h+b)}, which is the cheapest check on the result.
+#' \eqn{b/(h+b)}, which provides a check on the result.
 #'
 #' @param periods Horizon length.
 #' @param support,probs Demand values and probabilities, assumed the same in
@@ -226,7 +226,7 @@ ss_cost <- function(s, S, support, probs, order_cost, holding_cost,
 #' form, a consequence of the K-convexity of the cost-to-go.
 #'
 #' The search is exhaustive over the supplied range rather than using the
-#' Zheng-Federgruen recursion, which is faster but harder to read; on the
+#' Zheng-Federgruen recursion, which is faster but less transparent. On the
 #' instances tested here the two agree.
 #'
 #' @inheritParams ss_cost

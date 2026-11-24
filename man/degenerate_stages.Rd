@@ -21,21 +21,20 @@ A data frame, one row per stage, with \code{n}, \code{n_measurable},
 \code{verdict}.
 }
 \description{
-A stage that every instance leaves at the instant it arrives is not a stage.
-It is a flag, or a system event, or a configuration row that was never a
-wait in the first place, and it will never produce a measurement worth
-acting on.
+A stage that every instance leaves at the instant it arrives records no
+wait: it is a flag, a system event, or a configuration row, and it yields no
+measurement to act on.
 }
 \details{
 The scan is a dwell distribution per stage with the share of visits ending
 within \code{tol_hours}, plus the stage those instantaneous visits collapse onto.
-The second column is what identifies the duplicate: a stage recorded at the
-same instant as the one after it is a second name for that event.
+The second column identifies duplicates: a stage recorded at the same
+instant as the one after it is a second name for that event.
 
-Visits with no following event are not measurable -- the instance is either
-finished or still in flight -- so they are counted and excluded. A stage
-whose visits are all of that kind is terminal rather than degenerate, which
-the verdict distinguishes.
+Visits with no following event are not measurable, because the instance is
+either finished or still in flight, so they are counted and excluded. A
+stage whose visits are all of that kind is terminal rather than degenerate,
+and the verdict distinguishes the two.
 }
 \examples{
 sim <- simulate_lifecycles(n = 600, seed = 1)

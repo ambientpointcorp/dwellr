@@ -14,8 +14,8 @@ test_that("dwell_quantile is monotone and uses the censored estimate", {
   d <- stage_dwell(sim, "released")
   q <- dwell_quantile(d, c(0.5, 0.75, 0.9))
   expect_true(all(diff(q) >= 0))
-  # p90 should land well past the median on a heavy-tailed dwell -- the reason
-  # a quantile is preferred to mean-plus-sigma.
+  # p90 should land well past the median on a heavy-tailed dwell, which is the
+  # reason a quantile is preferred to mean-plus-sigma.
   expect_gt(q[3], q[1])
 })
 
@@ -26,8 +26,8 @@ test_that("a threshold follows the cost ratio", {
   dear  <- threshold_from_dwell_quantile(d, cost_miss = 400, cost_look = 10)
   expect_equal(cheap$fractile, 10 / 30)
   expect_equal(dear$fractile, 10 / 410)
-  # A more expensive miss buys an earlier threshold and a larger flagged
-  # share, because looking sooner is what protects against the miss. The
+  # A more expensive miss gives an earlier threshold and a larger flagged
+  # share, because looking sooner protects against the miss. The
   # newsvendor fractile runs the other way, since its decision variable is a
   # stocking quantity and this one is a waiting time.
   expect_lte(dear$hours, cheap$hours)
@@ -42,7 +42,7 @@ test_that("a cost threshold on fitted probabilities minimizes expected cost", {
   q <- mix$posterior(d$dwell_hours, censored = d$censored)
 
   # The mixture posterior is a probability and rises with time waited, which
-  # is what lets a threshold on it be read back as an hours threshold.
+  # allows a threshold on it to be read back as an hours threshold.
   expect_true(all(q >= 0 & q <= 1))
   expect_true(all(diff(mix$posterior(sort(d$dwell_hours), censored = TRUE)) >= -1e-9))
 
@@ -61,7 +61,8 @@ test_that("a cost threshold on fitted probabilities minimizes expected cost", {
     expect_lte(r$expected_cost[["rule"]], cost)
   }
 
-  # A dearer miss lowers the threshold, flags more and surfaces sooner.
+  # A more expensive miss lowers the threshold, flags more and surfaces
+  # sooner.
   loose <- threshold_from_cost(q, cost_miss = 400, cost_look = 40, hours = d$dwell_hours)
   expect_lt(loose$probability_threshold, r$probability_threshold)
   expect_gt(loose$flagged_share, r$flagged_share)

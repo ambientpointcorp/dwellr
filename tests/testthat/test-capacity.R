@@ -4,8 +4,8 @@ test_that("queue stability turns on the utilization", {
   expect_equal(ok$utilization, 3.8 / 12)
   expect_true(is.finite(ok$queue_length))
 
-  # At or above one the backlog has no finite expectation, and reporting a
-  # number there would be worse than reporting none.
+  # At or above one the backlog has no finite expectation, so no queue length
+  # is reported.
   bad <- queue_stability(alerts_per_day = 37.9, reviews_per_day = 12)
   expect_false(bad$stable)
   expect_true(is.infinite(bad$queue_length))
@@ -35,7 +35,7 @@ test_that("admission takes the top of the ranking and reports what it cost", {
 })
 
 test_that("the marginal band is what a capacity decision turns on", {
-  # A score that genuinely ranks puts the true cases first, so precision in a
+  # A score that ranks correctly puts the true cases first, so precision in a
   # trailing band falls as capacity grows while the cumulative figure lags.
   set.seed(3)
   s <- runif(1000)

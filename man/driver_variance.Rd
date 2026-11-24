@@ -17,12 +17,12 @@ A list with the \code{ranking}, the \code{r_squared}, the \code{unexplained}
 share, and \code{max_correlation} among numeric covariates.
 }
 \description{
-Stage attribution says which stage holds the variance. Driver attribution
-asks which recorded attribute of an order predicts it, which is a different
-question and a weaker one.
+Stage attribution gives the stage that holds the variance. Driver
+attribution gives the recorded order attributes that predict it, which is a
+different and weaker question.
 }
 \details{
-The result is a ranking and not a decomposition. Each term's share is the
+The result is a ranking rather than a decomposition. Each term's share is the
 variance of its own fitted contribution over the variance of log dwell, and
 those shares do not sum to the explained share when the covariates are
 correlated, because the covariance between fitted contributions belongs to
@@ -31,10 +31,9 @@ beside the ranking: where it is small the ranking is close to a
 decomposition, and where it is large the shares should be read as
 indicative only.
 
-The unexplained share is the figure to read first. A stage whose dwell is
-driven by a mixture that no order attribute predicts will leave almost all
-of its variance unexplained, and no reweighting of these drivers will change
-that.
+The unexplained share is worth reading first. A stage whose dwell is driven
+by a mixture that no order attribute predicts leaves almost all of its
+variance unexplained, and reweighting these drivers does not change that.
 }
 \examples{
 sim <- simulate_lifecycles(n = 2000, seed = 11)

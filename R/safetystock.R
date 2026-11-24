@@ -12,7 +12,7 @@
 #' @param service_level Target alpha service level.
 #' @param hours_per_period Hours in one demand period. The default of 24 pairs
 #'   an hourly dwell measurement with a daily demand rate, which is the usual
-#'   combination and the usual place to get the units wrong.
+#'   combination; mismatched units here are a common source of error.
 #'
 #' @details
 #' Writing \eqn{\bar{L}} and \eqn{\sigma_L} for the mean and standard
@@ -23,9 +23,9 @@
 #'
 #' [lead_time_decompose()] splits \eqn{\sigma_L^{2}} across stages by
 #' covariance with the total, so each stage's share can be carried straight
-#' into the expression above. What cannot be carried straight through is safety
-#' stock, which is proportional to the standard deviation and therefore not
-#' additive. Two attributions are reported because they answer different
+#' into the expression above. Safety stock cannot be carried through the same
+#' way, because it is proportional to the standard deviation and is therefore
+#' not additive. Two attributions are reported, and they answer different
 #' questions.
 #'
 #' `marginal_units` is the safety stock that would be released if that stage's
@@ -107,14 +107,13 @@ print.variance_contribution <- function(x, digits = 3, ...) {
 #' released and into an annual carrying cost, so that the case for working on a
 #' stage can be stated in the same terms as the cost of working on it.
 #'
-#' Three assumptions sit behind the figure and all three fail in recognizable
-#' ways. The service level is held fixed, so the saving is a reduction in stock
-#' at constant service and not an improvement in service. Demand is held fixed,
-#' so a reduction achieved by losing volume does not count. And the reduction
-#' is assumed to persist, which is the assumption that fails most often: a
-#' stage improved by attention reverts when the attention moves elsewhere,
-#' which is why [evaluate_policy()] evaluates a monitoring policy over a period
-#' rather than at a point.
+#' Three assumptions sit behind the figure. The service level is held fixed, so
+#' the saving is a reduction in stock at constant service rather than an
+#' improvement in service. Demand is held fixed, so a reduction achieved by
+#' losing volume does not count. The reduction is assumed to persist, which is
+#' the assumption that fails most often: a stage improved by attention reverts
+#' when the attention moves elsewhere, and for that reason [evaluate_policy()]
+#' evaluates a monitoring policy over a period rather than at a point.
 #'
 #' @param contrib A `variance_contribution` from
 #'   [dwell_variance_contribution()].
@@ -152,12 +151,12 @@ variance_reduction_value <- function(contrib, stage, reduction = 0.5,
 #'
 #' A monitoring budget is the point at which the carrying cost released by
 #' watching a stage stops exceeding the cost of watching it. Below that point
-#' the attention pays; above it the reviews cost more than the stock they free.
+#' the reviews cost less than the stock they free, and above it they cost more.
 #'
-#' The figure is a ceiling and not a recommendation. It assumes every review is
-#' equally productive, which [capacity_admit()] does not, and it ignores the
-#' service consequences of a stall that nobody catches, which are the larger
-#' part of the case for monitoring in most operations and are priced by
+#' The figure is a ceiling rather than a recommendation. It assumes every review
+#' is equally productive, an assumption [capacity_admit()] drops, and it ignores
+#' the service consequences of an uncaught stall, which are the larger part of
+#' the case for monitoring in most operations and are priced by
 #' [threshold_from_cost()] instead.
 #'
 #' @param annual_value Annual carrying cost released, from
@@ -166,8 +165,8 @@ variance_reduction_value <- function(contrib, stage, reduction = 0.5,
 #' @param reviews_per_year Reviews the stage is expected to need.
 #'
 #' @return A list with the `break_even_reviews` the value supports, the
-#'   `value_per_review` at the proposed volume, and whether the proposal
-#'   `justified` itself.
+#'   `value_per_review` at the proposed volume, and whether the proposal is
+#'   `justified`.
 #'
 #' @examples
 #' monitoring_budget(annual_value = 186, cost_per_review = 4,
@@ -190,11 +189,11 @@ monitoring_budget <- function(annual_value, cost_per_review,
 
 #' Rank the drivers of a stage dwell
 #'
-#' Stage attribution says which stage holds the variance. Driver attribution
-#' asks which recorded attribute of an order predicts it, which is a different
-#' question and a weaker one.
+#' Stage attribution gives the stage that holds the variance. Driver
+#' attribution gives the recorded order attributes that predict it, which is a
+#' different and weaker question.
 #'
-#' The result is a ranking and not a decomposition. Each term's share is the
+#' The result is a ranking rather than a decomposition. Each term's share is the
 #' variance of its own fitted contribution over the variance of log dwell, and
 #' those shares do not sum to the explained share when the covariates are
 #' correlated, because the covariance between fitted contributions belongs to
@@ -203,10 +202,9 @@ monitoring_budget <- function(annual_value, cost_per_review,
 #' decomposition, and where it is large the shares should be read as
 #' indicative only.
 #'
-#' The unexplained share is the figure to read first. A stage whose dwell is
-#' driven by a mixture that no order attribute predicts will leave almost all
-#' of its variance unexplained, and no reweighting of these drivers will change
-#' that.
+#' The unexplained share is worth reading first. A stage whose dwell is driven
+#' by a mixture that no order attribute predicts leaves almost all of its
+#' variance unexplained, and reweighting these drivers does not change that.
 #'
 #' @param dwell A data frame from [stage_dwell()] with covariates joined on.
 #'   Censored visits are dropped, since the model is fitted on log dwell.
@@ -251,13 +249,13 @@ driver_variance <- function(dwell, covariates) {
 #' Service level a policy attains when its lead time was wrong
 #'
 #' A policy is parameterized with a lead-time mean and standard deviation, and
-#' it then operates under whatever the lead time actually is. Where the second
+#' it then operates under the lead time that actually occurs. Where the second
 #' standard deviation exceeds the first, the policy carries less stock than its
 #' own target requires and attains a service level below it.
 #'
 #' Reporting the gap this way attributes it. A fill rate short of target is
 #' usually investigated as a forecast problem, and this function prices the
-#' alternative explanation, which is that \eqn{\sigma_L} was never measured.
+#' alternative explanation, that \eqn{\sigma_L} was never measured.
 #'
 #' @param demand_mean,demand_sd Demand per period.
 #' @param assumed_mean,assumed_sd The lead time the policy was sized with.
@@ -308,8 +306,8 @@ service_level_gap <- function(demand_mean, demand_sd,
 #'
 #' This function convolves the measured lead-time distribution with demand
 #' directly, by drawing a lead time from the observed set and then drawing
-#' demand over it. It makes no assumption about the shape of the lead time and
-#' the normal assumption about demand over a fixed horizon only.
+#' demand over it. It makes no assumption about the shape of the lead time, and
+#' assumes normality only for demand over a fixed horizon.
 #'
 #' @param lead_times Observed lead times, one per completed instance, in the
 #'   same period as the demand rate.

@@ -1,28 +1,27 @@
 #' Declare a stage set as a state machine
 #'
-#' A stage set is not a list of names. It is a directed graph: which stages
+#' A stage set is a directed graph rather than a list of names: which stages
 #' exist, which moves between them are legitimate, which stages an instance can
-#' stop in, and what kind of wait each stage represents. Writing it down is
-#' what makes an event log checkable.
+#' stop in, and what kind of wait each stage represents. Declaring it makes an
+#' event log checkable.
 #'
-#' The `class` argument carries the stage taxonomy -- whether a stage holds
+#' The `class` argument carries the stage taxonomy: whether a stage holds
 #' physical work, a queue, a batch, an approval, or nothing at all. It is
-#' optional for the mechanics and essential for the diagnosis, because the
-#' remedy for a long approval wait has nothing in common with the remedy for a
-#' long transport leg.
+#' optional for the computations and used in diagnosis, because the remedy for
+#' a long approval wait differs from the remedy for a long transport leg.
 #'
 #' @param stages Character vector of stage names, in nominal order.
 #' @param transitions Character vector of legitimate moves, each written
 #'   `"from -> to"`. Any move not listed is a violation.
 #' @param terminal Stages an instance may stop in.
 #' @param fulfilling Stages in which the instance's work has been delivered,
-#'   whole or in part. This is not the same property as `terminal` and neither
-#'   implies the other: a partial shipment has delivered something and the
-#'   instance is still running, while a cancellation is an ending in which
-#'   nothing was delivered. Functions that ask whether an instance was
-#'   satisfied read this; functions that ask whether it stopped read
-#'   `terminal`. Stages that are terminal and not fulfilling are reported as
-#'   `abandoned`.
+#'   whole or in part. This is a different property from `terminal`, and
+#'   neither implies the other: a partial shipment has delivered something
+#'   while the instance is still running, and a cancellation is an ending in
+#'   which nothing was delivered. Functions concerned with whether an instance
+#'   was satisfied read this argument; functions concerned with whether it
+#'   stopped read `terminal`. Stages that are terminal and not fulfilling are
+#'   reported as `abandoned`.
 #' @param class Optional named character vector mapping stage to dwell class.
 #'   Unnamed stages are classed `"unclassified"`.
 #'
@@ -85,19 +84,19 @@ print.stage_spec <- function(x, ...) {
 
 #' Check an event log against a stage specification
 #'
-#' Three failures matter and none of them is visible by reading the log. A
-#' stage appears that the specification does not declare; a move is recorded
-#' that the specification forbids; or an event is recorded for an instance that
-#' had already reached a terminal state.
+#' The function checks three failures, none of them visible from reading the
+#' log: a stage appears that the specification does not declare; a move is
+#' recorded that the specification forbids; or an event is recorded for an
+#' instance that had already reached a terminal state.
 #'
-#' All three are configuration errors rather than operational ones, and all
-#' three corrupt dwell measurement silently: an undeclared stage is dropped
-#' from summaries, an illegal move produces a dwell for a wait that did not
-#' happen, and an event after a terminal state extends a lifecycle that was
+#' All three are configuration errors rather than operational ones, and each
+#' corrupts dwell measurement without raising an error: an undeclared stage is
+#' dropped from summaries, an illegal move produces a dwell for a wait that did
+#' not happen, and an event after a terminal state extends a lifecycle that was
 #' over.
 #'
-#' Instances still in flight are not a violation. They end in a non-terminal
-#' stage because they have not finished, which is what makes their dwell
+#' Instances still in flight are not counted as violations. They end in a
+#' non-terminal stage because they have not finished, which makes their dwell
 #' right-censored.
 #'
 #' @param sim A `lifecycle_sim` from [simulate_lifecycles()] or
@@ -148,8 +147,8 @@ stage_validate <- function(sim, spec) {
 #' The stage set the bundled corpus uses
 #'
 #' The specification derived from the event log of [simulate_lifecycles()],
-#' supplied as a function so that every caller validates against one definition
-#' rather than retyping it.
+#' supplied as a function so that every caller validates against one
+#' definition.
 #'
 #' @return A [stage_spec()].
 #'
@@ -158,8 +157,8 @@ stage_validate <- function(sim, spec) {
 #' @export
 distribution_stage_spec <- function() {
   stage_spec(
-    # Declared in order of PROGRESS, not in the order the stages happen to be
-    # listed anywhere else. `stage_exit_type()` reads backwardness from this
+    # Declared in order of progress, rather than in the order the stages are
+    # listed elsewhere. `stage_exit_type()` reads backwardness from this
     # order, so `backordered` has to sit behind `released`: a short pick is a
     # move back, and classing it as forward would confound the hazards
     # `dwell_competing()` separates.
@@ -179,9 +178,10 @@ distribution_stage_spec <- function() {
       "backordered -> released",
       "partially_shipped -> shipped"),
     terminal = c("shipped", "cancelled"),
-    # Delivery, not ending. `partially_shipped` has put goods on a truck and
-    # is still running; `cancelled` is an ending that delivered nothing. The
-    # two properties cross, which is why they are declared separately.
+    # Delivery rather than ending. `partially_shipped` has put goods on a
+    # truck and is still running, while `cancelled` is an ending that
+    # delivered nothing. The two properties cross, so they are declared
+    # separately.
     fulfilling = c("partially_shipped", "shipped"),
     class = c(received          = "queueing",
               awaiting_supply   = "external supply",
@@ -195,17 +195,17 @@ distribution_stage_spec <- function() {
 
 # Which stage specification applies to this call.
 #
-# An explicit `spec` argument wins; otherwise the one the population carries,
-# which [simulate_lifecycles()] and [as_lifecycle()] both attach. There is no
-# third branch, and that is the design rather than an omission.
+# An explicit `spec` argument takes precedence; otherwise the one the
+# population carries, which [simulate_lifecycles()] and [as_lifecycle()] both
+# attach. There is no third branch, by design.
 #
 # An earlier version fell back to [distribution_stage_spec()] when a bare list
-# carried none. That default is right for exactly one corpus and silently
-# wrong for every other: an operation whose work ends in `departed` would be
-# measured against a stage set that has never heard of it, so every completed
-# instance gains a long open visit and the stage where the work finishes reads
-# as the worst in the operation. A wrong number with no warning is worse than
-# a refusal, so this refuses.
+# carried none. That default is correct for one corpus and wrong for every
+# other, without raising an error: an operation whose work ends in `departed`
+# would be measured against a stage set that does not declare it, so every
+# completed instance gains a long open visit and the stage where the work
+# finishes reads as the worst in the operation. This function refuses
+# instead.
 spec_of <- function(sim, spec = NULL) {
   if (!is.null(spec)) {
     if (!inherits(spec, "stage_spec"))
@@ -225,24 +225,23 @@ spec_of <- function(sim, spec = NULL) {
 #' lifecycle. This function performs that sum per instance and then reports
 #' what each stage contributes to the mean and to the variance of the total.
 #'
-#' Two details of the arithmetic are worth stating, because the obvious version
-#' of each is wrong.
+#' Two details of the arithmetic are worth stating.
 #'
 #' Only instances that reached `through` are included. A lifecycle still in
 #' flight has an incomplete total, and averaging incomplete totals with complete
 #' ones understates lead time by an amount that grows as the operation degrades.
 #'
-#' Variance is attributed by covariance with the total, not by a stage's own
-#' variance. Stage dwells are not independent -- an order held for credit is
-#' also an order that waited to be released -- so \eqn{\sum_k
+#' Variance is attributed by covariance with the total rather than by a stage's
+#' own variance. Stage dwells are not independent, since an order held for
+#' credit is also an order that waited to be released, so \eqn{\sum_k
 #' \mathrm{Var}(D_k)} does not equal \eqn{\mathrm{Var}(L)}. The identity that
 #' does hold is
 #'
 #' \deqn{\mathrm{Var}(L) = \sum_k \mathrm{Cov}(D_k, L),}
 #'
-#' which is exact whatever the dependence, and whose terms therefore sum to one
-#' when expressed as shares. The `own_var` column is reported alongside so the
-#' difference between the two is visible rather than assumed away.
+#' which is exact under any dependence, and whose terms therefore sum to one
+#' when expressed as shares. The `own_var` column is reported alongside, so the
+#' difference between the two is visible.
 #'
 #' A stage not visited by an instance contributes a dwell of zero to that
 #' instance, so `mean_hours` is an unconditional contribution to
@@ -251,9 +250,9 @@ spec_of <- function(sim, spec = NULL) {
 #'
 #' @param sim A `lifecycle_sim` from [simulate_lifecycles()].
 #' @param through Stage an instance must have reached to be counted. Defaults
-#'   to the stages the specification declares both `terminal` and `fulfilling`
-#'   -- the endings in which the work was actually delivered, which is what a
-#'   lead time is the length of.
+#'   to the stages the specification declares both `terminal` and `fulfilling`,
+#'   the endings in which the work was delivered, which is the interval a lead
+#'   time covers.
 #' @param spec Optional [stage_spec()]. Used to label each stage with its class
 #'   and to supply `through`. Defaults to the one carried on `sim`.
 #'
@@ -330,20 +329,19 @@ print.lead_time_decomposition <- function(x, digits = 2, ...) {
 
 #' Find stages nothing dwells in
 #'
-#' A stage that every instance leaves at the instant it arrives is not a stage.
-#' It is a flag, or a system event, or a configuration row that was never a
-#' wait in the first place, and it will never produce a measurement worth
-#' acting on.
+#' A stage that every instance leaves at the instant it arrives records no
+#' wait: it is a flag, a system event, or a configuration row, and it yields no
+#' measurement to act on.
 #'
 #' The scan is a dwell distribution per stage with the share of visits ending
 #' within `tol_hours`, plus the stage those instantaneous visits collapse onto.
-#' The second column is what identifies the duplicate: a stage recorded at the
-#' same instant as the one after it is a second name for that event.
+#' The second column identifies duplicates: a stage recorded at the same
+#' instant as the one after it is a second name for that event.
 #'
-#' Visits with no following event are not measurable -- the instance is either
-#' finished or still in flight -- so they are counted and excluded. A stage
-#' whose visits are all of that kind is terminal rather than degenerate, which
-#' the verdict distinguishes.
+#' Visits with no following event are not measurable, because the instance is
+#' either finished or still in flight, so they are counted and excluded. A
+#' stage whose visits are all of that kind is terminal rather than degenerate,
+#' and the verdict distinguishes the two.
 #'
 #' @param sim A `lifecycle_sim` from [simulate_lifecycles()], or a list with
 #'   an `events` data frame.

@@ -17,8 +17,9 @@ A \code{busy_fraction} above 1 means the schedule is infeasible.
 }
 \description{
 Several items sharing one machine, restricted to schedules in which every
-item is produced exactly once per cycle. The exact problem is NP-hard; this
-restriction makes it tractable and is the standard practical response.
+item is produced exactly once per cycle. The exact problem is NP-hard, and
+this restriction makes it tractable; it is the standard practical
+restriction.
 }
 \examples{
 elsp_common_cycle(data.frame(d = c(10, 5, 8), P = c(50, 40, 60),

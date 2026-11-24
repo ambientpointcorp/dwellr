@@ -17,7 +17,7 @@ test_that("cohort cells fall back rather than publishing a thin estimate", {
   expect_true(all(all_back$assign(o[, "branch", drop = FALSE]) ==
                   all_back$pooled))
 
-  # A cohort never seen at fit time gets the pooled threshold, not NA.
+  # A cohort never seen at fit time gets the pooled threshold rather than NA.
   novel <- data.frame(branch = "99", order_source = "fax",
                       stringsAsFactors = FALSE)
   expect_equal(b$assign(novel), b$pooled)
@@ -80,9 +80,9 @@ test_that("drift decomposition separates mix from process", {
 
 test_that("drift decomposition aligns by name", {
   # tapply returns its groups in sorted order, so a caller writing the weights
-  # in the order the cohorts occur to them would otherwise pair each weight
-  # with the wrong cohort. An early draft of the decomposition reported a mix
-  # effect of +85 hours that way against a true +12.
+  # in a different order would otherwise pair each weight with the wrong
+  # cohort. An early draft of the decomposition reported a mix effect of +85
+  # hours that way against a true +12.
   v <- c(specialty = 160, stock = 40)
   w <- c(specialty = 0.1, stock = 0.9)
 
@@ -91,7 +91,7 @@ test_that("drift decomposition aligns by name", {
   expect_equal(sorted$mix, jumbled$mix)
   expect_equal(sorted$now, jumbled$now)
 
-  # Names that do not match are refused rather than silently recycled.
+  # Names that do not match are refused rather than recycled.
   expect_error(baseline_drift_decompose(v, v, w, c(a = 0.2, b = 0.8)),
                "do not match")
 })

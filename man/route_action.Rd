@@ -14,27 +14,27 @@ route_action(keys, table, default = NULL)
 
 \item{default}{Optional single-row data frame used for keys with no rule.
 Supplying it marks those rows \code{matched = FALSE} even though they are
-routed, so a default can never hide a gap.}
+routed, so a default does not hide a gap.}
 }
 \value{
 A data frame with one row per item: \code{key}, \code{action}, \code{recipient},
 \code{urgency} and \code{matched}.
 }
 \description{
-An exception is useful to the person who receives it only if they can do
-something about it. Routing on what is wrong sends a credit hold to a
-warehouse that cannot release it; routing on what needs doing sends it to
-whoever can clear credit.
+An exception is useful to the person who receives it only if they can act on
+it. Routing on the symptom sends a credit hold to a warehouse that cannot
+release it, while routing on the required action sends it to whoever can
+clear credit.
 }
 \details{
-The table is therefore keyed on the required action and not on the symptom.
-Several conditions often need the same action, and one condition sometimes
-needs several, so the mapping is many-to-many and has to be written down
-rather than inferred from a stage name.
+The table is therefore keyed on the required action rather than on the
+symptom. Several conditions often need the same action, and one condition
+sometimes needs several, so the mapping is many-to-many and has to be
+declared rather than inferred from a stage name.
 
-\code{matched} is the column to test. An item with no rule is not routed to
-nobody by accident: it is reported, and \code{\link[=routing_gaps]{routing_gaps()}} measures what a
-silent default costs.
+\code{matched} records whether a rule applied. An item with no rule is reported
+rather than left unrouted without notice, and \code{\link[=routing_gaps]{routing_gaps()}} measures the
+cost of a silent default.
 }
 \examples{
 rules <- data.frame(

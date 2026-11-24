@@ -42,7 +42,8 @@ test_that("scan and lag cost are equal at the optimum", {
 })
 
 test_that("a nonlinear wait cost is optimized numerically", {
-  # Nothing is lost until the slack is gone, then the whole miss cost lands.
+  # Nothing is lost until the slack is gone, after which the whole miss cost
+  # applies.
   deadline <- function(wait) if (wait < 6) 0 else 400
   o <- cadence_optimal(12, 5, lag_cost = NA, lag_cost_fn = deadline)
   expect_false(o$closed_form)

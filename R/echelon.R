@@ -4,7 +4,7 @@
 # The cost convention is stated once here because every figure depends on it:
 # installation holding `holding[j]` is charged on end-of-period on-hand stock
 # at stage j, `penalty` is charged per unit of backorder per period at stage 1,
-# and units in transit are charged to nobody until they arrive. Stage 1 faces
+# and units in transit are charged to no stage until they arrive. Stage 1 faces
 # demand; stage N orders from an outside source assumed never to be short.
 
 #' Simulate a serial multi-echelon system under echelon base-stock control
@@ -14,16 +14,17 @@
 #' everything below it, in transit included, net of backorders -- to its base
 #' stock level, shipping downstream only what it has on hand.
 #'
-#' Echelon positions are what make the policy work on a network: a stage
-#' ordering against its own local stock alone is the installation policy, which
-#' is also available here and which carries more stock for the same service.
+#' Echelon positions are what the policy operates on across a network: a stage
+#' ordering against its own local stock alone follows the installation policy,
+#' which is also available here and which carries more stock for the same
+#' service.
 #'
-#' Two identities are returned for checking, because a simulator that gets
-#' them wrong gets everything else wrong too. Mean echelon-j stock, units in
-#' transit included, equals `levels[j]` less one period of mean demand; mean
-#' net inventory at stage 1 equals `levels[1]` less mean demand over
-#' `lead_times[1] + 1` periods. Both hold exactly while no stage is starved by
-#' the one above it, and the gap measures the starvation when one is.
+#' Two identities are returned as checks on the simulation. Mean echelon-j
+#' stock, units in transit included, equals `levels[j]` less one period of mean
+#' demand; mean net inventory at stage 1 equals `levels[1]` less mean demand
+#' over `lead_times[1] + 1` periods. Both hold exactly while no stage is
+#' starved by the one above it, and the gap measures the starvation where one
+#' is.
 #'
 #' @param levels Echelon base-stock levels, stage 1 first. Nondecreasing.
 #' @param demand_mean,demand_sd Per-period demand at stage 1. Normal,
@@ -37,8 +38,8 @@
 #'   from the averages.
 #' @param stall Optional list with `stage`, `probability` and `periods`: with
 #'   that probability a shipment into that stage is delayed by that many extra
-#'   periods. This is an administrative stall, which is a lead time from
-#'   downstream and nothing else.
+#'   periods. This is an administrative stall, which appears downstream as a
+#'   lead time.
 #' @param review Periods between orders. One is continuous review; a larger
 #'   value is `(R,S)` batching, which is an administrative cause of the
 #'   amplification [bullwhip()] measures.
@@ -190,10 +191,10 @@ echelon_simulate <- function(levels, demand_mean, demand_sd, lead_times,
 #' grid. Every evaluation shares a seed, so a difference in cost between two
 #' candidate levels is a difference in the policy and not in the demand drawn.
 #'
-#' The search is here because the exact decomposition fixes the downstream
-#' level by a critical fractile and leaves the upstream levels to numerical
-#' work, and because a simulator is the only arbiter available once lead times
-#' are stochastic or a stall is present.
+#' A search is used because the exact decomposition fixes the downstream level
+#' by a critical fractile and leaves the upstream levels to numerical work, and
+#' because a simulator is the only available evaluation once lead times are
+#' stochastic or a stall is present.
 #'
 #' @inheritParams echelon_simulate
 #' @param start Starting levels. Defaults to mean demand over each stage's
@@ -236,9 +237,9 @@ echelon_optimize <- function(demand_mean, demand_sd, lead_times, holding,
   best <- evaluate(cur)
   path <- best
   # Coarse to fine: a wide step finds the neighborhood, a narrow one the
-  # level. Sweeping stops when a whole pass changes nothing, which is what
-  # makes the result independent of the starting point rather than a
-  # fixed number of steps away from it.
+  # level. Sweeping stops when a whole pass changes nothing, so the result
+  # depends on the cost surface rather than on a fixed number of steps from
+  # the starting point.
   for (step in steps) {
     for (s in seq_len(max_sweeps)) {
       moved <- FALSE
@@ -265,16 +266,15 @@ echelon_optimize <- function(demand_mean, demand_sd, lead_times, holding,
 #'
 #' The bullwhip ratio -- the variance of the orders divided by the variance of
 #' the demand that drove them -- measured on a realized pair of series. A ratio
-#' above one says the orders a supplier sees are more variable than the demand
-#' that caused them, and an unwatched upstream stall is one of the things that
-#' makes it so.
+#' above one means the orders a supplier sees are more variable than the demand
+#' that caused them; an unwatched upstream stall is one cause.
 #'
 #' @param demand Per-period demand.
 #' @param orders Per-period replenishment orders placed upstream.
 #'
 #' @return A list with the variance `ratio`, the standard-deviation ratio, the
 #'   two coefficients of variation, and the lag-1 autocorrelation of orders,
-#'   which is what a batching or stalling stage leaves behind.
+#'   which a batching or stalling stage produces.
 #'
 #' @examples
 #' set.seed(1)

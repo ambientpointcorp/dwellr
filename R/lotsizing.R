@@ -29,8 +29,8 @@ eoq_cost_interval <- function(interval, demand_rate, order_cost,
 #'
 #' @description
 #' What a given order quantity costs above the optimum, as a fraction of the
-#' optimal cost. The curve is flat near the optimum, which is what makes
-#' rounding to a case or pallet quantity essentially free.
+#' optimal cost. The curve is flat near the optimum, so rounding to a case or
+#' pallet quantity adds little cost.
 #'
 #' @details
 #' The ratio of the cost at \eqn{Q} to the cost at \eqn{Q^*} depends only on
@@ -58,8 +58,8 @@ eoq_penalty <- function(ratio) {
 #' @description
 #' What it costs to order the EOQ computed from a misestimated ordering or
 #' holding cost. An error by some factor in either one moves the quantity by
-#' its square root, so the penalty is the one `eoq_penalty()` already charges
-#' for being off by that much.
+#' its square root, so the penalty is `eoq_penalty()` evaluated at that
+#' factor.
 #'
 #' @details
 #' Using \eqn{fK} in place of \eqn{K} gives \eqn{\sqrt{f}\,Q^*}, so the cost
@@ -127,9 +127,9 @@ pow2_interval <- function(optimal_interval, base_interval) {
 
 #' Worst-case penalty of a powers-of-two policy
 #'
-#' The constant behind [pow2_interval()]: rounding the interval to a power of
-#' two costs at most 6.07 percent over the unconstrained optimum, whatever the
-#' demand rate and cost parameters. It is [eoq_penalty()] evaluated at the
+#' The bound behind [pow2_interval()]: rounding the interval to a power of two
+#' costs at most 6.07 percent over the unconstrained optimum, for any demand
+#' rate and cost parameters. It is [eoq_penalty()] evaluated at the
 #' largest ratio the rounding can produce, a factor of root two.
 #'
 #' @return The bound 0.0607, as a fraction.
@@ -152,7 +152,7 @@ pow2_bound <- function() eoq_penalty(sqrt(2))
 #' @param prices Unit price in each band, the same length as `breakpoints`.
 #' @return A data frame of the candidate per band, with the chosen row
 #'   identifiable by the minimum `cost`. Bands whose EOQ lies above them are
-#'   omitted, which is sound only because prices fall as quantity rises.
+#'   omitted, which is valid because prices fall as quantity rises.
 #' @examples
 #' eoq_quantity_discount(demand_rate = 10, order_cost = 100,
 #'                       holding_cost = 1,
@@ -219,7 +219,7 @@ backorder_policy <- function(demand_rate, order_cost, holding_cost,
 #' \eqn{Q(1-\rho)/2} with \eqn{\rho = d/P}.
 #'
 #' The result is the EOQ with \eqn{h} replaced by \eqn{h(1-\rho)}: finite
-#' production acts exactly as a reduction in the holding cost. As
+#' production acts as a reduction in the holding cost. As
 #' \eqn{P \to \infty} it recovers the EOQ.
 #'
 #' @inheritParams eoq
@@ -243,8 +243,9 @@ epq <- function(demand_rate, order_cost, holding_cost, production_rate) {
 #' Common-cycle solution to the economic lot scheduling problem
 #'
 #' Several items sharing one machine, restricted to schedules in which every
-#' item is produced exactly once per cycle. The exact problem is NP-hard; this
-#' restriction makes it tractable and is the standard practical response.
+#' item is produced exactly once per cycle. The exact problem is NP-hard, and
+#' this restriction makes it tractable; it is the standard practical
+#' restriction.
 #'
 #' @param items A data frame with columns `d`, `P`, `K` and `h`: demand rate,
 #'   production rate, setup cost and holding cost for each item.
@@ -270,8 +271,8 @@ elsp_common_cycle <- function(items) {
 #'
 #' Splits the fixed cost into a major cost incurred whenever any order is
 #' placed and a minor cost per item included in it. Each item joins every
-#' `m`-th order, so items that are slow moving and cheap to hold ride along
-#' with deliveries that would have been made regardless.
+#' `m`-th order, so items that are slow moving and cheap to hold are included
+#' in deliveries that would have been made regardless.
 #'
 #' Solved by alternating between the base interval and the multiples, which
 #' converges quickly. This is a heuristic, not an exact method.

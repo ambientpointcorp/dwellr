@@ -66,11 +66,11 @@ test_that("a reduction is worth less than a proportional reading suggests", {
                unname(attr(vc, "total")[["safety_stock"]]))
   expect_lt(half$units, full$units)
 
-  # Halving a stage's variance releases LESS than half of what eliminating it
+  # Halving a stage's variance releases less than half of what eliminating it
   # would, because safety stock is the square root of a sum and the return to
-  # removing variance rises as more of it goes. The economics therefore favor
-  # eliminating a stage's variance over trimming it, which is the opposite of
-  # the intuition that a partial fix buys a proportional share of the benefit.
+  # removing variance rises as more of it is removed. The economics therefore
+  # favor eliminating a stage's variance over trimming it, rather than a
+  # partial fix buying a proportional share of the benefit.
   expect_lt(half$units, full$units / 2)
   expect_gt(half$units, 0.85 * full$units / 2)
   expect_equal(half$annual_value, half$units * 120 * 0.22, tolerance = 1e-10)
@@ -97,7 +97,8 @@ test_that("driver attribution ranks the drivers and reports what it cannot expla
   expect_equal(dv$ranking$share_of_log_variance,
                sort(dv$ranking$share_of_log_variance, decreasing = TRUE))
   # Almost all of the variance is the fast-and-stuck mixture, which no order
-  # attribute predicts. The ranking is a ranking.
+  # attribute predicts, so the result is a ranking rather than a
+  # decomposition.
   expect_gt(dv$unexplained, 0.9)
   expect_lt(dv$max_correlation, 0.1)
 })
